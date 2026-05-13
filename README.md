@@ -1,1 +1,1 @@
-# kensho-list
+# 懸賞リスト
