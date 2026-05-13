@@ -285,6 +285,32 @@
     cursor: pointer;
     white-space: nowrap;
   }
+  .search-bar {
+    padding: 0 12px 10px;
+  }
+  #search-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Meiryo', sans-serif;
+    outline: none;
+    box-sizing: border-box;
+    background: rgba(255,255,255,0.9);
+    color: #333;
+  }
+  .tab-tag {
+    display: inline-block;
+    font-size: 10px;
+    background: rgba(231,76,60,0.15);
+    color: #c0392b;
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-right: 5px;
+    font-weight: bold;
+    vertical-align: middle;
+  }
 </style>
 </head>
 <body>
@@ -294,7 +320,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年5月13日更新　全114件</div>
+  <div class="header-date">2026年5月13日更新　全110件</div>
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('inageya',this)">いなげや</button>
     <button class="tab-btn" onclick="switchTab('aeon',this)">イオン系列</button>
@@ -302,6 +328,9 @@
     <button class="tab-btn" onclick="switchTab('other',this)">その他</button>
     <button class="tab-btn" onclick="switchTab('maker',this)">食品・日用品</button>
     <button class="tab-btn" onclick="switchTab('memo',this)">買い物</button>
+  </div>
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="🔍 キーワードで検索（メーカー・商品・賞品など）" oninput="onSearchInput(this.value)" autocomplete="off">
   </div>
 </header>
 
@@ -336,6 +365,8 @@
   <div id="memo-list"></div>
 </div>
 
+<div id="tab-search" class="tab-content"></div>
+
 <div class="exclusion-section" id="exclusion-section" style="display:none">
   <div class="exclusion-header" onclick="toggleExclusion()">
     <span>🗑 除外リスト（削除済みアイテム）</span>
@@ -354,7 +385,8 @@ const allData = {
     {id:'i3',store:'いなげや',maker:'キッコーマン・デルモンテ',deadline:'6/7',dlClass:'dl-yellow',buy:'A:対象商品1800円以上\nB:1100円以上\nギフトカード:200円以上\n購入レシート',method:'ハガキ・LINE',prize:'A:TDLペアチケット+レストラン招待(5組)\nB:TDRペアチケット(30組)\nJCBギフトカード2000円(100名)',url:'https://www.inageya.co.jp/campaign/20260501_0608.html'},
     {id:'i4',store:'いなげや',maker:'アイスメーカー19社',deadline:'6/7',dlClass:'dl-yellow',buy:'A:対象アイス2000円以上\nB:1500円以上\nC:500円以上\n購入レシート',method:'WEB',prize:'A:60L冷凍庫(50名)/宿泊ペアギフト(100名)\nB:和牛カタログギフト等(250名)\nC:商品券2000円(700名)',url:'https://www.inageya.co.jp/campaign/20260502_0607.html'},
     {id:'i5',store:'いなげや',maker:'全農パールライス',deadline:'7/5',dlClass:'dl-green',buy:'対象商品購入レシート',method:'WEB',prize:'A:秋田牛・美味豚セット(40名)\nB:秋田高原ハムセット(70名)\nW:商品券1000円(90名)',url:'https://www.inageya.co.jp/campaign/20260501_0706.html'},
-    {id:'i6',store:'いなげや',maker:'ダノンジャパン',deadline:'7/31',dlClass:'dl-green',buy:'ダノン ビオ2個以上含む\n1000円以上 購入レシート',method:'WEB・ハガキ',prize:'A:グラファイトトースター(20名)\nB:商品券2000円(50名)',url:'https://www.inageya.co.jp/campaign/20260501_0801.html'}
+    {id:'i6',store:'いなげや',maker:'ダノンジャパン',deadline:'7/31',dlClass:'dl-green',buy:'ダノン ビオ2個以上含む\n1000円以上 購入レシート',method:'WEB・ハガキ',prize:'A:グラファイトトースター(20名)\nB:商品券2000円(50名)',url:'https://www.inageya.co.jp/campaign/20260501_0801.html'},
+    {id:'i7',store:'いなげや',maker:'いなげや 年に一度のすこやけく祭り',deadline:'6/21',dlClass:'dl-green',buy:'いなげやにて、5,000円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'親子で楽しむ！食体験ツアーコース：全12コース×総計428名\nプロ選手に会える！立川ダイスとバスケット体験コース：立川ダイス プロ選手の練習見学＆バスケットボール体験×おとなとこども 10組40名\n我が家で楽しむ！グルメギフトコース：全3コース×総計70名\nいなげや専用QUOカードPayコース：すこやけく賞(10万円分×10名)・ありがとう賞(5,000円分×1,000名)',url:'https://kenshomin.hatenablog.jp/entry/2026/05/13/140500'}
   ],
   aeon: [
     {id:'a1',store:'イオングループ',maker:'アイスメーカー19社',deadline:'6/7(日)23:59',dlClass:'dl-yellow',buy:'イオングループ対象店舗にて、各賞に必要な条件を満たすレシートを1口として、WEBから応募\n期間:2026年5月1日(金)～5月31日(日)',method:'WEB',prize:'A賞①：60L前開き冷凍庫 ハイアール  JF-U6A×50名\nA賞②：イオンコンパス 宿泊ペアギフト萌黄(もえぎ)コース×50組100名\nB賞①：デジタルカタログギフト「選べる国産和牛 溌剌」×250名\nB賞②：デジタルカタログギフト「ア・ラ・グルメ キール ロワイヤル」×250名\nC賞：商品券2,000円分×700名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/04/140200'},
@@ -404,73 +436,68 @@ const allData = {
     {id:'ot32',store:'ローソン',maker:'キリン',deadline:'6/5(金)23:59',dlClass:'dl-yellow',buy:'対象商品A800･B150円(税込)以上',method:'WEB',prize:'A･Tｼｬﾂ･500名\nB･ｷﾘﾝｸﾞｯﾄﾞｴｰﾙ1本･500名\nB･ｷﾘﾝiMUSE1本･500名',url:'https://ameblo.jp/rsj64177/entry-12965347203.html'},
     {id:'ot33',store:'西友',maker:'カゴメ',deadline:'6/30（7/5）',dlClass:'dl-green',buy:'西友にて、各コースに必要な条件を満たすレシートを1口として、LINEで応募',method:'LINE',prize:'完熟コース：えらべるPay 10,000円分×5名\n実りコース：えらべるPay 3,000円分×20名\n開花コース：えらべるPay 500円分×180名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/09/140100'},
     {id:'ot34',store:'食品館あおば',maker:'カゴメ',deadline:'6/30\n(7/5 23:59)',dlClass:'dl-green',buy:'各コースに必要な条件を満たすレシートを1口として、LINEで応募',method:'LINE',prize:'完熟コース：JTBえらべるギフト たびもの撰華 楓コース×1名\n実りコース：ビック・ライズ商品券3,000円分×5名\n開花コース：カゴメ野菜生活ファーム グッズ詰め合わせ×45名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/01/140200'},
-    {id:'ot35',store:'｢コーナン｣',maker:'',deadline:'',dlClass:'dl-gray',buy:'対象商品含',method:'アプリ･WEB',prize:'A･歌舞伎貸切･475組950名\nB･商品券3万円･100名\nC･エビ･30名',url:'https://ameblo.jp/rsj64177/entry-12965512024.html'}
+    {id:'ot35',store:'｢コーナン｣',maker:'',deadline:'',dlClass:'dl-gray',buy:'対象商品含',method:'アプリ･WEB',prize:'A･歌舞伎貸切･475組950名\nB･商品券3万円･100名\nC･エビ･30名',url:'https://ameblo.jp/rsj64177/entry-12965512024.html'},
+    {id:'ot36',store:'ニチウリグループ',maker:'くらしにエール！キャンペーン',deadline:'5/31(6/1)',dlClass:'dl-yellow',buy:'対象商品含　A2000･B1000円(税込)以上\nレシート応募',method:'WEB',prize:'A･商品券2万円･30名\nB･商品券5000円･300名\nW･商品券1000円･3000名',url:'https://www.kurashimore-cp.com/'}
   ],
   maker: [
-    {id:'m1',category:'食品',cat:'cat-food',maker:'タカギベーカリー　石窯パンでつながるキャンペーン',deadline:'46184',dlClass:'dl-gray',buy:'対象商品購入レシート\n２点購入',method:'LINE',prize:'※詳細は公式サイトを確認してください。\n※詳細は公式サイト、応募用紙等をご確認下さい。',url:'https://get-cp.jp/campain/pages/top/ishigama26'},
-    {id:'m2',category:'食品',cat:'cat-food',maker:'OHAYOなめらか贅沢な焼きプリン　心を満たすなめらか時間キャンペーン',deadline:'',dlClass:'dl-gray',buy:'対象商品購入レシート',method:'LINE・ハガキ',prize:'※詳細は公式サイトを確認してください。\n※詳細は公式サイト、応募用紙等をご確認下さい。',url:'https://www.ohayo-milk.co.jp/brand/nameraka-bakedpudding/'},
-    {id:'m3',category:'食品',cat:'cat-food',maker:'Pascoイングリッシュマフィン　ペアリングキャンペーン',deadline:'',dlClass:'dl-gray',buy:'対象商品購入レシート',method:'WEB',prize:'※詳細は公式サイトを確認してください。\n※詳細は公式サイト、応募用紙等をご確認下さい。',url:'https://cp-master.com/pascomuffin-2026cp'},
-    {id:'m4',category:'食品',cat:'cat-food',maker:'ニチウリグループ　くらしにエール！キャンペーン',deadline:'',dlClass:'dl-gray',buy:'対象商品購入レシート',method:'WEB',prize:'',url:'https://www.kurashimore-cp.com/'},
-    {id:'m5',category:'食品',cat:'cat-food',maker:'パスコ　たっぷりホイップシリーズ 当たって嬉しい！選べるプレゼント',deadline:'',dlClass:'dl-gray',buy:'対象商品購入レシート',method:'WEB',prize:'【3個購入コース】オリジナルキャラクターボイスメッセージ電話…100名\n【1個購入コース】「QUOカードPay」500円分…1,000名',url:'https://www.ichance.jp/cp/tappuri-202605/?utm_source=hp_news&utm_medium=referral&utm_campaign=tappuri_202605'},
-    {id:'m6',category:'食品',cat:'cat-food',maker:'信州ハム　グリーンマークキャンペーン',deadline:'',dlClass:'dl-gray',buy:'対象商品購入レシート',method:'LINE・ハガキ',prize:'※詳細は公式サイトを確認してください。\n※詳細は公式サイト、応募用紙等をご確認下さい。',url:'https://www.shinshuham.co.jp/gmcampaign2026'},
-    {id:'m7',category:'食品',cat:'cat-food',maker:'北海道産ほたて　北海道の海の幸プレゼントキャンペーン',deadline:'',dlClass:'dl-gray',buy:'対象商品購入レシート',method:'LINE',prize:'※詳細は公式サイトを確認してください。\n※詳細は公式サイト、応募用紙等をご確認下さい。',url:'https://www.gyoren.or.jp/hotate/linecp/index.html'},
-    {id:'m8',category:'食品',cat:'cat-food',maker:'フジッコ　カスピ海ヨーグルト もっと！とろぉ〜もっちキャンペーン',deadline:'',dlClass:'dl-gray',buy:'対象商品購入レシート',method:'WEB・ハガキ',prize:'Giftee box SELECT2,000円分…500名',url:'https://www.fujicco.co.jp/caspikaiyogurt/motto-toromocchi2026/'},
-    {id:'m9',category:'食品',cat:'cat-food',maker:'丸美屋　丸美屋 まるっと中華キャンペーン',deadline:'',dlClass:'dl-gray',buy:'丸美屋対象商品のパッケージに付いている「今日もおいしくマーク」を各コースに必要な枚数を1口として、郵送で応募\n期間:2025年5月1日(金)～7月31日(金)当日消印有効 ※毎月抽選',method:'ハガキ',prize:'6枚コース：レミパンプラス×毎月100名(合計300名)\n2枚コース：中華に合う厳選米セット×毎月400名(合計1,200名)\n1枚コース：丸美屋オリジナルQUOカード2,000円分×毎月550名(合計1,650名)\nWチャンス：丸美屋商品詰め合わせ×毎月1,500名(合計4,500名)',url:'https://kenshomin.hatenablog.jp/entry/2026/05/03/080100'},
-    {id:'m10',category:'日用品',cat:'cat-daily',maker:'ジョンソン　ジョンソン･カビキラーアルコール除菌',deadline:'',dlClass:'dl-gray',buy:'対象商品1点以上',method:'LINE',prize:'ﾎﾟｰﾁ･100名\nﾐﾆﾄｰﾄﾊﾞｯｸﾞ･100名\nQUOPay1000円･300名',url:'https://ameblo.jp/rsj64177/entry-12964682413.html'},
-    {id:'m11',category:'日用品',cat:'cat-daily',maker:'カビキラー・パイプユニッシュ　梅雨こそ、家の中を気持ちよく!!キャンペーン',deadline:'',dlClass:'dl-gray',buy:'対象商品購入レシート',method:'LINE',prize:'【700円(税込)以上購入コース】\n2人に1人に700円分のえらべるPay\n【1,500円(税込)以上購入コース】\n3,000円分のえらべるPay…500名\n※詳細は公式サイト、応募用紙等をご確認下さい。',url:'https://kabi-pipe2026.campar.jp/'},
-    {id:'m12',category:'日用品',cat:'cat-daily',maker:'カビキラーアルコール除菌　ショーンと一緒にLet’s除菌！キャンペーン',deadline:'',dlClass:'dl-gray',buy:'対象商品購入レシート',method:'LINE',prize:'※詳細は公式サイトを確認してください。\n※詳細は公式サイト、応募用紙等をご確認下さい。',url:'https://kabikiller-shaun.campar.jp/'},
-    {id:'m13',category:'食品',cat:'cat-food',maker:'リカルデント　リカルデント',deadline:'5/14〜7/9(木)',dlClass:'dl-red',buy:'対象商品1000･500',method:'LINE',prize:'1000･電動歯ﾊﾌﾞﾗｼ･15名\n500･ぬいぐるみ･計40名\n100･QUOPay2000円･200名',url:'https://ameblo.jp/rsj64177/entry-12965377957.html'},
-    {id:'m14',category:'食品',cat:'cat-food',maker:'まとめ◆ペアリング懸賞①　まとめ◆ペアリング懸賞①',deadline:'5/18(月)正午',dlClass:'dl-red',buy:'対象商品含\nA･対象商品2品\n対象商品2種\n対象商品1種',method:'WEB',prize:'',url:'https://ameblo.jp/rsj64177/entry-12965040826.html'},
-    {id:'m15',category:'食品',cat:'cat-food',maker:'サントリー　サントリー･スターバックス',deadline:'5/18〜6/30(火)23:59',dlClass:'dl-red',buy:'対象商品2本以上',method:'WEB',prize:'ｽﾀﾊﾞeGift3000円･500名',url:'https://ameblo.jp/rsj64177/entry-12965450745.html'},
-    {id:'m16',category:'食品',cat:'cat-food',maker:'まとめ◆アイス懸賞①　まとめ◆アイス懸賞①',deadline:'●5/18(月)23:59',dlClass:'dl-red',buy:'対象商品購入ﾚｼｰﾄ応募\n対象商品1点以上\n対象商品3･1個\n対象商品2袋\n対象商品1･3･5個\nｼﾞｬｲｱﾝﾄｺｰﾝ',method:'LINE',prize:'1p･ﾊｰｹﾞﾝﾀﾞｯﾂ券･1000名\n3p･ｸﾞｯｽﾞ缶･300名\n10p･星野5万円･10名\nﾃﾞｼﾞﾀﾙｷﾞﾌﾄ3000円･400名\n3･ﾊｰﾄﾞｹｰｽ&ﾏｸﾞｶｯﾌﾟ･100名\n3･ﾄｰﾄﾊﾞｯｸﾞ&ﾎﾞﾄﾙ･100名\n3･ｷｬｯﾌﾟ&ﾎﾟｰﾁ･100名\n1･QUO2000円･200名\nﾀﾝﾌﾞﾗｰ&ｱｲｽの実･300名\n1･えらべるPay3000･100名\n3･ﾘﾗｸｾﾞｰｼｮﾝ1万ﾁｹｯﾄ･10名\n5･HIS18000円旅行券･10名\n3･ﾀｵﾙ･300名\n5･Tｼｬﾂﾍﾟｱ･90名',url:'https://ameblo.jp/rsj64177/entry-12965325564.html'},
-    {id:'m17',category:'食品',cat:'cat-food',maker:'まとめ◆ノンアル懸賞　まとめ◆ノンアル懸賞',deadline:'5/20(水)23:59',dlClass:'dl-red',buy:'A･対象商品12本\n対象商品購入ﾚｼｰﾄ応募\n対象商品購入ﾚｼｰﾄ応募\n対象店にて',method:'LINE',prize:'A･KingGnuｺﾝｻｰﾄﾁｹｯﾄﾍﾟｱ\nB･ｷｰﾁｪｰﾝ･1000名\n1･選べるﾃﾞｼﾞﾀﾙ500円･5000名\n3･ｻｰﾓｽ缶ﾎﾙﾀﾞｰ･500名\n12･ｱｿﾋﾞｭｰ体験ｷﾞﾌﾄ･50名\n1･選べるﾃﾞｼﾞﾀﾙ500円･300名\n2･ｽﾃﾝﾚｽﾀﾝﾌﾞﾗｰ･100名\n5･ｼｱﾀｰｻｳﾝﾄﾞ･50名',url:'https://ameblo.jp/rsj64177/entry-12965419113.html'},
-    {id:'m18',category:'食品',cat:'cat-food',maker:'Plecia×Kiri　コラボ10周年記念キャンペーン 第2弾',deadline:'5/31',dlClass:'dl-yellow',buy:'対象商品購入レシート',method:'WEB',prize:'Amazonギフトカード2,000円分…100名\n※詳細は公式サイト、応募用紙等をご確認下さい。',url:'https://www.plecia.co.jp/news/10811/'},
-    {id:'m19',category:'食品',cat:'cat-food',maker:'Umios　Umios 月花でパカッと愛情キャンペーン',deadline:'5/31(日)23:59',dlClass:'dl-yellow',buy:'Umios対象商品を各コースに必要な個数購入したレシートを1口として、LINEで応募\n期間:2026年5月1日(金)～5月31日(日)',method:'LINE',prize:'3個コース：オリジナル川栄李奈さん缶詰ケース×100名\n1個コース：Umios月花シリーズ12缶セット×200名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/03/080200'},
-    {id:'m20',category:'食品',cat:'cat-food',maker:'スギ薬局　スギ薬局 お菓子宝箱キャンペーン',deadline:'5/31（6/7）',dlClass:'dl-yellow',buy:'スギ薬局にて、対象商品500円(税込)購入ごとにスギ薬局アプリで1スタンプを貯め、1スタンプ1口として応募',method:'スギ薬局にて、対象商品500円(税込)購入ごとにスギ薬局アプ',prize:'おかし宝箱(お菓子詰め合わせ10種類入り)×50名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/13/140300'},
-    {id:'m21',category:'日用品',cat:'cat-daily',maker:'まとめ◆日用品懸賞④洗濯洗剤　まとめ◆日用品懸賞④洗濯洗剤',deadline:'●6/7(日)23:59',dlClass:'dl-yellow',buy:'対象商品A2500･B1000円(税込)以上\n1会計\n対象商品2品同時購入した',method:'WEB',prize:'A･たまごっち･12名\nB･ﾏｸﾞｶｯﾌﾟﾍﾟｱ･300名\nｸﾏﾎﾞﾄﾙ･100名',url:'https://ameblo.jp/rsj64177/entry-12965106730.html'},
-    {id:'m22',category:'日用品',cat:'cat-daily',maker:'花王　花王 世界と戦う汗を応援!!キャンペーン',deadline:'6/7(日)23:59',dlClass:'dl-yellow',buy:'花王対象商品1,000円(税込)以上購入したレシートを1口として、WEBから応募\n期間:2026年4月23日(木)～5月31日(日)',method:'WEB',prize:'A賞：花王汗応援セット×500名\nB賞：長友選手オリジナルプリペイドカード3,000円分×500名\n〈対象商品1,000円(税込)以上を含む1会計5,000円(税込)以上購入した方〉\nミニゴール＋長友選手サイン色紙×5名\n長友選手直筆サインボール×20名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/06/080400'},
-    {id:'m23',category:'食品',cat:'cat-food',maker:'まとめ◆ヨーグルト懸賞　まとめ◆ヨーグルト懸賞',deadline:'●6/8(月)〆切',dlClass:'dl-yellow',buy:'対象商品購入ﾚｼｰﾄ応募\n対象商品2個\n対象商品両方購入\n応募ﾏｰｸ応募\n対象商品150円(税込)以上\n対象商品A1700･B1000\n対象商品1点以上\n対象商品購入ﾚｼｰﾄ',method:'WEB･ハガキ',prize:'2･えらべるPay1000円･250名\n4･ｺﾞﾘﾗのひとつかみ･40名\n6･ｲﾔﾎﾝ･10名\nA･和牛ｽﾃｰｷ･ﾊﾝﾊﾞｰｸﾞｾｯﾄ･100名\nB･桃･100名\n2･えらべるPay500円･120名\n4･ﾄｲﾚｯﾄﾍﾟｰﾊﾟｰ1年分･50名\n8･BALMUDAﾎﾟｯﾄ･20名\n10･腸内検査ｷｯﾄ･10名\n選べる電子ﾏﾈｰ･1000円･1000名\nA･BALMUDAﾄｰｽﾀｰ･1名\nB･ﾎｯﾄﾌﾟﾚｰﾄ･5名\nC･らくれんｾｯﾄ･20名\nD･らくれんﾌﾟﾘﾝ12個･30名\nW･QUO500･100名\nﾃﾞｼﾞﾀﾙｷﾞﾌﾄ2000円･500名\nW･ｴｺﾊﾞｯｸﾞ･500名\n5･小岩井乳製品ｾｯﾄ･200名\n20･ｲｯﾀﾗｸﾘｱﾍﾟｱ･40名\n20･小岩井農場TOKYO食事券･40組\n40･小岩井農場見学&宿泊ﾍﾟｱ･20組',url:'https://ameblo.jp/rsj64177/entry-12965481541.html'},
-    {id:'m24',category:'食品',cat:'cat-food',maker:'まとめ◆パン懸賞　まとめ◆パン懸賞',deadline:'●6/8(月)消印有効',dlClass:'dl-yellow',buy:'応募券22点分\n応募券32点分\n応募券5枚貼付応募\n対象商品4･2･1\n対象商品3･1個\n対象商品2種\n動画を見て',method:'ハガキ',prize:'ﾐｯﾌｨｰｺｯﾄﾝﾊﾞｯｸﾞ\nたち吉すずらん皿\nﾎﾟｯﾌﾟｱｯﾌﾟﾄｰｽﾀｰ･500名\nW･ﾎﾟｰﾁ･2500名\n4･石窯ﾌｧﾝﾐｰﾃｨﾝｸﾞ･48組\n2･石窯ﾊﾟﾝｾｯﾄ･50名\n1･ｴｺﾊﾞｯｸﾞ･300名\n3･ﾎﾞｲｽﾒｯｾｰｼﾞ･100名\n1･QUOPay500円･1000名\n2･ｶﾗﾌﾙﾘﾄﾙﾌﾟﾚｰﾄ･100名\n1･えらべるPay1000円･400名',url:'https://ameblo.jp/rsj64177/entry-12965453729.html'},
-    {id:'m25',category:'食品',cat:'cat-food',maker:'タカキベーカリー　タカキベーカリー･石窯パン',deadline:'6/12(金)23:59',dlClass:'dl-yellow',buy:'対象商品4･2･1',method:'LINE',prize:'4･石窯ﾌｧﾝﾐｰﾃｨﾝｸﾞ･48組\n2･石窯ﾊﾟﾝｾｯﾄ･50名\n1･ｴｺﾊﾞｯｸﾞ･300名',url:'https://ameblo.jp/rsj64177/entry-12964731495.html'},
-    {id:'m26',category:'日用品',cat:'cat-daily',maker:'まとめ◆日用品懸賞③キッチン　まとめ◆日用品懸賞③キッチン',deadline:'●6/19(金)〆切',dlClass:'dl-green',buy:'対象商品1点以上含\n対象商品700円(税込)以上\n対象商品1個以上\n対象商品1000･400円(税込)以上\nﾊﾞｰｺｰﾄﾞ1枚貼付応募',method:'WEB',prize:'えらべるPay1万･各回25名\nQUO1万円･100名\nえらべるPay5393円･100名\n1000･ﾄｰｽﾀｰ･30名\n400･ﾗﾝﾁｹｰｽ･30名\nW･QUO500円･100名\nJCB5000円･100名\nW･QUO500円･500名',url:'https://ameblo.jp/rsj64177/entry-12965103807.html'},
-    {id:'m27',category:'食品',cat:'cat-food',maker:'富岡食品　富岡食品 創業100周年記念キャンペーン',deadline:'6/20(土)23:59',dlClass:'dl-green',buy:'富岡食品対象商品を1点以上購入したレシートを1口として、LINEで応募\n期間:2026年5月1日(金)～6月20日(土)',method:'LINE',prize:'A賞：自社商品詰め合わせ×30名\nB賞：富ばあちゃんの保冷バッグ×50名\nC賞：富ばあちゃんのカトラリーセット×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/06/080500'},
-    {id:'m28',category:'食品',cat:'cat-food',maker:'いなげや　いなげや 年に一度のすこやけく祭り',deadline:'6/21',dlClass:'dl-green',buy:'いなげやにて、5,000円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'親子で楽しむ！食体験ツアーコース：全12コース×総計428名\nプロ選手に会える！立川ダイスとバスケット体験コース：立川ダイス プロ選手の練習見学＆バスケットボール体験×おとなとこども 10組40名\n我が家で楽しむ！グルメギフトコース：全3コース×総計70名\nいなげや専用QUOカードPayコース：すこやけく賞(10万円分×10名)・ありがとう賞(5,000円分×1,000名)',url:'https://kenshomin.hatenablog.jp/entry/2026/05/13/140500'},
-    {id:'m29',category:'食品',cat:'cat-food',maker:'オハヨー乳業　オハヨー乳業･なめらか贅沢焼きプリン',deadline:'6/30(火)〆切',dlClass:'dl-green',buy:'対象商品2･5個以上',method:'LINE･ハガキ',prize:'2･焼菓子･計120名\n5･BALMUDAﾎﾟｯﾄ･30名\nW･QUOPay 500･1000名',url:'https://ameblo.jp/rsj64177/entry-12964728225.html'},
-    {id:'m30',category:'食品',cat:'cat-food',maker:'キンレイ　50周年大感謝祭 プレゼントキャンペーン',deadline:'6/30(火)〆切',dlClass:'dl-green',buy:'対象商品購入レシート',method:'WEB',prize:'1点購入　５００円×２０００名',url:'https://50th-kinrei.com/campaign/'},
-    {id:'m31',category:'食品',cat:'cat-food',maker:'カゴメ　野菜、足しトクキャンペーン',deadline:'6/30(火)〆切',dlClass:'dl-green',buy:'対象商品購入レシート',method:'LINE',prize:'「トライアルコース」\n必要ポイント数：1ポイント\n賞品：えらべるPay1,000ポイント\n当選者数：521名\n※おひとり様1回までが当選上限となります。\n「ミドルコース」\n必要ポイント数：5ポイント\n賞品：これイチ24本入り1ケース\n当選者数：300名',url:'https://lsp-campaign.com/koreichi-receiptcp-2/lp.go'},
-    {id:'m32',category:'食品',cat:'cat-food',maker:'グリコ　カフェオーレ 総額100万ポイント山分けキャンペーン',deadline:'6/30(火)〆切',dlClass:'dl-green',buy:'対象商品購入レシート',method:'WEB',prize:'「えらべるPay 総額100万ポイント」',url:'https://cp.glico.com/cafeore-mild-2026ss/'},
-    {id:'m33',category:'食品',cat:'cat-food',maker:'北海道ぎょれん　北海道ぎょれん “北海道産の海の幸”プレゼントキャンペーン',deadline:'6/30(火)23:59',dlClass:'dl-green',buy:'対象商品となる「北海道産ほたて」を300円(税込)以上購入したレシートを1口として、LINEで応募\n期間:2026年5月1日(金)～6月30日(火)',method:'LINE',prize:'北海道の海の幸×50名\n〈レシート5枚以上応募〉\n3万円相当の豪華セット×20名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/01/080500'},
-    {id:'m34',category:'食品',cat:'cat-food',maker:'敷島製パン　敷島製パン 一緒だともっとおいしい！ペアリングキャンペーン',deadline:'6/30(火)23:59',dlClass:'dl-green',buy:'各コースの応募条件を満たすレシートを1口として、WEBから応募\n期間:2026年5月1日(金)～6月30日(火)',method:'WEB',prize:'2種ペアリングコース：Toffy カラフルリトルプレート×100名\n1種ペアリングコース：えらべるPay1,000ポイント×400名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/02/080300'},
-    {id:'m35',category:'食品',cat:'cat-food',maker:'アサヒ　アサヒ･未来のノンアルレモンサワー',deadline:'6/30(火)10:00',dlClass:'dl-green',buy:'対象商品1本',method:'LINE',prize:'えらべるPay500･5000名',url:'https://ameblo.jp/rsj64177/entry-12966010706.html'},
-    {id:'m36',category:'食品',cat:'cat-food',maker:'大日本除虫菊　大日本除虫菊 シンカトリ キャッシュバックキャンペーン',deadline:'6/30',dlClass:'dl-green',buy:'キャンペーン対象商品1,000円(税込)購入ごとのレシートを1口として、WEBから応募',method:'WEB',prize:'QUOカードPay 10,000円分×20名\nQUOカードPay 1,000円分×2,000名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/13/080200'},
-    {id:'m37',category:'日用品',cat:'cat-daily',maker:'フマキラー　フマキラー アウトドアにはフマキラーキャンペーン 第1弾',deadline:'6/30',dlClass:'dl-green',buy:'フマキラー対象商品500円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'A賞 手軽に ソロキャン賞：フマキラー×『ゆるキャン△』　オリジナルロゴ入りLOGOSグリルアタッシュmini×10名\nB賞 なかよし ゆるキャン△賞：フマキラー×『ゆるキャン△』　オリジナルフェイスタオル＆オリジナルペアアクリルスタンド×90名\nWチャンス賞：フマキラー×『ゆるキャン△』オリジナルQUOカード 500円分＋フマキラー商品詰め合わせセット×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/10/080100'},
-    {id:'m38',category:'日用品',cat:'cat-daily',maker:'ジョンソン　ジョンソン ショーンと一緒にLet\'s除菌！キャンペーン',deadline:'6/30（7/7）',dlClass:'dl-green',buy:'ジョンソン対象商品を1点以上購入したレシートを1口として、LINEで応募',method:'LINE',prize:'ひつじのショーンオリジナルデザイン ポーチ×100名\nひつじのショーンオリジナルデザイン ミニトートバッグ×100名\nカビキラー アルコール除菌オリジナルデザインQUOカードPay 1,000円分×300名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/09/080300'},
-    {id:'m39',category:'日用品',cat:'cat-daily',maker:'小林製薬　小林製薬 おかげさまで消臭元30周年！ニオイも！ストレスも！元からなかったことにキャンペーン',deadline:'6/30（7/7）',dlClass:'dl-green',buy:'小林製薬対象商品を各コースに必要な金額以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'〈A ニオイリフレッシュコース〉\n対象商品1,050円(税込)購入で応募：ダスキン 選んで使えるおそうじギフトカード(10,000円×2枚セット)×40名\n対象商品600円(税込)購入で応募：アイリスオーヤマ 布団クリーナー×50名\n対象商品300円(税込)購入で応募プラスマイナスゼロ オートディスペンサー(液体)＋スポンジセット×60名\n〈B ココロリフレッシュコース〉\n対象商品1,050円(税込)購入で応募：TBCエステチケット グラシアスコース×40名\n対象商品600円(税込)購入で応募：全国共通お食事券ジェフグルメカード 10,000円分×50名\n対象商品300円(税込)購入で応募：AYURAギフトセット バスエッセンス×60名\n〈Wチャンス賞〉\n消臭元30周年 感謝の詰め合わせセット×300名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/09/080100'},
-    {id:'m40',category:'日用品',cat:'cat-daily',maker:'まとめ◆日用品懸賞②掃除　まとめ◆日用品懸賞②掃除･除菌',deadline:'7/5(日)23:59',dlClass:'dl-green',buy:'1会計で\n対象商品1個以上\n対象商品700･150円(税込)以上\n対象商品1050･600\n対象商品1点以上\n対象商品1000･400円(税込)以上',method:'WEB',prize:'A･家電･30名\nB･Uber1万円･50名\nB･Amazon5000円･100名\nB･QUO1000円･320名\nえらべるPay5393円･100名\n\n\n賞品\nW･消臭元ｾｯﾄ･300名\nﾎﾟｰﾁ･100名\nﾐﾆﾄｰﾄﾊﾞｯｸﾞ･100名\nQUOPay1000円･300名\n1000･ﾄｰｽﾀｰ･30名\n400･ﾗﾝﾁｹｰｽ･30名\nW･QUO500円･100名',url:'https://ameblo.jp/rsj64177/entry-12965048648.html'},
-    {id:'m41',category:'日用品',cat:'cat-daily',maker:'小林製薬　小林製薬･消臭元',deadline:'7/7(火)23:59',dlClass:'dl-green',buy:'対象商品1050･600',method:'WEB',prize:'賞品\nW･消臭元ｾｯﾄ･300名',url:'https://ameblo.jp/rsj64177/entry-12964692268.html'},
-    {id:'m42',category:'食品',cat:'cat-food',maker:'中田食品　中田食品 レシート撮影で当たる！ポイントを貯めて応募キャンペーン',deadline:'7/31(金)23:59',dlClass:'dl-green',buy:'ポイントを貯め',method:'LINE',prize:'A賞(10ポイント)：JTB旅行券2万円分×2名\nB賞(5ポイント)：カタログギフト ひんやりスイーツ×20名\nC賞(1ポイント)：選べる電子マネー 500円分×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/02/080500'},
-    {id:'m43',category:'食品',cat:'cat-food',maker:'ホクト　ホクト ホクト 夏を元気に！きのこで菌活キャンペーン',deadline:'7/31（6/30）',dlClass:'dl-green',buy:'ホクト対象商品を購入したレシートと未開封の商品を一緒に撮影した画像で、LINEから応募',method:'LINE',prize:'A賞：産直きのこセット(7パック分)×各回250名(合計500名)\nB賞：ブナピーエコバッグ×各回250名(合計500名)',url:'https://kenshomin.hatenablog.jp/entry/2026/05/13/080300'},
-    {id:'m44',category:'日用品',cat:'cat-daily',maker:'王子ネピア　王子ネピア nepia アネモネHGリニューアル記念！ どっさりご褒美キャンペーン 〜北海道日本ハムファイターズと一緒に〜',deadline:'7/31（5/31）',dlClass:'dl-green',buy:'王子ネピア対象商品1パック以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'どっさり生活応援賞：nepia ティシュ3年分（＝1ケース60箱）×毎月100名(合計300名)\nファイターズコラボアイテム賞：ファイターズ×nepia Wネーム オリジナルバケットハット×毎月200名(合計600名)\nファイターズ推しメン賞（Wチャンス）：オリジナル「ファイターズ」主力選手＆監督デザイン紙製スタンド×毎月100名(合計300名)',url:'https://kenshomin.hatenablog.jp/entry/2026/05/10/080300'},
-    {id:'m45',category:'食品',cat:'cat-food',maker:'共立食品　共立食品･ナッツ･ドライフルーツ',deadline:'8/3(月)〆切',dlClass:'dl-green',buy:'対象商品300円(税込)以上',method:'LINE･ハガキ',prize:'LINE･QUOPay5000円･60名\nﾊｶﾞｷ･JCB5000円･20名\nW･ﾅｯﾂ商品ｾｯﾄ･100名',url:'https://ameblo.jp/rsj64177/entry-12964739782.html'},
-    {id:'m46',category:'食品',cat:'cat-food',maker:'小岩井乳業　小岩井乳業 小岩井ヨーグルトマイレージキャンペーン',deadline:'10/31（7/31）',dlClass:'dl-green',buy:'小岩井乳業対象商品を購入したレシートをアップロードして190円(税込)ごとに1ポイントを貯め、各コースに必要なポイントを1口として応募',method:'小岩井乳業対象商品を購入したレシートをアップロードして190',prize:'〈必ずもらえる〉\nオリジナルエコバッグ×1人1個まで\n〈抽選でもらえる〉\n5ポイント：小岩井乳製品お楽しみセット×200名\n20ポイント：イッタラ カステヘルミ ボウル230ml クリア ペア×40名\n20ポイント：小岩井農場TOKYOペアお食事券×40組\n40ポイント：小岩井農場＆工場見学ツアー＋ペア宿泊つき×20組',url:'https://kenshomin.hatenablog.jp/entry/2026/05/12/080000'},
-    {id:'m47',category:'食品',cat:'cat-food',maker:'応募◆カルビー　応募◆カルビー･ファンタスティックキャンペーン2026',deadline:'●1/19〜6/1(月)〆切',dlClass:'dl-green',buy:'カルビー\n･ファンタスティック\nキャンペーン2026\n●1/19〜6/1(月)〆切\n『◆懸賞情報◆カルビー･ファンタスティックキャンペーン2026』',method:'',prize:'',url:'https://ameblo.jp/rsj64177/entry-12965304752.html'},
-    {id:'m48',category:'食品',cat:'cat-food',maker:'〆切間近◆明治　〆切間近◆明治･まるごと野菜･銀座トマトカリー',deadline:'3/13本日〜キャンペーン 食品懸賞   明治･まるごと野菜･銀座トマトカリー ●3/13〜5/15(金)23:59■対象商品5･2･1個　購入ﾚｼｰﾄ応募…',dlClass:'dl-green',buy:'対象商品5･2･1個',method:'WEB',prize:'5･ふとん3点ｾｯﾄ･1名\n3･皿ｽﾌﾟｰﾝｾｯﾄ･100名\n1･ﾄｰﾄﾊﾞｯｸﾞ･730名',url:'https://ameblo.jp/rsj64177/entry-12965892550.html'},
-    {id:'m49',category:'日用品',cat:'cat-daily',maker:'まとめ◆日用品懸賞⑤ヘアケア　まとめ◆日用品懸賞⑤ヘアケア',deadline:'●3/16〜5/15(金)23:59',dlClass:'dl-green',buy:'Xﾌｫﾛｰ\n対象商品購入ﾚｼｰﾄ応募\n対象商品500円(\n対象商品1品以上',method:'X',prize:'',url:'https://ameblo.jp/rsj64177/entry-12965124970.html'},
-    {id:'m50',category:'日用品',cat:'cat-daily',maker:'まとめ◆日用品懸賞①　まとめ◆日用品懸賞①･防虫･防菌',deadline:'●第1回4/1〜6/30(火)23:59',dlClass:'dl-green',buy:'対象商品\n対象商品1点以上購入\n1会計で\n1会計で\n対象商品A1500\n対象商品1000円(税込)以上\n対象商品A1800･B900円(税込)以上\n対象商品2個以上',method:'WEB',prize:'JTBｶﾀﾛｸﾞ(3万円)･5組\nﾘｶﾊﾞﾘｰｳｪｱ･5名\nえらべるPay1万･60名\nJCB5000円･計100名\nﾏｯｸｶｰﾄﾞ5000円･計100名\nW･白元ｱｰｽ商品ｾｯﾄ･計200名\nA･ﾛｺﾞｽｸﾞﾘﾙｱﾀｯｼｭ･10名\nB･ﾀｵﾙ&ｱｸｽﾀ･90名\nW･ﾌﾏｷﾗｰｾｯﾄ\nｺｰﾄﾞﾚｽｸﾘｰﾅｰ＋ｽﾃｯｶｰ･10名\nQUO5000円＋ｽﾃｯｶｰ･80名\nｱｸｽﾀ＋ｽﾃｯｶｰ･300名\nA･Yogibo･20名\nB･ﾐﾆﾄｰﾄﾊﾞｯｸﾞ･980名\nQUOPay1万･20名\nQUOPay1000円･2000名\nA･QUOPay1万･40名\nB･･QUOPay5000円･60名\nW･QUOPay1000円･100名\nJCB5000円･計100名\nぬいぐるみ3体ｾｯﾄ･計30名\nえらべるPay2000円･計870名\nW･立体ｼｰﾙ･計3000名',url:'https://ameblo.jp/rsj64177/entry-12965099922.html'},
-    {id:'m51',category:'食品',cat:'cat-food',maker:'まとめ◆アイス懸賞②　まとめ◆アイス懸賞②',deadline:'в—Ҹ4/6гҖң6/30(зҒ«)23:59',dlClass:'dl-green',buy:'пҪўжҮёиіһжғ…е ұпҪЈж•ҙзҗҶ\nгӮўгӮӨгӮ№жҮёиіһ\nгҒҫгҒЁгӮҒв‘Ў\nгҖҗгӮ°гғӘгӮіпҪҘгғ‘гғ”гӮігҖ',method:'',prize:'',url:'https://ameblo.jp/rsj64177/entry-12965307221.html'},
-    {id:'m52',category:'食品',cat:'cat-food',maker:'まとめ◆デザート懸賞　まとめ◆デザート懸賞',deadline:'4/6〜5/31(日)23:59',dlClass:'dl-green',buy:'対象商品2点以上\nA･対象商品3点以上\n対象商品\n対象商品2･5個以上\n対象商品6･4個\n応募ﾏｰｸ5枚貼付応募\n対象商品A1700･B1000\n対象商品500･1000\n対象商品ﾊﾟｯｹｰｼﾞ撮影写真',method:'WEB',prize:'ｱﾗﾓｰﾄﾞｸﾞﾗｽ2個･200名\nW･ちょこっとﾌﾟｯﾁﾝ1袋･800名\nA･ｽﾌﾟｰﾝ･30名\nB･茨城乳業ｾｯﾄ･50名\n2･焼菓子･計120名\n5･BALMUDAﾎﾟｯﾄ･30名\nW･QUOPay 500･1000名\n6･BRUNOｴｱﾌﾗｲﾔｰ･100名\n4･ﾚｺﾙﾄ･ﾎﾟｯﾄｷｬﾚ･100名\nW･QUOPay500円･800名\n親子ﾏﾘﾝﾀｵﾙｾｯﾄ･85名\nA･BALMUDAﾄｰｽﾀｰ･1名\nB･ﾎｯﾄﾌﾟﾚｰﾄ･5名\nC･らくれんｾｯﾄ･20名\nD･らくれんﾌﾟﾘﾝ12個･30名\nW･QUO500･100名\n500･中村屋ｾｯﾄ･70名\n1000･有田焼食器･30名\n1500･中村屋ﾚｽﾄﾗﾝ10組20名\nえらべるPay1000円･各20名',url:'https://ameblo.jp/rsj64177/entry-12965485702.html'},
-    {id:'m53',category:'食品',cat:'cat-food',maker:'まとめ◆シリアル懸賞　まとめ◆シリアル懸賞',deadline:'4/7〜5/27(水)23:59',dlClass:'dl-green',buy:'折りパケ\n対象商品1個以上\n対象商品2ﾎﾟｲﾝﾄ',method:'アプリ',prize:'A･ﾎﾞｰﾙ･100名\nB･Amazon2000円･1000名\nA･ﾎﾞｳﾙ&ｽﾌﾟｰﾝｾｯﾄ･各回150名\nB･ﾎﾟｰﾁ&ｽﾃｯｶｰ･各回150名\nC･ごろグラ4個ｾｯﾄ･各回260名\nｼｽｺｰﾝ4品',url:'https://ameblo.jp/rsj64177/entry-12965453101.html'},
-    {id:'m54',category:'食品',cat:'cat-food',maker:'まとめ◆パンに塗る　まとめ◆パンに塗る',deadline:'4/16〜5/31(日)',dlClass:'dl-green',buy:'対象商品2個\n対象商品2･1個\n対象商品購入ﾚｼｰﾄ応募',method:'WEB',prize:'ﾊﾞｯｸﾞ&ﾁｬｰﾑ･100名\nW･ｼｰﾙ4種･200名\n2･ｱﾗｼﾞﾝﾄｰｽﾀｰ･各回50名\n1･えらべるPay2000･各回100名\nW遠藤製餡ｾｯﾄ(2000円)･120名\nｸｯｼｮﾝ･500名\nﾊﾟﾝｾｯﾄ･500名',url:'https://ameblo.jp/rsj64177/entry-12965477262.html'},
-    {id:'m55',category:'食品',cat:'cat-food',maker:'まとめ◆ペアリング懸賞②　まとめ◆ペアリング懸賞②',deadline:'4/27〜6/30(火)23:59',dlClass:'dl-green',buy:'対象商品\nﾜﾝﾀﾞ商品1品\n対象商品1点以上',method:'LINE',prize:'',url:'https://ameblo.jp/rsj64177/entry-12965046549.html'},
-    {id:'m56',category:'食品',cat:'cat-food',maker:'カゴメ　カゴメ･野菜一日これ一本',deadline:'5/1〜6/30(火)23:59',dlClass:'dl-green',buy:'対象商品購入ﾚｼｰﾄ応募',method:'LINE',prize:'1･えらべるPay1000円･521名\n5･24本･300名\n10･特大ｸｯｼｮﾝ･10名',url:'https://ameblo.jp/rsj64177/entry-12964740820.html'},
-    {id:'m57',category:'食品',cat:'cat-food',maker:'パスコ　パスコ･イングリッシュマフィン',deadline:'5/1〜6/30(火)23:59',dlClass:'dl-green',buy:'対象商品2種',method:'WEB',prize:'2･ｶﾗﾌﾙﾘﾄﾙﾌﾟﾚｰﾄ･100名\n1･えらべるPay1000円･400名',url:'https://ameblo.jp/rsj64177/entry-12964725134.html'},
-    {id:'m58',category:'食品',cat:'cat-food',maker:'雪印メグミルク　雪印メグミルク･ネオソフト',deadline:'5/1〜7/31(金)23:59',dlClass:'dl-green',buy:'対象商品購入ﾚｼｰﾄ応募',method:'LINE',prize:'ｸｯｼｮﾝ･500名\nﾊﾟﾝｾｯﾄ･500名',url:'https://ameblo.jp/rsj64177/entry-12964856148.html'},
-    {id:'m59',category:'日用品',cat:'cat-daily',maker:'白元アース　白元アース･ドライUP NECO',deadline:'第1弾･5/1〜6/30',dlClass:'dl-green',buy:'対象商品2個以上',method:'',prize:'JCB5000円･計100名\nぬいぐるみ3体ｾｯﾄ･計30名\nえらべるPay2000円･計870名\nW･立体ｼｰﾙ･計3000名',url:'https://ameblo.jp/rsj64177/entry-12964693573.html'},
-    {id:'m60',category:'日用品',cat:'cat-daily',maker:'フマキラー　フマキラー･アルコール除菌',deadline:'5/1〜7/31(金)23:59',dlClass:'dl-green',buy:'対象商品1000･400円(税込)以上',method:'WEB',prize:'1000･ﾄｰｽﾀｰ･30名\n400･ﾗﾝﾁｹｰｽ･30名\nW･QUO500円･100名',url:'https://ameblo.jp/rsj64177/entry-12964810651.html'},
-    {id:'m61',category:'食品',cat:'cat-food',maker:'成城石井　成城石井 私の暮らしを整える マイボトルプレゼントキャンペーン',deadline:'5/10（5/12）',dlClass:'dl-green',buy:'成城石井にて、キャンペーン対象商品1点以上を含む3,000円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'1期：570ml ボトル×200名\n2期：1000ml ボトル×150名\n3期：570ml ボトル×100名/1000ml ボトル×70名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/13/140600'},
-    {id:'m62',category:'食品',cat:'cat-food',maker:'エースコック　エースコック･はるさめ',deadline:'5/11〜7/31(金)',dlClass:'dl-green',buy:'対象商品3･2･1個以上',method:'LINE',prize:'3･ﾍｯﾄﾞﾌｫﾝ･100名\n2･ｱｸｽﾀ･100名\n1･QUOPay500円･500名\nW･対象企業で購入',url:'https://ameblo.jp/rsj64177/entry-12965347506.html'},
-    {id:'m63',category:'食品',cat:'cat-food',maker:'田中食品　田中食品･旅行の友',deadline:'5/12〜6/30(火)',dlClass:'dl-green',buy:'対象商品3個',method:'WEB',prize:'ふりかけｾｯﾄ･100名\n･お米券5000円分･100名',url:'https://ameblo.jp/rsj64177/entry-12965904877.html'},
-    {id:'m64',category:'食品',cat:'cat-food',maker:'森永乳業　森永乳業･リプトン紙パック',deadline:'5/12〜7/13(月)23:59',dlClass:'dl-green',buy:'対象商品1本以上',method:'WEB',prize:'A･ｴｺﾊﾞｯｸﾞ･500名\nB･えらべるPay500･500名',url:'https://ameblo.jp/rsj64177/entry-12965900681.html'}
+    {id:'m1',category:'食品',cat:'cat-food',maker:'フジッコ　カスピ海ヨーグルト もっと！とろぉ〜もっちキャンペーン',deadline:'',dlClass:'dl-gray',buy:'対象商品購入レシート',method:'WEB・ハガキ',prize:'Giftee box SELECT2,000円分…500名',url:'https://www.fujicco.co.jp/caspikaiyogurt/motto-toromocchi2026/'},
+    {id:'m2',category:'食品',cat:'cat-food',maker:'丸美屋　丸美屋 まるっと中華キャンペーン',deadline:'',dlClass:'dl-gray',buy:'丸美屋対象商品のパッケージに付いている「今日もおいしくマーク」を各コースに必要な枚数を1口として、郵送で応募\n期間:2025年5月1日(金)～7月31日(金)当日消印有効 ※毎月抽選',method:'ハガキ',prize:'6枚コース：レミパンプラス×毎月100名(合計300名)\n2枚コース：中華に合う厳選米セット×毎月400名(合計1,200名)\n1枚コース：丸美屋オリジナルQUOカード2,000円分×毎月550名(合計1,650名)\nWチャンス：丸美屋商品詰め合わせ×毎月1,500名(合計4,500名)',url:'https://kenshomin.hatenablog.jp/entry/2026/05/03/080100'},
+    {id:'m3',category:'日用品',cat:'cat-daily',maker:'ジョンソン　ジョンソン･カビキラーアルコール除菌',deadline:'',dlClass:'dl-gray',buy:'対象商品1点以上',method:'LINE',prize:'ﾎﾟｰﾁ･100名\nﾐﾆﾄｰﾄﾊﾞｯｸﾞ･100名\nQUOPay1000円･300名',url:'https://ameblo.jp/rsj64177/entry-12964682413.html'},
+    {id:'m4',category:'日用品',cat:'cat-daily',maker:'カビキラー・パイプユニッシュ　梅雨こそ、家の中を気持ちよく!!キャンペーン',deadline:'',dlClass:'dl-gray',buy:'対象商品購入レシート',method:'LINE',prize:'【700円(税込)以上購入コース】\n2人に1人に700円分のえらべるPay\n【1,500円(税込)以上購入コース】\n3,000円分のえらべるPay…500名\n※詳細は公式サイト、応募用紙等をご確認下さい。',url:'https://kabi-pipe2026.campar.jp/'},
+    {id:'m5',category:'日用品',cat:'cat-daily',maker:'カビキラーアルコール除菌　ショーンと一緒にLet’s除菌！キャンペーン',deadline:'',dlClass:'dl-gray',buy:'対象商品購入レシート',method:'LINE',prize:'※詳細は公式サイトを確認してください。\n※詳細は公式サイト、応募用紙等をご確認下さい。',url:'https://kabikiller-shaun.campar.jp/'},
+    {id:'m6',category:'食品',cat:'cat-food',maker:'リカルデント　リカルデント',deadline:'5/14〜7/9(木)',dlClass:'dl-red',buy:'対象商品1000･500',method:'LINE',prize:'1000･電動歯ﾊﾌﾞﾗｼ･15名\n500･ぬいぐるみ･計40名\n100･QUOPay2000円･200名',url:'https://ameblo.jp/rsj64177/entry-12965377957.html'},
+    {id:'m7',category:'食品',cat:'cat-food',maker:'まとめ◆ペアリング懸賞①　まとめ◆ペアリング懸賞①',deadline:'5/18(月)正午',dlClass:'dl-red',buy:'対象商品含\nA･対象商品2品\n対象商品2種\n対象商品1種',method:'WEB',prize:'',url:'https://ameblo.jp/rsj64177/entry-12965040826.html'},
+    {id:'m8',category:'食品',cat:'cat-food',maker:'サントリー　サントリー･スターバックス',deadline:'5/18〜6/30(火)23:59',dlClass:'dl-red',buy:'対象商品2本以上',method:'WEB',prize:'ｽﾀﾊﾞeGift3000円･500名',url:'https://ameblo.jp/rsj64177/entry-12965450745.html'},
+    {id:'m9',category:'食品',cat:'cat-food',maker:'まとめ◆アイス懸賞①　まとめ◆アイス懸賞①',deadline:'●5/18(月)23:59',dlClass:'dl-red',buy:'対象商品購入ﾚｼｰﾄ応募\n対象商品1点以上\n対象商品3･1個\n対象商品2袋\n対象商品1･3･5個\nｼﾞｬｲｱﾝﾄｺｰﾝ',method:'LINE',prize:'1p･ﾊｰｹﾞﾝﾀﾞｯﾂ券･1000名\n3p･ｸﾞｯｽﾞ缶･300名\n10p･星野5万円･10名\nﾃﾞｼﾞﾀﾙｷﾞﾌﾄ3000円･400名\n3･ﾊｰﾄﾞｹｰｽ&ﾏｸﾞｶｯﾌﾟ･100名\n3･ﾄｰﾄﾊﾞｯｸﾞ&ﾎﾞﾄﾙ･100名\n3･ｷｬｯﾌﾟ&ﾎﾟｰﾁ･100名\n1･QUO2000円･200名\nﾀﾝﾌﾞﾗｰ&ｱｲｽの実･300名\n1･えらべるPay3000･100名\n3･ﾘﾗｸｾﾞｰｼｮﾝ1万ﾁｹｯﾄ･10名\n5･HIS18000円旅行券･10名\n3･ﾀｵﾙ･300名\n5･Tｼｬﾂﾍﾟｱ･90名',url:'https://ameblo.jp/rsj64177/entry-12965325564.html'},
+    {id:'m10',category:'食品',cat:'cat-food',maker:'まとめ◆ノンアル懸賞　まとめ◆ノンアル懸賞',deadline:'5/20(水)23:59',dlClass:'dl-red',buy:'A･対象商品12本\n対象商品購入ﾚｼｰﾄ応募\n対象商品購入ﾚｼｰﾄ応募\n対象店にて',method:'LINE',prize:'A･KingGnuｺﾝｻｰﾄﾁｹｯﾄﾍﾟｱ\nB･ｷｰﾁｪｰﾝ･1000名\n1･選べるﾃﾞｼﾞﾀﾙ500円･5000名\n3･ｻｰﾓｽ缶ﾎﾙﾀﾞｰ･500名\n12･ｱｿﾋﾞｭｰ体験ｷﾞﾌﾄ･50名\n1･選べるﾃﾞｼﾞﾀﾙ500円･300名\n2･ｽﾃﾝﾚｽﾀﾝﾌﾞﾗｰ･100名\n5･ｼｱﾀｰｻｳﾝﾄﾞ･50名',url:'https://ameblo.jp/rsj64177/entry-12965419113.html'},
+    {id:'m11',category:'食品',cat:'cat-food',maker:'Plecia×Kiri　コラボ10周年記念キャンペーン 第2弾',deadline:'5/31',dlClass:'dl-yellow',buy:'対象商品購入レシート',method:'WEB',prize:'Amazonギフトカード2,000円分…100名\n※詳細は公式サイト、応募用紙等をご確認下さい。',url:'https://www.plecia.co.jp/news/10811/'},
+    {id:'m12',category:'食品',cat:'cat-food',maker:'Umios　Umios 月花でパカッと愛情キャンペーン',deadline:'5/31(日)23:59',dlClass:'dl-yellow',buy:'Umios対象商品を各コースに必要な個数購入したレシートを1口として、LINEで応募\n期間:2026年5月1日(金)～5月31日(日)',method:'LINE',prize:'3個コース：オリジナル川栄李奈さん缶詰ケース×100名\n1個コース：Umios月花シリーズ12缶セット×200名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/03/080200'},
+    {id:'m13',category:'食品',cat:'cat-food',maker:'スギ薬局　スギ薬局 お菓子宝箱キャンペーン',deadline:'5/31（6/7）',dlClass:'dl-yellow',buy:'スギ薬局にて、対象商品500円(税込)購入ごとにスギ薬局アプリで1スタンプを貯め、1スタンプ1口として応募',method:'スギ薬局にて、対象商品500円(税込)購入ごとにスギ薬局アプ',prize:'おかし宝箱(お菓子詰め合わせ10種類入り)×50名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/13/140300'},
+    {id:'m14',category:'食品',cat:'cat-food',maker:'パスコ　たっぷりホイップシリーズ 当たって嬉しい！選べるプレゼント',deadline:'6/7',dlClass:'dl-yellow',buy:'対象商品購入レシート',method:'WEB',prize:'【1個購入コース】「QUOカードPay」500円分…1,000名',url:'https://www.ichance.jp/cp/tappuri-202605/?utm_source=hp_news&utm_medium=referral&utm_campaign=tappuri_202605'},
+    {id:'m15',category:'日用品',cat:'cat-daily',maker:'まとめ◆日用品懸賞④洗濯洗剤　まとめ◆日用品懸賞④洗濯洗剤',deadline:'●6/7(日)23:59',dlClass:'dl-yellow',buy:'対象商品A2500･B1000円(税込)以上\n1会計\n対象商品2品同時購入した',method:'WEB',prize:'A･たまごっち･12名\nB･ﾏｸﾞｶｯﾌﾟﾍﾟｱ･300名\nｸﾏﾎﾞﾄﾙ･100名',url:'https://ameblo.jp/rsj64177/entry-12965106730.html'},
+    {id:'m16',category:'日用品',cat:'cat-daily',maker:'花王　花王 世界と戦う汗を応援!!キャンペーン',deadline:'6/7(日)23:59',dlClass:'dl-yellow',buy:'花王対象商品1,000円(税込)以上購入したレシートを1口として、WEBから応募\n期間:2026年4月23日(木)～5月31日(日)',method:'WEB',prize:'A賞：花王汗応援セット×500名\nB賞：長友選手オリジナルプリペイドカード3,000円分×500名\n〈対象商品1,000円(税込)以上を含む1会計5,000円(税込)以上購入した方〉\nミニゴール＋長友選手サイン色紙×5名\n長友選手直筆サインボール×20名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/06/080400'},
+    {id:'m17',category:'食品',cat:'cat-food',maker:'まとめ◆ヨーグルト懸賞　まとめ◆ヨーグルト懸賞',deadline:'●6/8(月)〆切',dlClass:'dl-yellow',buy:'対象商品購入ﾚｼｰﾄ応募\n対象商品2個\n対象商品両方購入\n応募ﾏｰｸ応募\n対象商品150円(税込)以上\n対象商品A1700･B1000\n対象商品1点以上\n対象商品購入ﾚｼｰﾄ',method:'WEB･ハガキ',prize:'2･えらべるPay1000円･250名\n4･ｺﾞﾘﾗのひとつかみ･40名\n6･ｲﾔﾎﾝ･10名\nA･和牛ｽﾃｰｷ･ﾊﾝﾊﾞｰｸﾞｾｯﾄ･100名\nB･桃･100名\n2･えらべるPay500円･120名\n4･ﾄｲﾚｯﾄﾍﾟｰﾊﾟｰ1年分･50名\n8･BALMUDAﾎﾟｯﾄ･20名\n10･腸内検査ｷｯﾄ･10名\n選べる電子ﾏﾈｰ･1000円･1000名\nA･BALMUDAﾄｰｽﾀｰ･1名\nB･ﾎｯﾄﾌﾟﾚｰﾄ･5名\nC･らくれんｾｯﾄ･20名\nD･らくれんﾌﾟﾘﾝ12個･30名\nW･QUO500･100名\nﾃﾞｼﾞﾀﾙｷﾞﾌﾄ2000円･500名\nW･ｴｺﾊﾞｯｸﾞ･500名\n5･小岩井乳製品ｾｯﾄ･200名\n20･ｲｯﾀﾗｸﾘｱﾍﾟｱ･40名\n20･小岩井農場TOKYO食事券･40組\n40･小岩井農場見学&宿泊ﾍﾟｱ･20組',url:'https://ameblo.jp/rsj64177/entry-12965481541.html'},
+    {id:'m18',category:'食品',cat:'cat-food',maker:'まとめ◆パン懸賞　まとめ◆パン懸賞',deadline:'●6/8(月)消印有効',dlClass:'dl-yellow',buy:'応募券22点分\n応募券32点分\n応募券5枚貼付応募\n対象商品4･2･1\n対象商品3･1個\n対象商品2種\n動画を見て',method:'ハガキ',prize:'ﾐｯﾌｨｰｺｯﾄﾝﾊﾞｯｸﾞ\nたち吉すずらん皿\nﾎﾟｯﾌﾟｱｯﾌﾟﾄｰｽﾀｰ･500名\nW･ﾎﾟｰﾁ･2500名\n4･石窯ﾌｧﾝﾐｰﾃｨﾝｸﾞ･48組\n2･石窯ﾊﾟﾝｾｯﾄ･50名\n1･ｴｺﾊﾞｯｸﾞ･300名\n3･ﾎﾞｲｽﾒｯｾｰｼﾞ･100名\n1･QUOPay500円･1000名\n2･ｶﾗﾌﾙﾘﾄﾙﾌﾟﾚｰﾄ･100名\n1･えらべるPay1000円･400名',url:'https://ameblo.jp/rsj64177/entry-12965453729.html'},
+    {id:'m19',category:'食品',cat:'cat-food',maker:'タカギベーカリー　石窯パンでつながるキャンペーン',deadline:'6/11',dlClass:'dl-yellow',buy:'対象商品購入レシート\n２点購入',method:'LINE',prize:'パン詰合せ',url:'https://get-cp.jp/campain/pages/top/ishigama26'},
+    {id:'m20',category:'食品',cat:'cat-food',maker:'タカキベーカリー　タカキベーカリー･石窯パン',deadline:'6/12(金)23:59',dlClass:'dl-yellow',buy:'対象商品4･2･1',method:'LINE',prize:'4･石窯ﾌｧﾝﾐｰﾃｨﾝｸﾞ･48組\n2･石窯ﾊﾟﾝｾｯﾄ･50名\n1･ｴｺﾊﾞｯｸﾞ･300名',url:'https://ameblo.jp/rsj64177/entry-12964731495.html'},
+    {id:'m21',category:'食品',cat:'cat-food',maker:'OHAYOなめらか贅沢な焼きプリン　心を満たすなめらか時間キャンペーン',deadline:'6/15(6/30)',dlClass:'dl-green',buy:'対象商品購入レシート\n2点購入',method:'LINE・ハガキ',prize:'お菓子セット',url:'https://www.ohayo-milk.co.jp/brand/nameraka-bakedpudding/'},
+    {id:'m22',category:'日用品',cat:'cat-daily',maker:'まとめ◆日用品懸賞③キッチン　まとめ◆日用品懸賞③キッチン',deadline:'●6/19(金)〆切',dlClass:'dl-green',buy:'対象商品1点以上含\n対象商品700円(税込)以上\n対象商品1個以上\n対象商品1000･400円(税込)以上\nﾊﾞｰｺｰﾄﾞ1枚貼付応募',method:'WEB',prize:'えらべるPay1万･各回25名\nQUO1万円･100名\nえらべるPay5393円･100名\n1000･ﾄｰｽﾀｰ･30名\n400･ﾗﾝﾁｹｰｽ･30名\nW･QUO500円･100名\nJCB5000円･100名\nW･QUO500円･500名',url:'https://ameblo.jp/rsj64177/entry-12965103807.html'},
+    {id:'m23',category:'食品',cat:'cat-food',maker:'富岡食品　富岡食品 創業100周年記念キャンペーン',deadline:'6/20(土)23:59',dlClass:'dl-green',buy:'富岡食品対象商品を1点以上購入したレシートを1口として、LINEで応募\n期間:2026年5月1日(金)～6月20日(土)',method:'LINE',prize:'A賞：自社商品詰め合わせ×30名\nB賞：富ばあちゃんの保冷バッグ×50名\nC賞：富ばあちゃんのカトラリーセット×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/06/080500'},
+    {id:'m24',category:'食品',cat:'cat-food',maker:'オハヨー乳業　オハヨー乳業･なめらか贅沢焼きプリン',deadline:'6/30(火)〆切',dlClass:'dl-green',buy:'対象商品2･5個以上',method:'LINE･ハガキ',prize:'2･焼菓子･計120名\n5･BALMUDAﾎﾟｯﾄ･30名\nW･QUOPay 500･1000名',url:'https://ameblo.jp/rsj64177/entry-12964728225.html'},
+    {id:'m25',category:'食品',cat:'cat-food',maker:'キンレイ　50周年大感謝祭 プレゼントキャンペーン',deadline:'6/30(火)〆切',dlClass:'dl-green',buy:'対象商品購入レシート',method:'WEB',prize:'1点購入　５００円×２０００名',url:'https://50th-kinrei.com/campaign/'},
+    {id:'m26',category:'食品',cat:'cat-food',maker:'カゴメ　野菜、足しトクキャンペーン',deadline:'6/30(火)〆切',dlClass:'dl-green',buy:'対象商品購入レシート',method:'LINE',prize:'「トライアルコース」\n必要ポイント数：1ポイント\n賞品：えらべるPay1,000ポイント\n当選者数：521名\n※おひとり様1回までが当選上限となります。\n「ミドルコース」\n必要ポイント数：5ポイント\n賞品：これイチ24本入り1ケース\n当選者数：300名',url:'https://lsp-campaign.com/koreichi-receiptcp-2/lp.go'},
+    {id:'m27',category:'食品',cat:'cat-food',maker:'グリコ　カフェオーレ 総額100万ポイント山分けキャンペーン',deadline:'6/30(火)〆切',dlClass:'dl-green',buy:'対象商品購入レシート',method:'WEB',prize:'「えらべるPay 総額100万ポイント」',url:'https://cp.glico.com/cafeore-mild-2026ss/'},
+    {id:'m28',category:'食品',cat:'cat-food',maker:'Pascoイングリッシュマフィン　ペアリングキャンペーン',deadline:'6/30',dlClass:'dl-green',buy:'マフィン、具材各１購入レシート',method:'WEB',prize:'えらべるPay1000',url:'https://cp-master.com/pascomuffin-2026cp'},
+    {id:'m29',category:'食品',cat:'cat-food',maker:'信州ハム　グリーンマークキャンペーン',deadline:'6/30',dlClass:'dl-green',buy:'対象商品２点購入レシート',method:'LINE・ハガキ',prize:'えらべるPay1000',url:'https://www.shinshuham.co.jp/gmcampaign2026'},
+    {id:'m30',category:'食品',cat:'cat-food',maker:'北海道ぎょれん　北海道ぎょれん “北海道産の海の幸”プレゼントキャンペーン',deadline:'6/30(火)23:59',dlClass:'dl-green',buy:'対象商品となる「北海道産ほたて」を300円(税込)以上購入したレシートを1口として、LINEで応募',method:'LINE',prize:'北海道の海の幸×50名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/01/080500'},
+    {id:'m31',category:'食品',cat:'cat-food',maker:'アサヒ　アサヒ･未来のノンアルレモンサワー',deadline:'6/30(火)10:00',dlClass:'dl-green',buy:'対象商品1本',method:'LINE',prize:'えらべるPay500･5000名',url:'https://ameblo.jp/rsj64177/entry-12966010706.html'},
+    {id:'m32',category:'食品',cat:'cat-food',maker:'大日本除虫菊　大日本除虫菊 シンカトリ キャッシュバックキャンペーン',deadline:'6/30',dlClass:'dl-green',buy:'キャンペーン対象商品1,000円(税込)購入ごとのレシートを1口として、WEBから応募',method:'WEB',prize:'QUOカードPay 10,000円分×20名\nQUOカードPay 1,000円分×2,000名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/13/080200'},
+    {id:'m33',category:'日用品',cat:'cat-daily',maker:'フマキラー　フマキラー アウトドアにはフマキラーキャンペーン 第1弾',deadline:'6/30',dlClass:'dl-green',buy:'フマキラー対象商品500円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'A賞 手軽に ソロキャン賞：フマキラー×『ゆるキャン△』　オリジナルロゴ入りLOGOSグリルアタッシュmini×10名\nB賞 なかよし ゆるキャン△賞：フマキラー×『ゆるキャン△』　オリジナルフェイスタオル＆オリジナルペアアクリルスタンド×90名\nWチャンス賞：フマキラー×『ゆるキャン△』オリジナルQUOカード 500円分＋フマキラー商品詰め合わせセット×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/10/080100'},
+    {id:'m34',category:'日用品',cat:'cat-daily',maker:'ジョンソン　ジョンソン ショーンと一緒にLet\'s除菌！キャンペーン',deadline:'6/30（7/7）',dlClass:'dl-green',buy:'ジョンソン対象商品を1点以上購入したレシートを1口として、LINEで応募',method:'LINE',prize:'ひつじのショーンオリジナルデザイン ポーチ×100名\nひつじのショーンオリジナルデザイン ミニトートバッグ×100名\nカビキラー アルコール除菌オリジナルデザインQUOカードPay 1,000円分×300名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/09/080300'},
+    {id:'m35',category:'日用品',cat:'cat-daily',maker:'小林製薬　小林製薬 おかげさまで消臭元30周年！ニオイも！ストレスも！元からなかったことにキャンペーン',deadline:'6/30（7/7）',dlClass:'dl-green',buy:'小林製薬対象商品を各コースに必要な金額以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'〈A ニオイリフレッシュコース〉\n対象商品1,050円(税込)購入で応募：ダスキン 選んで使えるおそうじギフトカード(10,000円×2枚セット)×40名\n対象商品600円(税込)購入で応募：アイリスオーヤマ 布団クリーナー×50名\n対象商品300円(税込)購入で応募プラスマイナスゼロ オートディスペンサー(液体)＋スポンジセット×60名\n〈B ココロリフレッシュコース〉\n対象商品1,050円(税込)購入で応募：TBCエステチケット グラシアスコース×40名\n対象商品600円(税込)購入で応募：全国共通お食事券ジェフグルメカード 10,000円分×50名\n対象商品300円(税込)購入で応募：AYURAギフトセット バスエッセンス×60名\n〈Wチャンス賞〉\n消臭元30周年 感謝の詰め合わせセット×300名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/09/080100'},
+    {id:'m36',category:'日用品',cat:'cat-daily',maker:'まとめ◆日用品懸賞②掃除　まとめ◆日用品懸賞②掃除･除菌',deadline:'7/5(日)23:59',dlClass:'dl-green',buy:'1会計で\n対象商品1個以上\n対象商品700･150円(税込)以上\n対象商品1050･600\n対象商品1点以上\n対象商品1000･400円(税込)以上',method:'WEB',prize:'A･家電･30名\nB･Uber1万円･50名\nB･Amazon5000円･100名\nB･QUO1000円･320名\nえらべるPay5393円･100名\n\n\n賞品\nW･消臭元ｾｯﾄ･300名\nﾎﾟｰﾁ･100名\nﾐﾆﾄｰﾄﾊﾞｯｸﾞ･100名\nQUOPay1000円･300名\n1000･ﾄｰｽﾀｰ･30名\n400･ﾗﾝﾁｹｰｽ･30名\nW･QUO500円･100名',url:'https://ameblo.jp/rsj64177/entry-12965048648.html'},
+    {id:'m37',category:'日用品',cat:'cat-daily',maker:'小林製薬　小林製薬･消臭元',deadline:'7/7(火)23:59',dlClass:'dl-green',buy:'対象商品1050･600',method:'WEB',prize:'賞品\nW･消臭元ｾｯﾄ･300名',url:'https://ameblo.jp/rsj64177/entry-12964692268.html'},
+    {id:'m38',category:'食品',cat:'cat-food',maker:'中田食品　中田食品 レシート撮影で当たる！ポイントを貯めて応募キャンペーン',deadline:'7/31(金)23:59',dlClass:'dl-green',buy:'ポイントを貯め',method:'LINE',prize:'A賞(10ポイント)：JTB旅行券2万円分×2名\nB賞(5ポイント)：カタログギフト ひんやりスイーツ×20名\nC賞(1ポイント)：選べる電子マネー 500円分×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/02/080500'},
+    {id:'m39',category:'食品',cat:'cat-food',maker:'ホクト　ホクト ホクト 夏を元気に！きのこで菌活キャンペーン',deadline:'7/31（6/30）',dlClass:'dl-green',buy:'ホクト対象商品を購入したレシートと未開封の商品を一緒に撮影した画像で、LINEから応募',method:'LINE',prize:'A賞：産直きのこセット(7パック分)×各回250名(合計500名)\nB賞：ブナピーエコバッグ×各回250名(合計500名)',url:'https://kenshomin.hatenablog.jp/entry/2026/05/13/080300'},
+    {id:'m40',category:'日用品',cat:'cat-daily',maker:'王子ネピア　王子ネピア nepia アネモネHGリニューアル記念！ どっさりご褒美キャンペーン 〜北海道日本ハムファイターズと一緒に〜',deadline:'7/31（5/31）',dlClass:'dl-green',buy:'王子ネピア対象商品1パック以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'どっさり生活応援賞：nepia ティシュ3年分（＝1ケース60箱）×毎月100名(合計300名)\nファイターズコラボアイテム賞：ファイターズ×nepia Wネーム オリジナルバケットハット×毎月200名(合計600名)\nファイターズ推しメン賞（Wチャンス）：オリジナル「ファイターズ」主力選手＆監督デザイン紙製スタンド×毎月100名(合計300名)',url:'https://kenshomin.hatenablog.jp/entry/2026/05/10/080300'},
+    {id:'m41',category:'食品',cat:'cat-food',maker:'共立食品　共立食品･ナッツ･ドライフルーツ',deadline:'8/3(月)〆切',dlClass:'dl-green',buy:'対象商品300円(税込)以上',method:'LINE･ハガキ',prize:'LINE･QUOPay5000円･60名\nﾊｶﾞｷ･JCB5000円･20名\nW･ﾅｯﾂ商品ｾｯﾄ･100名',url:'https://ameblo.jp/rsj64177/entry-12964739782.html'},
+    {id:'m42',category:'食品',cat:'cat-food',maker:'小岩井乳業　小岩井乳業 小岩井ヨーグルトマイレージキャンペーン',deadline:'10/31（7/31）',dlClass:'dl-green',buy:'小岩井乳業対象商品を購入したレシートをアップロードして190円(税込)ごとに1ポイントを貯め、各コースに必要なポイントを1口として応募',method:'小岩井乳業対象商品を購入したレシートをアップロードして190',prize:'〈必ずもらえる〉\nオリジナルエコバッグ×1人1個まで\n〈抽選でもらえる〉\n5ポイント：小岩井乳製品お楽しみセット×200名\n20ポイント：イッタラ カステヘルミ ボウル230ml クリア ペア×40名\n20ポイント：小岩井農場TOKYOペアお食事券×40組\n40ポイント：小岩井農場＆工場見学ツアー＋ペア宿泊つき×20組',url:'https://kenshomin.hatenablog.jp/entry/2026/05/12/080000'},
+    {id:'m43',category:'食品',cat:'cat-food',maker:'応募◆カルビー　応募◆カルビー･ファンタスティックキャンペーン2026',deadline:'●1/19〜6/1(月)〆切',dlClass:'dl-green',buy:'カルビー\n･ファンタスティック\nキャンペーン2026\n●1/19〜6/1(月)〆切\n『◆懸賞情報◆カルビー･ファンタスティックキャンペーン2026』',method:'',prize:'',url:'https://ameblo.jp/rsj64177/entry-12965304752.html'},
+    {id:'m44',category:'食品',cat:'cat-food',maker:'〆切間近◆明治　〆切間近◆明治･まるごと野菜･銀座トマトカリー',deadline:'3/13本日〜キャンペーン 食品懸賞   明治･まるごと野菜･銀座トマトカリー ●3/13〜5/15(金)23:59■対象商品5･2･1個　購入ﾚｼｰﾄ応募…',dlClass:'dl-green',buy:'対象商品5･2･1個',method:'WEB',prize:'5･ふとん3点ｾｯﾄ･1名\n3･皿ｽﾌﾟｰﾝｾｯﾄ･100名\n1･ﾄｰﾄﾊﾞｯｸﾞ･730名',url:'https://ameblo.jp/rsj64177/entry-12965892550.html'},
+    {id:'m45',category:'日用品',cat:'cat-daily',maker:'まとめ◆日用品懸賞⑤ヘアケア　まとめ◆日用品懸賞⑤ヘアケア',deadline:'●3/16〜5/15(金)23:59',dlClass:'dl-green',buy:'Xﾌｫﾛｰ\n対象商品購入ﾚｼｰﾄ応募\n対象商品500円(\n対象商品1品以上',method:'X',prize:'',url:'https://ameblo.jp/rsj64177/entry-12965124970.html'},
+    {id:'m46',category:'日用品',cat:'cat-daily',maker:'まとめ◆日用品懸賞①　まとめ◆日用品懸賞①･防虫･防菌',deadline:'●第1回4/1〜6/30(火)23:59',dlClass:'dl-green',buy:'対象商品\n対象商品1点以上購入\n1会計で\n1会計で\n対象商品A1500\n対象商品1000円(税込)以上\n対象商品A1800･B900円(税込)以上\n対象商品2個以上',method:'WEB',prize:'JTBｶﾀﾛｸﾞ(3万円)･5組\nﾘｶﾊﾞﾘｰｳｪｱ･5名\nえらべるPay1万･60名\nJCB5000円･計100名\nﾏｯｸｶｰﾄﾞ5000円･計100名\nW･白元ｱｰｽ商品ｾｯﾄ･計200名\nA･ﾛｺﾞｽｸﾞﾘﾙｱﾀｯｼｭ･10名\nB･ﾀｵﾙ&ｱｸｽﾀ･90名\nW･ﾌﾏｷﾗｰｾｯﾄ\nｺｰﾄﾞﾚｽｸﾘｰﾅｰ＋ｽﾃｯｶｰ･10名\nQUO5000円＋ｽﾃｯｶｰ･80名\nｱｸｽﾀ＋ｽﾃｯｶｰ･300名\nA･Yogibo･20名\nB･ﾐﾆﾄｰﾄﾊﾞｯｸﾞ･980名\nQUOPay1万･20名\nQUOPay1000円･2000名\nA･QUOPay1万･40名\nB･･QUOPay5000円･60名\nW･QUOPay1000円･100名\nJCB5000円･計100名\nぬいぐるみ3体ｾｯﾄ･計30名\nえらべるPay2000円･計870名\nW･立体ｼｰﾙ･計3000名',url:'https://ameblo.jp/rsj64177/entry-12965099922.html'},
+    {id:'m47',category:'食品',cat:'cat-food',maker:'まとめ◆アイス懸賞②　まとめ◆アイス懸賞②',deadline:'в—Ҹ4/6гҖң6/30(зҒ«)23:59',dlClass:'dl-green',buy:'пҪўжҮёиіһжғ…е ұпҪЈж•ҙзҗҶ\nгӮўгӮӨгӮ№жҮёиіһ\nгҒҫгҒЁгӮҒв‘Ў\nгҖҗгӮ°гғӘгӮіпҪҘгғ‘гғ”гӮігҖ',method:'',prize:'',url:'https://ameblo.jp/rsj64177/entry-12965307221.html'},
+    {id:'m48',category:'食品',cat:'cat-food',maker:'まとめ◆デザート懸賞　まとめ◆デザート懸賞',deadline:'4/6〜5/31(日)23:59',dlClass:'dl-green',buy:'対象商品2点以上\nA･対象商品3点以上\n対象商品\n対象商品2･5個以上\n対象商品6･4個\n応募ﾏｰｸ5枚貼付応募\n対象商品A1700･B1000\n対象商品500･1000\n対象商品ﾊﾟｯｹｰｼﾞ撮影写真',method:'WEB',prize:'ｱﾗﾓｰﾄﾞｸﾞﾗｽ2個･200名\nW･ちょこっとﾌﾟｯﾁﾝ1袋･800名\nA･ｽﾌﾟｰﾝ･30名\nB･茨城乳業ｾｯﾄ･50名\n2･焼菓子･計120名\n5･BALMUDAﾎﾟｯﾄ･30名\nW･QUOPay 500･1000名\n6･BRUNOｴｱﾌﾗｲﾔｰ･100名\n4･ﾚｺﾙﾄ･ﾎﾟｯﾄｷｬﾚ･100名\nW･QUOPay500円･800名\n親子ﾏﾘﾝﾀｵﾙｾｯﾄ･85名\nA･BALMUDAﾄｰｽﾀｰ･1名\nB･ﾎｯﾄﾌﾟﾚｰﾄ･5名\nC･らくれんｾｯﾄ･20名\nD･らくれんﾌﾟﾘﾝ12個･30名\nW･QUO500･100名\n500･中村屋ｾｯﾄ･70名\n1000･有田焼食器･30名\n1500･中村屋ﾚｽﾄﾗﾝ10組20名\nえらべるPay1000円･各20名',url:'https://ameblo.jp/rsj64177/entry-12965485702.html'},
+    {id:'m49',category:'食品',cat:'cat-food',maker:'まとめ◆シリアル懸賞　まとめ◆シリアル懸賞',deadline:'4/7〜5/27(水)23:59',dlClass:'dl-green',buy:'折りパケ\n対象商品1個以上\n対象商品2ﾎﾟｲﾝﾄ',method:'アプリ',prize:'A･ﾎﾞｰﾙ･100名\nB･Amazon2000円･1000名\nA･ﾎﾞｳﾙ&ｽﾌﾟｰﾝｾｯﾄ･各回150名\nB･ﾎﾟｰﾁ&ｽﾃｯｶｰ･各回150名\nC･ごろグラ4個ｾｯﾄ･各回260名\nｼｽｺｰﾝ4品',url:'https://ameblo.jp/rsj64177/entry-12965453101.html'},
+    {id:'m50',category:'食品',cat:'cat-food',maker:'まとめ◆パンに塗る　まとめ◆パンに塗る',deadline:'4/16〜5/31(日)',dlClass:'dl-green',buy:'対象商品2個\n対象商品2･1個\n対象商品購入ﾚｼｰﾄ応募',method:'WEB',prize:'ﾊﾞｯｸﾞ&ﾁｬｰﾑ･100名\nW･ｼｰﾙ4種･200名\n2･ｱﾗｼﾞﾝﾄｰｽﾀｰ･各回50名\n1･えらべるPay2000･各回100名\nW遠藤製餡ｾｯﾄ(2000円)･120名\nｸｯｼｮﾝ･500名\nﾊﾟﾝｾｯﾄ･500名',url:'https://ameblo.jp/rsj64177/entry-12965477262.html'},
+    {id:'m51',category:'食品',cat:'cat-food',maker:'まとめ◆ペアリング懸賞②　まとめ◆ペアリング懸賞②',deadline:'4/27〜6/30(火)23:59',dlClass:'dl-green',buy:'対象商品\nﾜﾝﾀﾞ商品1品\n対象商品1点以上',method:'LINE',prize:'',url:'https://ameblo.jp/rsj64177/entry-12965046549.html'},
+    {id:'m52',category:'食品',cat:'cat-food',maker:'カゴメ　カゴメ･野菜一日これ一本',deadline:'5/1〜6/30(火)23:59',dlClass:'dl-green',buy:'対象商品購入ﾚｼｰﾄ応募',method:'LINE',prize:'1･えらべるPay1000円･521名\n5･24本･300名\n10･特大ｸｯｼｮﾝ･10名',url:'https://ameblo.jp/rsj64177/entry-12964740820.html'},
+    {id:'m53',category:'食品',cat:'cat-food',maker:'パスコ　パスコ･イングリッシュマフィン',deadline:'5/1〜6/30(火)23:59',dlClass:'dl-green',buy:'対象商品2種',method:'WEB',prize:'2･ｶﾗﾌﾙﾘﾄﾙﾌﾟﾚｰﾄ･100名\n1･えらべるPay1000円･400名',url:'https://ameblo.jp/rsj64177/entry-12964725134.html'},
+    {id:'m54',category:'日用品',cat:'cat-daily',maker:'白元アース　白元アース･ドライUP NECO',deadline:'第1弾･5/1〜6/30',dlClass:'dl-green',buy:'対象商品2個以上',method:'',prize:'JCB5000円･計100名\nぬいぐるみ3体ｾｯﾄ･計30名\nえらべるPay2000円･計870名\nW･立体ｼｰﾙ･計3000名',url:'https://ameblo.jp/rsj64177/entry-12964693573.html'},
+    {id:'m55',category:'日用品',cat:'cat-daily',maker:'フマキラー　フマキラー･アルコール除菌',deadline:'5/1〜7/31(金)23:59',dlClass:'dl-green',buy:'対象商品1000･400円(税込)以上',method:'WEB',prize:'1000･ﾄｰｽﾀｰ･30名\n400･ﾗﾝﾁｹｰｽ･30名\nW･QUO500円･100名',url:'https://ameblo.jp/rsj64177/entry-12964810651.html'},
+    {id:'m56',category:'食品',cat:'cat-food',maker:'エースコック　エースコック･はるさめ',deadline:'5/11〜7/31(金)',dlClass:'dl-green',buy:'対象商品3･2･1個以上',method:'LINE',prize:'3･ﾍｯﾄﾞﾌｫﾝ･100名\n2･ｱｸｽﾀ･100名\n1･QUOPay500円･500名\nW･対象企業で購入',url:'https://ameblo.jp/rsj64177/entry-12965347506.html'},
+    {id:'m57',category:'食品',cat:'cat-food',maker:'田中食品　田中食品･旅行の友',deadline:'5/12〜6/30(火)',dlClass:'dl-green',buy:'対象商品3個',method:'WEB',prize:'ふりかけｾｯﾄ･100名\n･お米券5000円分･100名',url:'https://ameblo.jp/rsj64177/entry-12965904877.html'},
+    {id:'m58',category:'食品',cat:'cat-food',maker:'森永乳業　森永乳業･リプトン紙パック',deadline:'5/12〜7/13(月)23:59',dlClass:'dl-green',buy:'対象商品1本以上',method:'WEB',prize:'A･ｴｺﾊﾞｯｸﾞ･500名\nB･えらべるPay500･500名',url:'https://ameblo.jp/rsj64177/entry-12965900681.html'}
   ],
 };
 
@@ -487,6 +514,69 @@ function saveState() {
 let state = loadState();
 let currentTab = 'inageya';
 let exclOpen = false;
+
+const TAB_LABELS = {inageya:'いなげや', aeon:'イオン系列', ok:'オーケー', other:'その他', maker:'食品・日用品'};
+
+function onSearchInput(val) {
+  const q = val.trim();
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  if (q) {
+    document.getElementById('tab-search').classList.add('active');
+    renderSearch(q);
+  } else {
+    document.getElementById('tab-' + currentTab).classList.add('active');
+    updateCount(currentTab);
+  }
+}
+
+function renderSearch(query) {
+  const container = document.getElementById('tab-search');
+  const q = query.toLowerCase();
+  let html = '';
+  let count = 0;
+  ['inageya','aeon','ok','other','maker'].forEach(tabId => {
+    allData[tabId].filter(i => state[i.id] !== 'deleted').forEach(item => {
+      const text = [item.maker||'', item.store||'', item.buy||'', item.method||'', item.prize||'', item.category||''].join(' ').toLowerCase();
+      if (!text.includes(q)) return;
+      const isDone = state[item.id] === 'done';
+      const buyLines = item.buy.replace(/\n/g, '<br>');
+      const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
+      const linkBtn = item.url ? `<a href="${item.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
+      if (!isDone) count++;
+      html += `
+        <div class="card${isDone ? ' done' : ''}" id="s-card-${item.id}">
+          <div class="card-inner">
+            <div class="check-area" onclick="toggleDone('${item.id}','${tabId}')">
+              <div class="check-circle">${isDone ? '✓' : ''}</div>
+            </div>
+            <div class="card-body">
+              <div class="card-top">
+                <div class="maker-name"><span class="tab-tag">${TAB_LABELS[tabId]}</span>${catChip}${item.maker}</div>
+                <div class="deadline-badge ${item.dlClass}">🗓 ${item.deadline}</div>
+              </div>
+              <div class="buy-box">
+                <div class="buy-label">🛍 何を買う？</div>
+                ${buyLines}
+              </div>
+              <div class="card-footer">
+                <span class="method-chip">${item.method}</span>
+                <span class="prize-text">🎁 ${item.prize}</span>
+                ${linkBtn}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  });
+  if (!html) {
+    container.innerHTML = `<div class="empty-state"><div class="emoji">🔍</div>「${query}」に一致する結果がありません</div>`;
+    document.getElementById('remaining').textContent = 0;
+    return;
+  }
+  container.innerHTML = html;
+  document.getElementById('remaining').textContent = count;
+}
 
 function renderTab(tabId) {
   const container = document.getElementById('tab-' + tabId);
@@ -562,7 +652,8 @@ function toggleDone(id, tabId) {
   state[id] = state[id] === 'done' ? undefined : 'done';
   saveState();
   renderTab(tabId);
-  updateCount(tabId);
+  const sq = document.getElementById('search-input').value.trim();
+  if (sq) { renderSearch(sq); } else { updateCount(tabId); }
 }
 
 function deleteItem(id, tabId) {
@@ -608,6 +699,7 @@ function toggleExclusion() {
 }
 
 function switchTab(tabId, btn) {
+  document.getElementById('search-input').value = '';
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
   document.getElementById('tab-' + tabId).classList.add('active');
