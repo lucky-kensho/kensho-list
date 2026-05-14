@@ -351,14 +351,14 @@
   <div id="memo-form-area" style="display:none;background:white;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 5px rgba(0,0,0,0.08);">
     <div style="margin-bottom:8px;">
       <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">タイトル（例: いなげや）</div>
-      <input id="memo-title-input" type="text" placeholder="いなげや" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
+      <input id="memo-title-input" type="text" placeholder="タイトル" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
     </div>
     <div style="margin-bottom:10px;">
-      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">メモ（例: 牛乳、鶏肉）</div>
-      <textarea id="memo-text-input" placeholder="牛乳&#10;鶏肉" rows="3" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;resize:vertical;outline:none;box-sizing:border-box;"></textarea>
+      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">メモ</div>
+      <textarea id="memo-text-input" placeholder="メモを入力" rows="3" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;resize:vertical;outline:none;box-sizing:border-box;"></textarea>
     </div>
     <div style="display:flex;gap:8px;">
-      <button onclick="submitMemo()" style="flex:1;padding:10px;background:#e74c3c;color:white;border:none;border-radius:10px;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;">追加する</button>
+      <button id="memo-submit-btn" onclick="submitMemo()" style="flex:1;padding:10px;background:#e74c3c;color:white;border:none;border-radius:10px;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;">追加する</button>
       <button onclick="toggleMemoForm()" style="padding:10px 14px;background:#f0f0f0;color:#888;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit;">キャンセル</button>
     </div>
   </div>
@@ -719,6 +719,7 @@ const MEMO_KEY = 'kenshow_memo_v1';
 let memoItems = [];
 try { memoItems = JSON.parse(localStorage.getItem(MEMO_KEY)) || []; } catch(e) {}
 let memoNextId = memoItems.length > 0 ? Math.max(...memoItems.map(i => i.id)) + 1 : 1;
+let editingMemoId = null;
 
 function saveMemo() {
   try { localStorage.setItem(MEMO_KEY, JSON.stringify(memoItems)); } catch(e) {}
@@ -748,6 +749,9 @@ function renderMemoList() {
               <div class="maker-name">${item.title || '無題'}</div>
             </div>
             ${item.memo ? `<div class="buy-box"><div class="buy-label">📋 メモ</div>${memoLines}</div>` : ''}
+            <div style="text-align:right;padding-top:6px">
+              <button onclick="editMemo(${item.id})" style="font-size:12px;background:#f0f0f0;color:#666;border:none;border-radius:8px;padding:4px 10px;cursor:pointer;font-family:inherit;">✏️ 編集</button>
+            </div>
           </div>
         </div>
         <button class="delete-btn" onclick="deleteMemoItem(${item.id})" title="削除">✕</button>
@@ -771,14 +775,34 @@ function toggleMemoForm() {
   else {
     document.getElementById('memo-title-input').value = '';
     document.getElementById('memo-text-input').value = '';
+    editingMemoId = null;
+    document.getElementById('memo-submit-btn').textContent = '追加する';
   }
+}
+
+function editMemo(id) {
+  const item = memoItems.find(i => i.id === id);
+  if (!item) return;
+  editingMemoId = id;
+  document.getElementById('memo-title-input').value = item.title || '';
+  document.getElementById('memo-text-input').value = item.memo || '';
+  document.getElementById('memo-submit-btn').textContent = '更新する';
+  document.getElementById('memo-form-area').style.display = 'block';
+  setTimeout(() => document.getElementById('memo-title-input').focus(), 50);
 }
 
 function submitMemo() {
   const title = document.getElementById('memo-title-input').value.trim();
   const memo  = document.getElementById('memo-text-input').value.trim();
   if (!title && !memo) return;
-  memoItems.push({ id: memoNextId++, title, memo, done: false, deleted: false });
+  if (editingMemoId !== null) {
+    const item = memoItems.find(i => i.id === editingMemoId);
+    if (item) { item.title = title; item.memo = memo; }
+    editingMemoId = null;
+    document.getElementById('memo-submit-btn').textContent = '追加する';
+  } else {
+    memoItems.push({ id: memoNextId++, title, memo, done: false, deleted: false });
+  }
   saveMemo();
   document.getElementById('memo-title-input').value = '';
   document.getElementById('memo-text-input').value = '';
