@@ -322,12 +322,12 @@
   </div>
   <div class="header-date">2026年5月16日更新　全196件</div>
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('inageya',this)">いなげや</button>
+    <button class="tab-btn" onclick="switchTab('inageya',this)">いなげや</button>
     <button class="tab-btn" onclick="switchTab('aeon',this)">イオン系列</button>
     <button class="tab-btn" onclick="switchTab('ok',this)">オーケー</button>
     <button class="tab-btn" onclick="switchTab('other',this)">その他</button>
     <button class="tab-btn" onclick="switchTab('maker',this)">食品・日用品</button>
-    <button class="tab-btn" onclick="switchTab('memo',this)">買い物</button>
+    <button class="tab-btn active" onclick="switchTab('memo',this)">買い物</button>
   </div>
   <div class="search-bar">
     <input type="text" id="search-input" placeholder="🔍 キーワードで検索（メーカー・商品・賞品など）" oninput="onSearchInput(this.value)" autocomplete="off">
@@ -339,12 +339,12 @@
   <span style="color:#ccc;font-size:11px;">✅ チェック ／ ✕ 削除</span>
 </div>
 
-<div id="tab-inageya" class="tab-content active"></div>
+<div id="tab-inageya" class="tab-content"></div>
 <div id="tab-aeon"    class="tab-content"></div>
 <div id="tab-ok"     class="tab-content"></div>
 <div id="tab-other"  class="tab-content"></div>
 <div id="tab-maker"  class="tab-content"></div>
-<div id="tab-memo"   class="tab-content">
+<div id="tab-memo"   class="tab-content active">
   <div style="padding:8px 0 12px;">
     <button onclick="toggleMemoForm()" style="width:100%;padding:12px;border:2px dashed #ddd;border-radius:12px;background:white;color:#999;font-size:14px;cursor:pointer;font-family:inherit;">＋ 追加</button>
   </div>
@@ -598,7 +598,7 @@ function saveState() {
 }
 
 let state = loadState();
-let currentTab = 'inageya';
+let currentTab = 'memo';
 let exclOpen = false;
 
 const TAB_LABELS = {inageya:'いなげや', aeon:'イオン系列', ok:'オーケー', other:'その他', maker:'食品・日用品'};
