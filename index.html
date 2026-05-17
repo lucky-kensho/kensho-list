@@ -325,6 +325,28 @@
     user-select: none;
   }
   .store-bar:active { background: #f8f8f8; }
+  .pin-btn {
+    font-size: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 1px 3px;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+    line-height: 1;
+    opacity: 0.6;
+  }
+  .pin-btn.active { opacity: 1; }
+  .pin-context {
+    font-size: 10px;
+    background: #fff3cd;
+    color: #856404;
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-right: 5px;
+    font-weight: bold;
+    vertical-align: middle;
+  }
   .store-bar-name { font-weight: bold; font-size: 15px; color: #333; }
   .store-bar-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #999; }
   .store-bar-count { background: #f0f2f5; border-radius: 20px; padding: 2px 9px; }
@@ -345,6 +367,7 @@
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
     <button class="tab-btn" onclick="switchTab('maker',this)">食品・日用品</button>
+    <button class="tab-btn" onclick="switchTab('pin',this)">⭐ ピン</button>
     <button class="tab-btn active" onclick="switchTab('memo',this)">買い物</button>
   </div>
   <div class="search-bar">
@@ -359,6 +382,7 @@
 
 <div id="tab-store"  class="tab-content"></div>
 <div id="tab-maker"  class="tab-content"></div>
+<div id="tab-pin"    class="tab-content"></div>
 <div id="tab-memo"   class="tab-content active">
   <div style="padding:8px 0 12px;">
     <button onclick="toggleMemoForm()" style="width:100%;padding:12px;border:2px dashed #ddd;border-radius:12px;background:white;color:#999;font-size:14px;cursor:pointer;font-family:inherit;">＋ 追加</button>
@@ -620,13 +644,71 @@ let state = loadState();
 let currentTab = 'memo';
 let exclOpen = false;
 
-const TAB_LABELS = {store:'店舗', maker:'食品・日用品'};
+const TAB_LABELS = {store:'店舗', maker:'食品・日用品', pin:'⭐ ピン'};
 let openStores = {};
 
 function toggleStoreGroup(name) {
   openStores[name] = !openStores[name];
   renderTab('store');
   updateCount('store');
+}
+
+// ===== ピン機能 =====
+const PINNED_KEY = 'kenshow_pinned_v1';
+let pinned = {};
+try { pinned = JSON.parse(localStorage.getItem(PINNED_KEY)) || {}; } catch(e) {}
+
+function savePinned() {
+  try { localStorage.setItem(PINNED_KEY, JSON.stringify(pinned)); } catch(e) {}
+}
+
+function togglePin(id) {
+  if (pinned[id]) { delete pinned[id]; } else { pinned[id] = true; }
+  savePinned();
+  renderPinnedTab();
+  const item = allItems[id];
+  if (item) renderTab(item.store ? 'store' : 'maker');
+  updateCount(currentTab);
+}
+
+function renderPinnedTab() {
+  const container = document.getElementById('tab-pin');
+  if (!container) return;
+  const pinnedItems = Object.values(allData).flat().filter(i => pinned[i.id] && state[i.id] !== 'deleted');
+  if (pinnedItems.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="emoji">⭐</div>ピン留めがありません<br><small style="font-size:12px">各カードの ☆ をタップしてピン留め</small></div>';
+    return;
+  }
+  let html = '';
+  pinnedItems.forEach(item => {
+    const isDone = state[item.id] === 'done';
+    const buyLines = item.buy.replace(/\n/g, '<br>');
+    const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
+    const linkBtn = item.url ? `<a href="${item.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
+    const srcTab = item.store ? 'store' : 'maker';
+    const ctxLabel = item.store || item.category || '';
+    html += `<div class="card${isDone ? ' done' : ''}" id="pin-card-${item.id}">
+      <div class="card-inner">
+        <div class="check-area" onclick="toggleDone('${item.id}','${srcTab}')">
+          <div class="check-circle">${isDone ? '✓' : ''}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${item.maker}</div>
+            <div class="deadline-badge ${item.dlClass}">🗓 ${item.deadline}</div>
+          </div>
+          <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>
+          <div class="card-footer">
+            <span class="method-chip">${item.method}</span>
+            <span class="prize-text">🎁 ${item.prize}</span>
+            <button class="pin-btn active" onclick="togglePin('${item.id}')" title="ピン解除">⭐</button>
+            ${linkBtn}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
 }
 
 function onSearchInput(val) {
@@ -722,6 +804,7 @@ function renderTab(tabId) {
         const isDone = state[item.id] === 'done';
         const buyLines = item.buy.replace(/\n/g, '<br>');
         const linkBtn = item.url ? `<a href="${item.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
+        const isPinned = pinned[item.id];
         html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
           <div class="card-inner">
             <div class="check-area" onclick="toggleDone('${item.id}','store')">
@@ -736,6 +819,7 @@ function renderTab(tabId) {
               <div class="card-footer">
                 <span class="method-chip">${item.method}</span>
                 <span class="prize-text">🎁 ${item.prize}</span>
+                <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
                 ${linkBtn}
               </div>
             </div>
@@ -765,6 +849,7 @@ function renderTab(tabId) {
       const buyLines = item.buy.replace(/\n/g, '<br>');
       const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span><br>` : '';
       const linkBtn = item.url ? `<a href="${item.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
+      const isPinned = pinned[item.id];
       html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
         <div class="card-inner">
           <div class="check-area" onclick="toggleDone('${item.id}','maker')">
@@ -779,6 +864,7 @@ function renderTab(tabId) {
             <div class="card-footer">
               <span class="method-chip">${item.method}</span>
               <span class="prize-text">🎁 ${item.prize}</span>
+              <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
               ${linkBtn}
             </div>
           </div>
@@ -792,6 +878,11 @@ function renderTab(tabId) {
 
 function updateCount(tabId) {
   if (tabId === 'memo') { updateMemoCount(); return; }
+  if (tabId === 'pin') {
+    const n = Object.values(allData).flat().filter(i => pinned[i.id] && state[i.id] !== 'deleted' && state[i.id] !== 'done').length;
+    document.getElementById('remaining').textContent = n;
+    return;
+  }
   const items = allData[tabId];
   if (!items) { document.getElementById('remaining').textContent = 0; return; }
   const n = items.filter(i => state[i.id] !== 'deleted' && state[i.id] !== 'done').length;
@@ -800,6 +891,7 @@ function updateCount(tabId) {
 
 function renderAll() {
   ['store','maker'].forEach(t => renderTab(t));
+  renderPinnedTab();
   renderMemoList();
   updateCount(currentTab);
   renderExclusion();
