@@ -1000,7 +1000,9 @@ function renderMemoList() {
               <div class="maker-name">${item.title || '無題'}</div>
             </div>
             ${item.memo ? `<div class="buy-box"><div class="buy-label">📋 メモ</div>${memoLines}</div>` : ''}
-            <div style="text-align:right;padding-top:6px">
+            <div style="display:flex;justify-content:flex-end;gap:5px;padding-top:6px;">
+              <button onclick="moveMemoUp(${item.id})" style="font-size:13px;background:#f0f0f0;color:#555;border:none;border-radius:8px;width:34px;height:28px;cursor:pointer;font-family:inherit;line-height:1;">↑</button>
+              <button onclick="moveMemoDown(${item.id})" style="font-size:13px;background:#f0f0f0;color:#555;border:none;border-radius:8px;width:34px;height:28px;cursor:pointer;font-family:inherit;line-height:1;">↓</button>
               <button onclick="editMemo(${item.id})" style="font-size:12px;background:#f0f0f0;color:#666;border:none;border-radius:8px;padding:4px 10px;cursor:pointer;font-family:inherit;">✏️ 編集</button>
             </div>
           </div>
@@ -1064,6 +1066,26 @@ function submitMemo() {
 function toggleMemoDone(id) {
   const item = memoItems.find(i => i.id === id);
   if (item) { item.done = !item.done; saveMemo(); renderMemoList(); }
+}
+
+function moveMemoUp(id) {
+  const active = memoItems.filter(i => !i.deleted);
+  const ai = active.findIndex(i => i.id === id);
+  if (ai <= 0) return;
+  const ia = memoItems.findIndex(i => i.id === id);
+  const ib = memoItems.findIndex(i => i.id === active[ai - 1].id);
+  [memoItems[ia], memoItems[ib]] = [memoItems[ib], memoItems[ia]];
+  saveMemo(); renderMemoList();
+}
+
+function moveMemoDown(id) {
+  const active = memoItems.filter(i => !i.deleted);
+  const ai = active.findIndex(i => i.id === id);
+  if (ai >= active.length - 1) return;
+  const ia = memoItems.findIndex(i => i.id === id);
+  const ib = memoItems.findIndex(i => i.id === active[ai + 1].id);
+  [memoItems[ia], memoItems[ib]] = [memoItems[ib], memoItems[ia]];
+  saveMemo(); renderMemoList();
 }
 
 function deleteMemoItem(id) {
