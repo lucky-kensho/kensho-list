@@ -325,6 +325,37 @@
     user-select: none;
   }
   .store-bar:active { background: #f8f8f8; }
+  .card-edit-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .card-edit-overlay.open { display: flex; }
+  .card-edit-box {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .edit-card-btn {
+    font-size: 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 1px 3px;
+    flex-shrink: 0;
+    color: #ccc;
+    -webkit-tap-highlight-color: transparent;
+    line-height: 1;
+  }
   .pin-btn {
     font-size: 16px;
     background: none;
@@ -405,6 +436,24 @@
 </div>
 
 <div id="tab-search" class="tab-content"></div>
+
+<div id="card-edit-overlay" class="card-edit-overlay" onclick="if(event.target===this)closeCardEdit()">
+  <div class="card-edit-box">
+    <div style="font-weight:bold;font-size:16px;margin-bottom:14px;">📝 カード情報を編集</div>
+    <div style="margin-bottom:10px;">
+      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">締切（例: 5/31）</div>
+      <input id="edit-deadline" type="text" placeholder="5/31" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
+    </div>
+    <div style="margin-bottom:16px;">
+      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">応募URL</div>
+      <input id="edit-url" type="url" placeholder="https://..." style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="saveCardEdit()" style="flex:1;padding:10px;background:#e74c3c;color:white;border:none;border-radius:10px;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;">保存</button>
+      <button onclick="closeCardEdit()" style="padding:10px 14px;background:#f0f0f0;color:#888;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit;">キャンセル</button>
+    </div>
+  </div>
+</div>
 
 <div class="exclusion-section" id="exclusion-section" style="display:none">
   <div class="exclusion-header" onclick="toggleExclusion()">
@@ -671,6 +720,69 @@ function toggleStoreGroup(name) {
   updateCount('store');
 }
 
+// ===== カード手動編集 =====
+const LOCAL_EDITS_KEY = 'kenshow_edits_v1';
+let localEdits = {};
+try { localEdits = JSON.parse(localStorage.getItem(LOCAL_EDITS_KEY)) || {}; } catch(e) {}
+
+function saveLocalEdits() {
+  try { localStorage.setItem(LOCAL_EDITS_KEY, JSON.stringify(localEdits)); } catch(e) {}
+}
+
+function calcDlClass(s) {
+  const m = String(s||'').match(/(\d{1,2})\/(\d{1,2})/);
+  if (!m) return 'dl-gray';
+  try {
+    const today = new Date(); today.setHours(0,0,0,0);
+    let dl = new Date(today.getFullYear(), m[1]-1, +m[2]);
+    if (dl < today) dl = new Date(today.getFullYear()+1, m[1]-1, +m[2]);
+    const days = Math.round((dl-today)/86400000);
+    if (days<=7) return 'dl-red'; if (days<=30) return 'dl-yellow'; return 'dl-green';
+  } catch(e) { return 'dl-gray'; }
+}
+
+const _origData = {};
+function applyLocalEdits() {
+  Object.entries(_origData).forEach(([id, orig]) => {
+    const item = allItems[id]; if (!item) return;
+    item.deadline = orig.deadline; item.dlClass = orig.dlClass; item.url = orig.url;
+  });
+  Object.entries(localEdits).forEach(([id, edits]) => {
+    const item = allItems[id]; if (!item) return;
+    if (!_origData[id]) _origData[id] = {deadline:item.deadline, dlClass:item.dlClass, url:item.url};
+    if (edits.deadline) { item.deadline = edits.deadline; item.dlClass = calcDlClass(edits.deadline); }
+    if (edits.url !== undefined) item.url = edits.url;
+  });
+}
+
+let editingCardId = null;
+function openCardEdit(id) {
+  editingCardId = id;
+  const item = allItems[id];
+  const e = localEdits[id] || {};
+  document.getElementById('edit-deadline').value = e.deadline || item.deadline || '';
+  document.getElementById('edit-url').value = e.url !== undefined ? e.url : (item.url || '');
+  document.getElementById('card-edit-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('edit-deadline').focus(), 80);
+}
+function closeCardEdit() {
+  document.getElementById('card-edit-overlay').classList.remove('open');
+  editingCardId = null;
+}
+function saveCardEdit() {
+  if (!editingCardId) return;
+  const dl  = document.getElementById('edit-deadline').value.trim();
+  const url = document.getElementById('edit-url').value.trim();
+  if (!localEdits[editingCardId]) localEdits[editingCardId] = {};
+  if (dl)  localEdits[editingCardId].deadline = dl;  else delete localEdits[editingCardId].deadline;
+  localEdits[editingCardId].url = url;   // 空文字も保存（URLなし扱い）
+  if (!Object.keys(localEdits[editingCardId]).length) delete localEdits[editingCardId];
+  saveLocalEdits();
+  applyLocalEdits();
+  closeCardEdit();
+  renderAll();
+}
+
 // ===== ピン機能 =====
 const PINNED_KEY = 'kenshow_pinned_v1';
 let pinned = {};
@@ -720,6 +832,7 @@ function renderPinnedTab() {
             <span class="method-chip">${item.method}</span>
             <span class="prize-text">🎁 ${item.prize}</span>
             <button class="pin-btn active" onclick="togglePin('${item.id}')" title="ピン解除">⭐</button>
+            <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
             ${linkBtn}
           </div>
         </div>
@@ -776,6 +889,7 @@ function renderSearch(query) {
                 <span class="method-chip">${item.method}</span>
                 <span class="prize-text">🎁 ${item.prize}</span>
                 <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
+                <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
                 ${linkBtn}
               </div>
             </div>
@@ -840,6 +954,7 @@ function renderTab(tabId) {
                 <span class="method-chip">${item.method}</span>
                 <span class="prize-text">🎁 ${item.prize}</span>
                 <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
+                <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
                 ${linkBtn}
               </div>
             </div>
@@ -885,6 +1000,7 @@ function renderTab(tabId) {
               <span class="method-chip">${item.method}</span>
               <span class="prize-text">🎁 ${item.prize}</span>
               <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
+              <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
               ${linkBtn}
             </div>
           </div>
@@ -1120,6 +1236,7 @@ function deleteMemoItem(id) {
   }
 }
 
+applyLocalEdits();
 renderAll();
 </script>
 </body>
