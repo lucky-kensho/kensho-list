@@ -808,7 +808,9 @@ function togglePin(id) {
 function renderPinnedTab() {
   const container = document.getElementById('tab-pin');
   if (!container) return;
-  const pinnedItems = Object.values(allData).flat().filter(i => pinned[i.id] && state[i.id] !== 'deleted');
+  const pinnedItems = Object.values(allData).flat()
+    .filter(i => pinned[i.id] && state[i.id] !== 'deleted')
+    .sort((a,b) => (state[a.id]==='done'?1:0)-(state[b.id]==='done'?1:0));
   if (pinnedItems.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="emoji">⭐</div>ピン留めがありません<br><small style="font-size:12px">各カードの ☆ をタップしてピン留め</small></div>';
     return;
@@ -940,7 +942,8 @@ function renderTab(tabId) {
         <div class="store-bar-meta"><span class="store-bar-count">${remaining}件</span><span class="store-bar-arrow${isOpen ? ' open' : ''}">▶</span></div>
       </div>
       <div class="store-cards${isOpen ? ' open' : ''}">`;
-      groupItems.forEach(item => {
+      const sorted = [...groupItems].sort((a,b) => (state[a.id]==='done'?1:0)-(state[b.id]==='done'?1:0));
+      sorted.forEach(item => {
         const it = getEff(item);
         const isDone = state[item.id] === 'done';
         const buyLines = it.buy.replace(/\n/g, '<br>');
@@ -986,11 +989,13 @@ function renderTab(tabId) {
   for (const [group, groupItems] of Object.entries(grouped)) {
     const icon = group === '食品' ? '🥗' : '🧴';
     html += `<div class="section-label">${icon} ${group}</div>`;
-    groupItems.forEach(item => {
+    const sorted = [...groupItems].sort((a,b) => (state[a.id]==='done'?1:0)-(state[b.id]==='done'?1:0));
+    sorted.forEach(item => {
       const it = getEff(item);
       const isDone = state[item.id] === 'done';
       const buyLines = it.buy.replace(/\n/g, '<br>');
       const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span><br>` : '';
+
       const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
       const isPinned = pinned[item.id];
       html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
