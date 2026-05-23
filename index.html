@@ -873,11 +873,14 @@ function renderPinnedTab() {
 function renderMayTab() {
   const container = document.getElementById('tab-may');
   if (!container) return;
+  const _mayToday = new Date(); _mayToday.setHours(0,0,0,0);
   const mayItems = Object.values(allData).flat()
     .filter(i => {
       if (state[i.id] === 'deleted') return false;
       const dl = getEff(i).deadline;
-      return String(dl||'').startsWith('5/');
+      if (!String(dl||'').startsWith('5/')) return false;
+      const day = parseInt((String(dl).split('/')[1])||'0') || 0;
+      return new Date(_mayToday.getFullYear(), 4, day) >= _mayToday;
     })
     .sort((a,b) => {
       const da = state[a.id]==='done' ? 1 : 0;
@@ -1111,9 +1114,13 @@ function updateCount(tabId) {
     return;
   }
   if (tabId === 'may') {
+    const _ct = new Date(); _ct.setHours(0,0,0,0);
     const n = Object.values(allData).flat().filter(i => {
       if (state[i.id] === 'deleted' || state[i.id] === 'done') return false;
-      return String(getEff(i).deadline||'').startsWith('5/');
+      const dl = getEff(i).deadline;
+      if (!String(dl||'').startsWith('5/')) return false;
+      const day = parseInt((String(dl).split('/')[1])||'0') || 0;
+      return new Date(_ct.getFullYear(), 4, day) >= _ct;
     }).length;
     document.getElementById('remaining').textContent = n;
     return;
