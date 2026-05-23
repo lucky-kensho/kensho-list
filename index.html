@@ -396,6 +396,7 @@
   </div>
   <div class="header-date">2026年5月23日更新　全243件</div>
   <div class="tabs">
+    <button class="tab-btn" onclick="switchTab('may',this)">🗓 5月</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
     <button class="tab-btn" onclick="switchTab('maker',this)">食品・日用品</button>
     <button class="tab-btn" onclick="switchTab('pin',this)">⭐ ピン</button>
@@ -411,6 +412,7 @@
   <span style="color:#ccc;font-size:11px;">✅ チェック ／ ✕ 削除</span>
 </div>
 
+<div id="tab-may"   class="tab-content"></div>
 <div id="tab-store"  class="tab-content"></div>
 <div id="tab-maker"  class="tab-content"></div>
 <div id="tab-pin"    class="tab-content"></div>
@@ -734,7 +736,7 @@ let state = loadState();
 let currentTab = 'memo';
 let exclOpen = false;
 
-const TAB_LABELS = {store:'店舗', maker:'食品・日用品', pin:'⭐ ピン'};
+const TAB_LABELS = {may:'🗓 5月', store:'店舗', maker:'食品・日用品', pin:'⭐ ピン'};
 let openStores = {};
 
 function toggleStoreGroup(name) {
@@ -858,6 +860,62 @@ function renderPinnedTab() {
             <span class="method-chip">${item.method}</span>
             <span class="prize-text">🎁 ${item.prize}</span>
             <button class="pin-btn active" onclick="togglePin('${item.id}')" title="ピン解除">⭐</button>
+            <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
+            ${linkBtn}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function renderMayTab() {
+  const container = document.getElementById('tab-may');
+  if (!container) return;
+  const mayItems = Object.values(allData).flat()
+    .filter(i => {
+      if (state[i.id] === 'deleted') return false;
+      const dl = getEff(i).deadline;
+      return String(dl||'').startsWith('5/');
+    })
+    .sort((a,b) => {
+      const da = state[a.id]==='done' ? 1 : 0;
+      const db = state[b.id]==='done' ? 1 : 0;
+      if (da !== db) return da - db;
+      const dayA = parseInt((getEff(a).deadline||'').split('/')[1]) || 99;
+      const dayB = parseInt((getEff(b).deadline||'').split('/')[1]) || 99;
+      return dayA - dayB;
+    });
+  if (mayItems.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="emoji">🗓</div>5月締切の案件はありません</div>';
+    return;
+  }
+  let html = '';
+  mayItems.forEach(item => {
+    const it = getEff(item);
+    const isDone = state[item.id] === 'done';
+    const buyLines = it.buy.replace(/\n/g, '<br>');
+    const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
+    const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
+    const srcTab = item.store ? 'store' : 'maker';
+    const ctxLabel = item.store || item.category || '';
+    const isPinned = pinned[item.id];
+    html += `<div class="card${isDone ? ' done' : ''}" id="may-card-${item.id}">
+      <div class="card-inner">
+        <div class="check-area" onclick="toggleDone('${item.id}','${srcTab}')">
+          <div class="check-circle">${isDone ? '✓' : ''}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${item.maker}</div>
+            <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
+          </div>
+          <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>
+          <div class="card-footer">
+            <span class="method-chip">${item.method}</span>
+            <span class="prize-text">🎁 ${item.prize}</span>
+            <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
             <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
             ${linkBtn}
           </div>
@@ -1051,6 +1109,14 @@ function updateCount(tabId) {
     document.getElementById('remaining').textContent = n;
     return;
   }
+  if (tabId === 'may') {
+    const n = Object.values(allData).flat().filter(i => {
+      if (state[i.id] === 'deleted' || state[i.id] === 'done') return false;
+      return String(getEff(i).deadline||'').startsWith('5/');
+    }).length;
+    document.getElementById('remaining').textContent = n;
+    return;
+  }
   const items = allData[tabId];
   if (!items) { document.getElementById('remaining').textContent = 0; return; }
   const n = items.filter(i => state[i.id] !== 'deleted' && state[i.id] !== 'done').length;
@@ -1060,6 +1126,7 @@ function updateCount(tabId) {
 function renderAll() {
   ['store','maker'].forEach(t => renderTab(t));
   renderPinnedTab();
+  renderMayTab();
   renderMemoList();
   updateCount(currentTab);
   renderExclusion();
