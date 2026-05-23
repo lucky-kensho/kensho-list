@@ -903,7 +903,7 @@ function renderMayTab() {
     const isPinned = pinned[item.id];
     html += `<div class="card${isDone ? ' done' : ''}" id="may-card-${item.id}">
       <div class="card-inner">
-        <div class="check-area" onclick="toggleDone('${item.id}','${srcTab}')">
+        <div class="check-area" onclick="toggleDone('${item.id}','may')">
           <div class="check-circle">${isDone ? '✓' : ''}</div>
         </div>
         <div class="card-body">
@@ -921,6 +921,7 @@ function renderMayTab() {
           </div>
         </div>
       </div>
+      <button class="delete-btn" onclick="deleteItem('${item.id}','may')" title="削除">✕</button>
     </div>`;
   });
   container.innerHTML = html;
@@ -1135,19 +1136,28 @@ function renderAll() {
 function toggleDone(id, tabId) {
   state[id] = state[id] === 'done' ? undefined : 'done';
   saveState();
-  renderTab(tabId);
+  if (tabId === 'may') {
+    renderMayTab();
+  } else {
+    renderTab(tabId);
+  }
   const sq = document.getElementById('search-input').value.trim();
   if (sq) { renderSearch(sq); } else { updateCount(tabId); }
 }
 
 function deleteItem(id, tabId) {
-  const card = document.getElementById('card-' + id);
+  const cardId = tabId === 'may' ? 'may-card-' + id : 'card-' + id;
+  const card = document.getElementById(cardId);
   if (card) {
     card.classList.add('removing');
     setTimeout(() => {
       state[id] = 'deleted';
       saveState();
-      renderTab(tabId);
+      if (tabId === 'may') {
+        renderMayTab();
+      } else {
+        renderTab(tabId);
+      }
       updateCount(tabId);
       renderExclusion();
     }, 280);
