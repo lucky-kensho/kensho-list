@@ -400,7 +400,7 @@
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
     <button class="tab-btn" onclick="switchTab('maker',this)">食品・日用品</button>
     <button class="tab-btn" onclick="switchTab('pin',this)">⭐ ピン</button>
-    <button class="tab-btn" onclick="switchTab('unknown',this)">❓ 不明</button>
+    <button class="tab-btn" onclick="switchTab('unknown',this)">不明</button>
     <button class="tab-btn active" onclick="switchTab('memo',this)">メモ</button>
   </div>
   <div class="search-bar">
@@ -720,7 +720,7 @@ let state = loadState();
 let currentTab = 'memo';
 let exclOpen = false;
 
-const TAB_LABELS = {may:'🗓 5月', store:'店舗', maker:'食品・日用品', pin:'⭐ ピン', unknown:'❓ 不明'};
+const TAB_LABELS = {may:'🗓 5月', store:'店舗', maker:'食品・日用品', pin:'⭐ ピン', unknown:'不明'};
 let openStores = {};
 
 function toggleStoreGroup(name) {
