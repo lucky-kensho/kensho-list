@@ -394,14 +394,14 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年5月28日更新　全223件</div>
+  <div class="header-date">2026年5月28日更新　全225件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('may',this)">🗓 5月</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
     <button class="tab-btn" onclick="switchTab('maker',this)">食品・日用品</button>
     <button class="tab-btn" onclick="switchTab('pin',this)">⭐ ピン</button>
     <button class="tab-btn" onclick="switchTab('unknown',this)">❓ 不明</button>
-    <button class="tab-btn active" onclick="switchTab('memo',this)">買い物</button>
+    <button class="tab-btn active" onclick="switchTab('memo',this)">メモ</button>
   </div>
   <div class="search-bar">
     <input type="text" id="search-input" placeholder="🔍 キーワードで検索（メーカー・商品・賞品など）" oninput="onSearchInput(this.value)" autocomplete="off">
@@ -520,7 +520,7 @@ const allData = {
     {id:'s_c6d05087',store:'オーケー',maker:'ダノンジャパン',deadline:'7/31(金)23:59',dlClass:'dl-green',buy:'対象商品購入レシート\n期間:2026年5月1日(金)～7月31日(金)',method:'ダノンビオ全品',prize:'Aコース：アラジン グラファイトトースター2枚焼き×20名\nBコース：オーケー商品券2,000円分×50名',url:''},
     {id:'s_70b384c2',store:'キッコーマンディズニー｢サンドラッグ｣',maker:'キッコーマン・デルモンテ商品を買って当てよう！春のドリームキャンペーン',deadline:'5/31\n6/7(日)〆切',dlClass:'dl-red',buy:'キッコーマン\n※豆乳は対象外',method:'LINE',prize:'Bコース　TDR２名分　２０名\nCコース　JCB券￥2000　２０名',url:'https://www.select-cp.com/2026ss/K-05-127/?utm_source=list&utm_medium=shop'},
     {id:'s_461ff631',store:'コープ',maker:'ヤマザキビスケット',deadline:'5/31消印',dlClass:'dl-red',buy:'コープにて、ヤマザキビスケット商品150円(税込)ごとのレシートを1口として、郵送で応募',method:'ハガキ',prize:'チップスター観戦グッズ＆お菓子詰め合わせ×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/08/140400'},
-    {id:'s_6833c3eb',store:'コープみらい\n（いばらき・とちぎ\n　ぐんま・ながの）',maker:'キッコーマン豆乳 朝の豆乳生活',deadline:'6/7(日)\n(レシート有効5/1〜5/31)',dlClass:'dl-yellow',buy:'A:500円 B:200円(税込)以上\n購入レシート\nレシート有効5/1〜5/31',method:'WEB・ハガキ',prize:'A:賞品(15名)\nB:賞品(50名)\n※賞品詳細は店舗確認',url:'https://ameblo.jp/rsj64177/entrylist.html'},
+    {id:'s_4b9f6b2d',store:'コープみらい （いばらき・とちぎ 　ぐんま・ながの）',maker:'キッコーマン豆乳 朝の豆乳生活',deadline:'6/7(日)\n(レシート有効5/1〜5/31)',dlClass:'dl-yellow',buy:'A:500円 B:200円(税込)以上\n購入レシート\nレシート有効5/1〜5/31',method:'WEB・ハガキ',prize:'A:賞品(15名)\nB:賞品(50名)\n※賞品詳細は店舗確認',url:'https://ameblo.jp/rsj64177/entrylist.html'},
     {id:'s_098ea786',store:'コープデリ',maker:'エバラ食品',deadline:'5/31消印',dlClass:'dl-red',buy:'コープデリ対象店舗にて、エバラ食品商品を含む610円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'BRUNO コンパクトホットプレート×15名\nWチャンス：コープ商品詰め合わせ(3,000円相当)×25名',url:'https://www.ebarafoods.com/shiten/campaign/index00353.html'},
     {id:'s_2fa329a8',store:'サミット',maker:'ハインツ日本・オレアイダ 家ポテ！',deadline:'5/31',dlClass:'dl-red',buy:'オレアイダ1点以上含む1000円(税込)以上レシート',method:'LINE・ハガキ',prize:'A:エアフライヤー(5名)\nB:オーブントースター(10名)\nC:商品券1000円(125名)',url:'https://ameblo.jp/rsj64177/entrylist.html'},
     {id:'s_757767bb',store:'サミット',maker:'片岡物産・トワイニング ティーパーティー\n※ライフも対象',deadline:'5/31(6/3)',dlClass:'dl-red',buy:'トワイニング商品含む1000円(税込)以上レシート\nレシート有効4/1〜5/31',method:'WEB・ハガキ',prize:'A:カップ&ソーサー(30名)\nB:商品券2000円(100名)\n※全チェーン合計',url:'https://ameblo.jp/rsj64177/entrylist.html'},
@@ -575,7 +575,8 @@ const allData = {
     {id:'s_f46e1442',store:'食品館あおば',maker:'キッコーマン豆乳・朝の豆乳生活',deadline:'5/31(6/7)',dlClass:'dl-red',buy:'対象商品レシート\nA:500円 B:200円(税込)以上\nレシート有効4/1〜5/31',method:'WEB・ハガキ',prize:'A:リンベル美味百撰 菜花(30名)\nB:ライフ商品券1000円(100名)',url:'https://kenshomin.hatenablog.jp/'},
     {id:'s_b2b15ebe',store:'食品館あおば',maker:'Pasco',deadline:'6/2消印',dlClass:'dl-red',buy:'土日レシート1枚＋火水木レシート2枚を貼付',method:'ハガキ',prize:'えらべるPay 1,000ポイント(150名)',url:''},
     {id:'s_bb2978cf',store:'食品館あおば',maker:'カゴメ',deadline:'6/30\n(7/5 23:59)',dlClass:'dl-green',buy:'各コースに必要な条件を満たすレシートを1口として、LINEで応募',method:'LINE',prize:'完熟コース：JTBえらべるギフト たびもの撰華 楓コース×1名\n実りコース：ビック・ライズ商品券3,000円分×5名\n開花コース：カゴメ野菜生活ファーム グッズ詰め合わせ×45名',url:'https://cp-master.com/tomato-charge/bicrise'},
-    {id:'s_944b09c3',store:'｢コーナン｣',maker:'',deadline:'',dlClass:'dl-gray',buy:'対象商品含',method:'アプリ･WEB',prize:'A･歌舞伎貸切･475組950名\nB･商品券3万円･100名\nC･エビ･30名',url:'https://get-cp.jp/campain/pages/top/kabukiza26'}
+    {id:'s_944b09c3',store:'｢コーナン｣',maker:'',deadline:'',dlClass:'dl-gray',buy:'対象商品含',method:'アプリ･WEB',prize:'A･歌舞伎貸切･475組950名\nB･商品券3万円･100名\nC･エビ･30名',url:'https://get-cp.jp/campain/pages/top/kabukiza26'},
+    {id:'s_ba266097',store:'オリンピック（CGCグループ）',maker:'ネスレ',deadline:'5/31',dlClass:'dl-red',buy:'対象商品1,000円(税込)以上購入レシート',method:'WEB',prize:'賞品（詳細はサイト参照）',url:'https://get-cp.jp/campain/pages/top/ice-cgccp4'}
   ],
   maker: [
     {id:'m_35f79e9b',category:'食品',cat:'cat-food',maker:'フジッコ　カスピ海ヨーグルト もっと！とろぉ〜もっちキャンペーン',deadline:'',dlClass:'dl-gray',buy:'対象商品購入レシート',method:'WEB・ハガキ',prize:'Giftee box SELECT2,000円分…500名',url:'https://www.fujicco.co.jp/caspikaiyogurt/motto-toromocchi2026/'},
@@ -641,6 +642,7 @@ const allData = {
     {id:'m_30373188',category:'食品',cat:'cat-food',maker:'スベルティ✕スギ薬局50周年記念キャンペーン　スベルティ✕スギ薬局50周年記念キャンペーン',deadline:'6/21（6/28）',dlClass:'dl-yellow',buy:'スギ薬局にて、対象商品2,200円(税込)購入ごとにスギ薬局アプリで1スタンプを貯め、1スタンプ1口として応募',method:'スギ薬局にて、対象商品2,200円(税込)購入ごとにスギ薬局',prize:'Aコース：選べる体験ギフト 贅沢ホテルスパ×15名\nBコース：Relax Gift(RED)×15名\nCコース：スギポイント5,000ポイント×20名',url:'https://www.sugi-net.jp/sugi-channel/3976'},
     {id:'m_a65648a1',category:'食品',cat:'cat-food',maker:'伊藤園　伊藤園･お〜いお茶',deadline:'6/21(日)〆切',dlClass:'dl-yellow',buy:'対象商品購入ﾚｼｰﾄ応募',method:'WEB',prize:'歌舞伎ｺｰｽ･ﾍﾟｱﾁｹｯﾄ\n大相撲ｺｰｽ･ﾍﾟｱﾁｹｯﾄ',url:'https://www.itoen.co.jp/news/article/86699/'},
     {id:'m_9f56e57b',category:'食品',cat:'cat-food',maker:'伊藤園　伊藤園 お～いお茶 世界に誇る「日本の伝統」ご招待キャンペーン',deadline:'6/21',dlClass:'dl-yellow',buy:'伊藤園対象商品を購入したレシートをアップロードしてポイントを貯め、36ポイントを1口として応募',method:'伊藤園対象商品を購入したレシートをアップロードしてポイントを',prize:'芸コース：歌舞伎ペアチケット\n東京・歌舞伎座×50組100名\n京都・南座×50組100名\n技コース：大相撲ペアチケット\n七月場所・名古屋×5組10名\n九月場所・東京×5組10名\n十一月場所・福岡×5組10名',url:'https://www.itoen.jp/oiocha/ticketcp2026/'},
+    {id:'m_4b25e16a',category:'食品',cat:'cat-food',maker:'トーラク　トーラクご褒美デザートキャンペーン',deadline:'6/22',dlClass:'dl-yellow',buy:'対象商品購入レシート（対象商品名・購入店舗名が明記されたもの）',method:'LINE',prize:'QUOカードPayほか 1,000名',url:'https://get-cp.jp/campain/pages/top/torakucp26'},
     {id:'m_adc9cf82',category:'食品',cat:'cat-food',maker:'キリンビバレッジ　キリンビバレッジ 午後の紅茶 ティーマグカップ プレゼントキャンペーン',deadline:'6/23（6/30）',dlClass:'dl-yellow',buy:'キリンビバレッジ対象商品を購入したレシートをアップロードして、80円(税込)ごとに1ポイントを貯め、各コースに必要なポイントを1口として応募',method:'キリンビバレッジ対象商品を購入したレシートをアップロードして',prize:'選べるティーマグカップコース(5ポイント)： 5色のティーマグカップから1種類×各550名(合計2,750名)\nコンプリートコース(24ポイント)：5色のティーマグカップコンプリートセット×250名',url:'https://cp.kirin.jp/story/37080'},
     {id:'m_75e2206f',category:'食品',cat:'cat-food',maker:'米国食肉輸出連合会　米国食肉輸出連合会 買って当たる!!父の日ビーフの日キャンペーン',deadline:'6/28',dlClass:'dl-green',buy:'キャンペーンシールの貼られたアメリカンビーフ(米国産牛肉)商品を購入し、キャンペーンサイトからシール中面に記載のシリアルナンバーで応募',method:'キャンペーンシールの貼られたアメリカンビーフ(米国産牛肉)商',prize:'A賞：アメリカンビーフ サーロインステーキ 1kg×100名\nB賞：アメリカンビーフ オリジナルトートバッグ×900名',url:'https://www.americanmeat.jp/index.html'},
     {id:'m_67314701',category:'食品',cat:'cat-food',maker:'アサヒ飲料　十六茶 日本全国16チャージ祭り！！',deadline:'6/29(月)23:59',dlClass:'dl-green',buy:'対象商品購入レシート（ポイント貯め応募）\n応募期間:4/7〜6/29',method:'LINE',prize:'C:選べるデジタルギフト1000円(1600名)',url:''},
@@ -1015,6 +1017,7 @@ function renderSearch(query) {
               </div>
             </div>
           </div>
+          <button class="delete-btn" onclick="deleteItem('${item.id}','search')" title="削除">✕</button>
         </div>
       `;
     });
@@ -1192,17 +1195,23 @@ function toggleDone(id, tabId) {
 }
 
 function deleteItem(id, tabId) {
-  const cardId = tabId === 'may' ? 'may-card-' + id : tabId === 'unknown' ? 'unk-card-' + id : 'card-' + id;
+  const cardId = tabId === 'may' ? 'may-card-' + id
+               : tabId === 'unknown' ? 'unk-card-' + id
+               : tabId === 'search'  ? 's-card-' + id
+               : 'card-' + id;
   const card = document.getElementById(cardId);
   if (card) {
     card.classList.add('removing');
     setTimeout(() => {
       state[id] = 'deleted';
       saveState();
-      if (tabId === 'may') { renderMayTab(); }
-      else if (tabId === 'unknown') { renderUnknownTab(); }
-      else { renderTab(tabId); }
-      updateCount(tabId);
+      if (tabId === 'search') {
+        const sq = document.getElementById('search-input').value.trim();
+        if (sq) renderSearch(sq);
+        updateCount(currentTab);
+      } else if (tabId === 'may') { renderMayTab(); updateCount('may'); }
+      else if (tabId === 'unknown') { renderUnknownTab(); updateCount('unknown'); }
+      else { renderTab(tabId); updateCount(tabId); }
       renderExclusion();
     }, 280);
   }
