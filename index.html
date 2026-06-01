@@ -874,9 +874,10 @@ function renderMayTab() {
     .filter(i => {
       if (state[i.id] === 'deleted') return false;
       const dl = getEff(i).deadline;
-      const mm = String(dl||'').match(/(\d{1,2})\/(\d{1,2})/);
-      if (!mm) return false;
-      const mo = parseInt(mm[1]), dy = parseInt(mm[2]);
+      const mms = [...String(dl||'').matchAll(/(\d{1,2})\/(\d{1,2})/g)];
+      if (!mms.length) return false;
+      const lastMm = mms[mms.length - 1];
+      const mo = parseInt(lastMm[1]), dy = parseInt(lastMm[2]);
       if (mo !== _thisM || dy > 15) return false;
       return new Date(_mayToday.getFullYear(), mo - 1, dy) >= _mayToday;
     })
@@ -1168,9 +1169,10 @@ function updateCount(tabId) {
     const n = Object.values(allData).flat().filter(i => {
       if (state[i.id] === 'deleted' || state[i.id] === 'done') return false;
       const dl = getEff(i).deadline;
-      const mm = String(dl||'').match(/(\d{1,2})\/(\d{1,2})/);
-      if (!mm) return false;
-      const mo = parseInt(mm[1]), dy = parseInt(mm[2]);
+      const mms = [...String(dl||'').matchAll(/(\d{1,2})\/(\d{1,2})/g)];
+      if (!mms.length) return false;
+      const lastMm = mms[mms.length - 1];
+      const mo = parseInt(lastMm[1]), dy = parseInt(lastMm[2]);
       if (mo !== _ctM || dy > 15) return false;
       return new Date(_ct.getFullYear(), mo - 1, dy) >= _ct;
     }).length;
