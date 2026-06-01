@@ -214,6 +214,7 @@
   }
   .cat-food  { background: #e8f8f5; color: #1a7a6a; }
   .cat-daily { background: #f4ecf7; color: #6c3483; }
+  .cat-store { background: #fff3e0; color: #e65100; }
   .delete-btn {
     position: absolute;
     top: 9px;
@@ -444,6 +445,10 @@
 <div id="card-edit-overlay" class="card-edit-overlay" onclick="if(event.target===this)closeCardEdit()">
   <div class="card-edit-box">
     <div style="font-weight:bold;font-size:16px;margin-bottom:14px;">📝 カード情報を編集</div>
+    <div style="margin-bottom:10px;">
+      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">🏪 お店名（食品→店舗の場合に入力）</div>
+      <input id="edit-store" type="text" placeholder="いなげや、マルエツ など" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
+    </div>
     <div style="margin-bottom:10px;">
       <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">締切（例: 5/31）</div>
       <input id="edit-deadline" type="text" placeholder="5/31" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
@@ -813,6 +818,7 @@ function getEff(item) {
   if (e.deadline) { r.deadline = e.deadline; r.dlClass = calcDlClass(e.deadline); }
   if (e.buy)      r.buy = e.buy;
   if (e.url !== undefined) r.url = e.url;
+  if (e.store)    r.storeTag = e.store;
   return r;
 }
 
@@ -821,6 +827,7 @@ function openCardEdit(id) {
   editingCardId = id;
   const item = allItems[id];
   const e = localEdits[id] || {};
+  document.getElementById('edit-store').value = e.store || '';
   document.getElementById('edit-deadline').value = e.deadline || item.deadline || '';
   document.getElementById('edit-buy').value = e.buy !== undefined ? e.buy : (item.buy || '');
   document.getElementById('edit-url').value = e.url !== undefined ? e.url : (item.url || '');
@@ -833,11 +840,13 @@ function closeCardEdit() {
 }
 function saveCardEdit() {
   if (!editingCardId) return;
+  const storeVal = document.getElementById('edit-store').value.trim();
   const dl  = document.getElementById('edit-deadline').value.trim();
   const buy = document.getElementById('edit-buy').value.trim();
   const url = document.getElementById('edit-url').value.trim();
   const prev = localEdits[editingCardId] || {};
   const e = {};
+  if (storeVal) e.store = storeVal; else if ('store' in prev) e.store = '';
   if (dl)  e.deadline = dl;
   if (buy) e.buy = buy;
   if (url) e.url = url; else if ('url' in prev) e.url = '';
@@ -882,6 +891,7 @@ function renderPinnedTab() {
     const isDone = state[item.id] === 'done';
     const buyLines = it.buy.replace(/\n/g, '<br>');
     const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
+    const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
     const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
     const srcTab = item.store ? 'store' : 'maker';
     const ctxLabel = item.store || item.category || '';
@@ -892,7 +902,7 @@ function renderPinnedTab() {
         </div>
         <div class="card-body">
           <div class="card-top">
-            <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${item.maker}</div>
+            <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
             <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
           </div>
           <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>
@@ -944,6 +954,7 @@ function renderMayTab() {
     const isDone = state[item.id] === 'done';
     const buyLines = it.buy.replace(/\n/g, '<br>');
     const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
+    const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
     const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
     const srcTab = item.store ? 'store' : 'maker';
     const ctxLabel = item.store || item.category || '';
@@ -955,7 +966,7 @@ function renderMayTab() {
         </div>
         <div class="card-body">
           <div class="card-top">
-            <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${item.maker}</div>
+            <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
             <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
           </div>
           <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>
@@ -994,6 +1005,7 @@ function renderUnknownTab() {
     const isDone = state[item.id] === 'done';
     const buyLines = it.buy.replace(/\n/g, '<br>');
     const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
+    const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
     const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
     const srcTab = item.store ? 'store' : 'maker';
     const ctxLabel = item.store || item.category || '';
@@ -1005,7 +1017,7 @@ function renderUnknownTab() {
         </div>
         <div class="card-body">
           <div class="card-top">
-            <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${item.maker}</div>
+            <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
             <div class="deadline-badge dl-gray">🗓 ${it.deadline || '不明'}</div>
           </div>
           <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>
@@ -1049,6 +1061,7 @@ function renderSearch(query) {
       const isDone = state[item.id] === 'done';
       const buyLines = it.buy.replace(/\n/g, '<br>');
       const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
+    const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
       const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
       const tagLabel = tabId === 'store' ? (item.store || '店舗') : TAB_LABELS[tabId];
       const isPinned = pinned[item.id];
@@ -1061,7 +1074,7 @@ function renderSearch(query) {
             </div>
             <div class="card-body">
               <div class="card-top">
-                <div class="maker-name"><span class="tab-tag">${tagLabel}</span>${catChip}${item.maker}</div>
+                <div class="maker-name"><span class="tab-tag">${tagLabel}</span>${catChip}${storeChip}${item.maker}</div>
                 <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
               </div>
               <div class="buy-box">
@@ -1181,7 +1194,7 @@ function renderTab(tabId) {
           </div>
           <div class="card-body">
             <div class="card-top">
-              <div class="maker-name">${catChip}${item.maker}</div>
+              <div class="maker-name">${catChip}${storeChip}${item.maker}</div>
               <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
             </div>
             <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>
