@@ -396,7 +396,7 @@
   </div>
   <div class="header-date">2026年6月1日更新　全226件</div>
   <div class="tabs">
-    <button class="tab-btn" onclick="switchTab('may',this)">🗓 5月</button>
+    <button class="tab-btn" id="tab-btn-may" onclick="switchTab('may',this)">🗓 前半</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
     <button class="tab-btn" onclick="switchTab('maker',this)">食品・日用品</button>
     <button class="tab-btn" onclick="switchTab('pin',this)">⭐ ピン</button>
@@ -721,7 +721,9 @@ let state = loadState();
 let currentTab = 'memo';
 let exclOpen = false;
 
-const TAB_LABELS = {may:'🗓 5月', store:'店舗', maker:'食品・日用品', pin:'⭐ ピン', unknown:'不明'};
+const _nowM = new Date().getMonth() + 1;
+const TAB_LABELS = {may:'🗓 ' + _nowM + '月前半', store:'店舗', maker:'食品・日用品', pin:'⭐ ピン', unknown:'不明'};
+(function(){ const b = document.getElementById('tab-btn-may'); if(b) b.textContent = '🗓 ' + _nowM + '月前半'; })();
 let openStores = {};
 
 function toggleStoreGroup(name) {
@@ -859,13 +861,16 @@ function renderMayTab() {
   const container = document.getElementById('tab-may');
   if (!container) return;
   const _mayToday = new Date(); _mayToday.setHours(0,0,0,0);
+  const _thisM = _mayToday.getMonth() + 1;
   const mayItems = Object.values(allData).flat()
     .filter(i => {
       if (state[i.id] === 'deleted') return false;
       const dl = getEff(i).deadline;
-      if (!String(dl||'').startsWith('5/')) return false;
-      const day = parseInt((String(dl).split('/')[1])||'0') || 0;
-      return new Date(_mayToday.getFullYear(), 4, day) >= _mayToday;
+      const mm = String(dl||'').match(/(\d{1,2})\/(\d{1,2})/);
+      if (!mm) return false;
+      const mo = parseInt(mm[1]), dy = parseInt(mm[2]);
+      if (mo !== _thisM || dy > 15) return false;
+      return new Date(_mayToday.getFullYear(), mo - 1, dy) >= _mayToday;
     })
     .sort((a,b) => {
       const da = state[a.id]==='done' ? 1 : 0;
@@ -1151,12 +1156,15 @@ function updateCount(tabId) {
   }
   if (tabId === 'may') {
     const _ct = new Date(); _ct.setHours(0,0,0,0);
+    const _ctM = _ct.getMonth() + 1;
     const n = Object.values(allData).flat().filter(i => {
       if (state[i.id] === 'deleted' || state[i.id] === 'done') return false;
       const dl = getEff(i).deadline;
-      if (!String(dl||'').startsWith('5/')) return false;
-      const day = parseInt((String(dl).split('/')[1])||'0') || 0;
-      return new Date(_ct.getFullYear(), 4, day) >= _ct;
+      const mm = String(dl||'').match(/(\d{1,2})\/(\d{1,2})/);
+      if (!mm) return false;
+      const mo = parseInt(mm[1]), dy = parseInt(mm[2]);
+      if (mo !== _ctM || dy > 15) return false;
+      return new Date(_ct.getFullYear(), mo - 1, dy) >= _ct;
     }).length;
     document.getElementById('remaining').textContent = n;
     return;
