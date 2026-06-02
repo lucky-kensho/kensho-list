@@ -456,12 +456,12 @@
   <div class="card-edit-box">
     <div style="font-weight:bold;font-size:16px;margin-bottom:14px;">📝 カード情報を編集</div>
     <div style="margin-bottom:10px;">
-      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">🏪 お店名（食品→店舗の場合に入力）</div>
-      <input id="edit-store" type="text" placeholder="いなげや、マルエツ など" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
+      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">🏪 店名</div>
+      <input id="edit-store" type="text" placeholder="" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
     </div>
     <div style="margin-bottom:10px;">
-      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">締切（例: 5/31）</div>
-      <input id="edit-deadline" type="text" placeholder="5/31" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
+      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">締切</div>
+      <input id="edit-deadline" type="text" placeholder="" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
     </div>
     <div style="margin-bottom:10px;">
       <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">🛍 何を買う？</div>
@@ -1105,8 +1105,7 @@ function renderSearch(query) {
                 <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
               </div>
               <div class="buy-box">
-                <div class="buy-label">🛍 何を買う？</div>
-                ${buyLines}
+                                ${buyLines}
               </div>
               ${item.prize ? `<div class="prize-row">🎁 賞品：${item.prize}</div>` : ''}
               <div class="card-footer">
