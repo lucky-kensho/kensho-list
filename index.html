@@ -912,7 +912,7 @@ function renderPinnedTab() {
     const buyLines = it.buy.replace(/\n/g, '<br>');
     const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
     const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
-    const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
+    const linkBtn = it.url ? `<a href="${it.url}" class="apply-link" onclick="window.open(this.href,'_blank','noopener,noreferrer');return false;">🔗 応募</a>` : '';
     const srcTab = item.store ? 'store' : 'maker';
     const ctxLabel = item.store || item.category || '';
     html += `<div class="card${isDone ? ' done' : ''}" id="pin-card-${item.id}">
@@ -975,7 +975,7 @@ function renderMayTab() {
     const buyLines = it.buy.replace(/\n/g, '<br>');
     const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
     const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
-    const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
+    const linkBtn = it.url ? `<a href="${it.url}" class="apply-link" onclick="window.open(this.href,'_blank','noopener,noreferrer');return false;">🔗 応募</a>` : '';
     const srcTab = item.store ? 'store' : 'maker';
     const ctxLabel = item.store || item.category || '';
     const isPinned = pinned[item.id];
@@ -1026,7 +1026,7 @@ function renderUnknownTab() {
     const buyLines = it.buy.replace(/\n/g, '<br>');
     const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
     const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
-    const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
+    const linkBtn = it.url ? `<a href="${it.url}" class="apply-link" onclick="window.open(this.href,'_blank','noopener,noreferrer');return false;">🔗 応募</a>` : '';
     const srcTab = item.store ? 'store' : 'maker';
     const ctxLabel = item.store || item.category || '';
     const isPinned = pinned[item.id];
@@ -1082,7 +1082,7 @@ function renderSearch(query) {
       const buyLines = it.buy.replace(/\n/g, '<br>');
       const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
     const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
-      const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
+      const linkBtn = it.url ? `<a href="${it.url}" class="apply-link" onclick="window.open(this.href,'_blank','noopener,noreferrer');return false;">🔗 応募</a>` : '';
       const tagLabel = tabId === 'store' ? (item.store || '店舗') : TAB_LABELS[tabId];
       const isPinned = pinned[item.id];
       if (!isDone) count++;
@@ -1166,7 +1166,7 @@ function renderTab(tabId) {
         const isDone = state[item.id] === 'done';
         const buyLines = it.buy.replace(/\n/g, '<br>');
         const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
-        const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
+        const linkBtn = it.url ? `<a href="${it.url}" class="apply-link" onclick="window.open(this.href,'_blank','noopener,noreferrer');return false;">🔗 応募</a>` : '';
         const isPinned = pinned[item.id];
         html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
           <div class="card-inner">
@@ -1215,7 +1215,7 @@ function renderTab(tabId) {
       const buyLines = it.buy.replace(/\n/g, '<br>');
       const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span><br>` : '';
       const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
-      const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener" class="apply-link">🔗 応募</a>` : '';
+      const linkBtn = it.url ? `<a href="${it.url}" class="apply-link" onclick="window.open(this.href,'_blank','noopener,noreferrer');return false;">🔗 応募</a>` : '';
       const isPinned = pinned[item.id];
       html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
         <div class="card-inner">
