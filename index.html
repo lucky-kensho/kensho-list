@@ -169,6 +169,16 @@
     letter-spacing: 0.4px;
     margin-bottom: 1px;
   }
+  .prize-row {
+    background: #fdeef3;
+    border-left: 3px solid #e75480;
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin-bottom: 7px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #b03060;
+  }
   .card-footer {
     display: flex;
     align-items: center;
@@ -925,10 +935,9 @@ function renderPinnedTab() {
             <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
             <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
           </div>
-          <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>
+          <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>${item.prize ? `<div class="prize-row">🎁 賞品：${item.prize}</div>` : ''}
           <div class="card-footer">
             <span class="method-chip">${item.method}</span>
-            <span class="prize-text">🎁 ${item.prize}</span>
             <button class="pin-btn active" onclick="togglePin('${item.id}')" title="ピン解除">⭐</button>
             <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
             ${linkBtn}
@@ -989,10 +998,9 @@ function renderMayTab() {
             <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
             <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
           </div>
-          <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>
+          <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>${item.prize ? `<div class="prize-row">🎁 賞品：${item.prize}</div>` : ''}
           <div class="card-footer">
             <span class="method-chip">${item.method}</span>
-            <span class="prize-text">🎁 ${item.prize}</span>
             <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
             <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
             ${linkBtn}
@@ -1040,10 +1048,9 @@ function renderUnknownTab() {
             <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
             <div class="deadline-badge dl-gray">🗓 ${it.deadline || '不明'}</div>
           </div>
-          <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>
+          <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>${item.prize ? `<div class="prize-row">🎁 賞品：${item.prize}</div>` : ''}
           <div class="card-footer">
             <span class="method-chip">${item.method}</span>
-            <span class="prize-text">🎁 ${item.prize}</span>
             <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
             <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
             ${linkBtn}
@@ -1101,9 +1108,9 @@ function renderSearch(query) {
                 <div class="buy-label">🛍 何を買う？</div>
                 ${buyLines}
               </div>
+              ${item.prize ? `<div class="prize-row">🎁 賞品：${item.prize}</div>` : ''}
               <div class="card-footer">
                 <span class="method-chip">${item.method}</span>
-                <span class="prize-text">🎁 ${item.prize}</span>
                 <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
                 <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
                 ${linkBtn}
@@ -1178,11 +1185,10 @@ function renderTab(tabId) {
                 <div class="maker-name">${catChip}${item.maker}</div>
                 <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
               </div>
-              <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>
+              <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>${item.prize ? `<div class="prize-row">🎁 賞品：${item.prize}</div>` : ''}
               <div class="card-footer">
                 <span class="method-chip">${item.method}</span>
-                <span class="prize-text">🎁 ${item.prize}</span>
-                <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
+                    <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
                 <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
                 ${linkBtn}
               </div>
@@ -1227,11 +1233,10 @@ function renderTab(tabId) {
               <div class="maker-name">${catChip}${storeChip}${item.maker}</div>
               <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
             </div>
-            <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>
+            <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>${item.prize ? `<div class="prize-row">🎁 賞品：${item.prize}</div>` : ''}
             <div class="card-footer">
               <span class="method-chip">${item.method}</span>
-              <span class="prize-text">🎁 ${item.prize}</span>
-              <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
+                <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
               <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
               ${linkBtn}
             </div>
