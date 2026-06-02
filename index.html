@@ -467,6 +467,10 @@
       <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">🛍 何を買う？</div>
       <textarea id="edit-buy" rows="3" placeholder="購入条件を入力" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;resize:vertical;"></textarea>
     </div>
+    <div style="margin-bottom:10px;">
+      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">🎁 賞品</div>
+      <textarea id="edit-prize" rows="2" placeholder="" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;resize:vertical;"></textarea>
+    </div>
     <div style="margin-bottom:16px;">
       <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">応募URL</div>
       <input id="edit-url" type="url" placeholder="https://..." style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
@@ -849,6 +853,7 @@ function getEff(item) {
   if (e.buy)      r.buy = e.buy;
   if (e.url !== undefined) r.url = e.url;
   if (e.store)    r.storeTag = e.store;
+  if (e.prize)    r.prize = e.prize;
   return r;
 }
 
@@ -860,6 +865,7 @@ function openCardEdit(id) {
   document.getElementById('edit-store').value = e.store || '';
   document.getElementById('edit-deadline').value = e.deadline || item.deadline || '';
   document.getElementById('edit-buy').value = e.buy !== undefined ? e.buy : (item.buy || '');
+  document.getElementById('edit-prize').value = e.prize !== undefined ? e.prize : (item.prize || '');
   document.getElementById('edit-url').value = e.url !== undefined ? e.url : (item.url || '');
   document.getElementById('card-edit-overlay').classList.add('open');
   setTimeout(() => document.getElementById('edit-deadline').focus(), 80);
@@ -873,12 +879,14 @@ function saveCardEdit() {
   const storeVal = document.getElementById('edit-store').value.trim();
   const dl  = document.getElementById('edit-deadline').value.trim();
   const buy = document.getElementById('edit-buy').value.trim();
+  const prize = document.getElementById('edit-prize').value.trim();
   const url = document.getElementById('edit-url').value.trim();
   const prev = localEdits[editingCardId] || {};
   const e = {};
   if (storeVal) e.store = storeVal; else if ('store' in prev) e.store = '';
   if (dl)  e.deadline = dl;
   if (buy) e.buy = buy;
+  if (prize) e.prize = prize;
   if (url) e.url = url; else if ('url' in prev) e.url = '';
   if (Object.keys(e).length) localEdits[editingCardId] = e;
   else delete localEdits[editingCardId];
@@ -935,7 +943,7 @@ function renderPinnedTab() {
             <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
             <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
           </div>
-          <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>${item.prize ? `<div class="prize-row">🎁 賞品：${item.prize}</div>` : ''}
+          <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
           <div class="card-footer">
             <span class="method-chip">${item.method}</span>
             <button class="pin-btn active" onclick="togglePin('${item.id}')" title="ピン解除">⭐</button>
@@ -998,7 +1006,7 @@ function renderMayTab() {
             <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
             <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
           </div>
-          <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>${item.prize ? `<div class="prize-row">🎁 賞品：${item.prize}</div>` : ''}
+          <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
           <div class="card-footer">
             <span class="method-chip">${item.method}</span>
             <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
@@ -1048,7 +1056,7 @@ function renderUnknownTab() {
             <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
             <div class="deadline-badge dl-gray">🗓 ${it.deadline || '不明'}</div>
           </div>
-          <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>${item.prize ? `<div class="prize-row">🎁 賞品：${item.prize}</div>` : ''}
+          <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
           <div class="card-footer">
             <span class="method-chip">${item.method}</span>
             <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
@@ -1107,7 +1115,7 @@ function renderSearch(query) {
               <div class="buy-box">
                                 ${buyLines}
               </div>
-              ${item.prize ? `<div class="prize-row">🎁 賞品：${item.prize}</div>` : ''}
+              ${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
               <div class="card-footer">
                 <span class="method-chip">${item.method}</span>
                 <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
@@ -1184,7 +1192,7 @@ function renderTab(tabId) {
                 <div class="maker-name">${catChip}${item.maker}</div>
                 <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
               </div>
-              <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>${item.prize ? `<div class="prize-row">🎁 賞品：${item.prize}</div>` : ''}
+              <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
               <div class="card-footer">
                 <span class="method-chip">${item.method}</span>
                     <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
@@ -1232,7 +1240,7 @@ function renderTab(tabId) {
               <div class="maker-name">${catChip}${storeChip}${item.maker}</div>
               <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
             </div>
-            <div class="buy-box"><div class="buy-label">🛍 何を買う？</div>${buyLines}</div>${item.prize ? `<div class="prize-row">🎁 賞品：${item.prize}</div>` : ''}
+            <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
             <div class="card-footer">
               <span class="method-chip">${item.method}</span>
                 <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
