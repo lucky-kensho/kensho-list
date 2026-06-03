@@ -405,7 +405,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年6月3日更新　全316件</div>
+  <div class="header-date">2026年6月4日更新　全309件</div>
   <div class="tabs">
     <button class="tab-btn" id="tab-btn-may" onclick="switchTab('may',this)">🗓 前半</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -495,10 +495,8 @@ const STATE_KEY = 'kenshow_state_v3';
 
 const allData = {
   store: [
-    {id:'s_5e144d6c',store:'(株)ダイエー',maker:'明治',deadline:'7/1(水)〆切',dlClass:'dl-yellow',buy:'対象商品含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'ﾎﾃﾙﾗﾝﾁ･20組40名\n明治菓子5000円･30名\nW･商品券1000円･30',url:'https://www.webcpn.com/cp/daiei/meiji_fair_2606/?r=web'},
-    {id:'s_c7d9e821',store:'(株)ダイエー',maker:'雪印メグミルク',deadline:'7/1(水)〆切',dlClass:'dl-yellow',buy:'対象商品含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'親子料理教室･15組30名\n雪印ﾊﾟｰﾗｰｱｲｽ10個･20名\nW･商品券1000円･150名',url:'https://www.webcpn.com/cp/daiei/meg-snowcp_2606/?r=web'},
     {id:'s_82243229',store:'AJSグループ',maker:'プリマハム',deadline:'6/30（7/5）',dlClass:'dl-green',buy:'AJSグループ店舗にて、プリマハム対象商品を、Aコースは950円(税込)以上、Bコースは1,100円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'Aコース：東京ディズニーランド® プライベート・イブニング・パーティーチケット(ペア)×50組100名\nBコース：東京ディズニーリゾート®パークチケット(ペア)×50組100名',url:'https://kenshomin.hatenablog.jp/entry/2026/06/02/140200'},
-    {id:'s_ace8d133',store:'Olympic',maker:'プリマハム',deadline:'7/31（8/4）',dlClass:'dl-green',buy:'Olympicにて、プリマハム対象商品950円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'東京ディズニーランド® プライベート・イブニング・パーティーチケット(ペア)×10組20名',url:'https://mrktsec.jp/primaham/2026PEP_olympic0601'},
+    {id:'s_1d649897',store:'オリンピック',maker:'プリマハム',deadline:'7/31（8/4）',dlClass:'dl-green',buy:'Olympicにて、プリマハム対象商品950円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'東京ディズニーランド® プライベート・イブニング・パーティーチケット(ペア)×10組20名',url:'https://mrktsec.jp/primaham/2026PEP_olympic0601'},
     {id:'s_0b671290',store:'いなげや',maker:'カゴメ',deadline:'6/3〜6/30(火)23:59',dlClass:'dl-yellow',buy:'対象商品含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'親子体験教室･15組30名',url:'https://www.inageya.co.jp/campaign/20260603_0701.html'},
     {id:'s_79c24441',store:'いなげや',maker:'全農パールライス（岩船米）',deadline:'6/5(金)23:59',dlClass:'dl-red',buy:'食卓応援プレミアム新潟県岩船こしひかり5kg\n岩船こしひかり5kg購入レシート（QRコードから応募）',method:'WEB',prize:'村上牛焼肉用250g(40名)/鮭の切り身セット(40名)/ジェラートセット(40名)',url:'https://www.inageya.co.jp/campaign/20260401_0606.html'},
     {id:'s_68860ac9',store:'いなげや',maker:'サッポロビール（黒ラベル）',deadline:'6/15(月)17:00',dlClass:'dl-yellow',buy:'サッポロ黒ラベル\nA賞:5,500円(税込)以上 / B賞:1,500円(税込)以上購入レシート\n(LINE友達登録必要)',method:'LINE',prize:'A:THE PERFECT BEER CELLAR(5名) / B:QUOカードPay3,000円(10名)',url:'https://www.inageya.co.jp/campaign/202605018_0615.html'},
@@ -535,7 +533,6 @@ const allData = {
     {id:'s_7a89e4dc',store:'｢マルエツ｣食体験ツアー',maker:'',deadline:'7/3(金)23:59',dlClass:'dl-yellow',buy:'対象商品購入レシートで応募',method:'WEB',prize:'賞品',url:'https://www.iwebms.com/cp/maruetsu-foods2026/'},
     {id:'s_04c394a5',store:'オリンピック',maker:'カゴメ',deadline:'6/30（7/5）',dlClass:'dl-green',buy:'Olympicにて、各コースに必要な条件を満たすレシートを1口として、LINEで応募',method:'LINE',prize:'完熟コース：ハーモニック テイク・ユア・チョイス ポピー×1名\n実りコース：BRUNO ステンレスペットボトルホルダー×5名\n開花コース：PayPayポイント1,000円分×45名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/15/140100'},
     {id:'s_f0c24c5c',store:'いなげや',maker:'秋田米',deadline:'5/1〜7/5(日)23:59',dlClass:'dl-green',buy:'対象商品購入ﾚｼｰﾄ応募',method:'WEB',prize:'A･秋田牛豚ｾｯﾄ･40名\nB･秋田ﾊﾑﾊﾞｰﾍﾞｷｭｰｾｯﾄ･70名\nW･商品券1000円･90名',url:'https://www.inageya.co.jp/campaign/20260501_0706.html'},
-    {id:'s_4fc23999',store:'いなげや',maker:'片岡物産（Twinings）',deadline:'6/3',dlClass:'dl-red',buy:'トワイニング紅茶各種\n対象商品含むレシート（金額条件なし）',method:'ハガキ・WEB',prize:'BURLEIGHカップ&ソーサー(20名)・いなげや商品券2,000円(30名)',url:'https://www.inageya.co.jp/campaign/20260401_0604.html'},
     {id:'s_650a0f43',store:'いなげや',maker:'フジッコ',deadline:'6/5',dlClass:'dl-red',buy:'おまめさん豆小鉢・おかず畑おばんざい小鉢シリーズ全品\n対象商品1点以上含む1,000円以上（2点以上で当選確率5倍）',method:'ハガキ・WEB',prize:'いなげや商品券2,000円分(86名)',url:'https://www.inageya.co.jp/campaign/20260420_0606.html'},
     {id:'s_c6409464',store:'いなげや',maker:'キッコーマン・デルモンテ',deadline:'6/7',dlClass:'dl-red',buy:'しょうゆ・みりん・つゆ・ソース・ケチャップ等\nA:対象商品1800円以上\nB:1100円以上\nギフトカード:200円以上\n購入レシート',method:'ハガキ・LINE',prize:'A:TDLペアチケット+レストラン招待(5組)\nB:TDRペアチケット(30組)\nJCBギフトカード2000円(100名)',url:'https://www.inageya.co.jp/campaign/20260501_0608.html'},
     {id:'s_c44eed06',store:'いなげや',maker:'アイスメーカー19社',deadline:'6/7',dlClass:'dl-red',buy:'19社アイス全商品\nA:対象アイス2000円以上\nB:1500円以上\nC:500円以上\n購入レシート',method:'WEB',prize:'A:60L冷凍庫(50名)/宿泊ペアギフト(100名)\nB:和牛カタログギフト等(250名)\nC:商品券2000円(700名)',url:'https://www.inageya.co.jp/campaign/20260502_0607.html'},
@@ -560,7 +557,6 @@ const allData = {
     {id:'s_6d91d2b2',store:'エコスグループ',maker:'フジッコ',deadline:'6/5(金)23:59',dlClass:'dl-red',buy:'WEB・ハガキ\nエコスグループ対象店舗にて、フジッコ対象商品1点以上を含む1,000円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募\n期間:2026年4月20日(月)～5月31日(日)',method:'エコスグループ商品券1,000円分×100名',prize:'気まぐれ',url:''},
     {id:'s_dec9456a',store:'オオゼキ',maker:'劇団四季・マンマミーア貸切招待',deadline:'6/30(火)\n(レシート有効4/1〜6/28)',dlClass:'dl-yellow',buy:'対象商品1点含む2000円(税込)以上\n購入レシート\nレシート有効4/1〜6/28',method:'WEB・ハガキ',prize:'劇団四季マンマミーア！貸切ペア招待(515組1030名)\n商品券2000円(300名)',url:'https://ameblo.jp/rsj64177/entrylist.html'},
     {id:'s_e4dd1cd7',store:'オーケー',maker:'サッポロラガービール',deadline:'5/18〜6/28(日)23:59',dlClass:'dl-yellow',buy:'対象商品購入レシートで応募',method:'LINE',prize:'赤星ｸﾞｯｽﾞ5000円相当･100名',url:'https://ameblo.jp/rsj64177/entry-12966636240.html'},
-    {id:'s_aef2877c',store:'オーケー',maker:'アサヒ飲料',deadline:'5/31（6/3）',dlClass:'dl-red',buy:'モンスターエナジー対象商品3本以上を含む3,000円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'A賞：PlayStation 5 デジタル・エディション×1名\nB賞：オーケー商品券3,000円分×20名\nC賞：オーケー商品券2,000円分×30名',url:'https://get-cp.jp/campain/pages/top/ok-monster'},
     {id:'s_b875a813',store:'オーケー',maker:'P＆G',deadline:'6/7(日)23:59',dlClass:'dl-red',buy:'オーケーにて各コースの応募条件を満たすレシートを1口として、WEBから応募\n期間:2026年5月1日(金)～5月31日(日)',method:'WEB',prize:'Aコース：オーケー商品券5,000円分×50名\nBコース：オーケー商品券2,000円分×20名\nCコース：アリエールジェルボール約1年分×100名',url:''},
     {id:'s_97706e0d',store:'オーケー',maker:'マルマツ',deadline:'6/7(日)23:59',dlClass:'dl-red',buy:'オーケーにて、マルマツ対象商品1点購入ごとのレシートを1口として、WEBまたは郵送で応募\n期間:2026年5月1日(金)～5月31日(日)',method:'WEB・ハガキ',prize:'A賞：オーケー商品券5,000円分×20名\nB賞：オーケー商品券2,000円分×50名',url:'https://marumatsu.cp-form.jp/60ann2nd/form'},
     {id:'s_9d3d55c6',store:'オーケー',maker:'サントリー',deadline:'6/10',dlClass:'dl-red',buy:'オフ&ゼロ 500ml缶\nサントリー オフ&ゼロ 500ml缶購入レシート',method:'WEB',prize:'えらべるPay1,000円',url:'https://entry.tokubai.co.jp/suntory-receipt-campaign-202605'},
@@ -571,7 +567,6 @@ const allData = {
     {id:'s_4cf188e9',store:'オーケー',maker:'キリンビール・キリンビバレッジ',deadline:'7/19（7/21）',dlClass:'dl-green',buy:'オーケーにて、対象商品を含む2,500円(税抜)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'A賞：キリンカップサッカー2026観戦ペアチケット×50組100名\nB賞：サッカー日本代表 ティロ26 プロ レインジャケット×20名\nC賞：キリンビール・キリンビバレッジ商品詰合せセット×100名',url:'https://cp.kirin.jp/story/37310'},
     {id:'s_c6d05087',store:'オーケー',maker:'ダノンジャパン',deadline:'7/31(金)23:59',dlClass:'dl-green',buy:'対象商品購入レシート\n期間:2026年5月1日(金)～7月31日(金)',method:'ダノンビオ全品',prize:'Aコース：アラジン グラファイトトースター2枚焼き×20名\nBコース：オーケー商品券2,000円分×50名',url:''},
     {id:'s_70b384c2',store:'キッコーマンディズニー｢サンドラッグ｣',maker:'キッコーマン・デルモンテ商品を買って当てよう！春のドリームキャンペーン',deadline:'5/31\n6/7(日)〆切',dlClass:'dl-red',buy:'キッコーマン\n※豆乳は対象外',method:'LINE',prize:'Bコース　TDR２名分　２０名\nCコース　JCB券￥2000　２０名',url:'https://www.select-cp.com/2026ss/K-05-127/?utm_source=list&utm_medium=shop'},
-    {id:'s_757767bb',store:'サミット',maker:'片岡物産・トワイニング ティーパーティー\n※ライフも対象',deadline:'5/31(6/3)',dlClass:'dl-red',buy:'トワイニング商品含む1000円(税込)以上レシート\nレシート有効4/1〜5/31',method:'WEB・ハガキ',prize:'A:カップ&ソーサー(30名)\nB:商品券2000円(100名)\n※全チェーン合計',url:'https://ameblo.jp/rsj64177/entrylist.html'},
     {id:'s_7cde07f2',store:'サミット',maker:'オリオンビール',deadline:'6/7(日)',dlClass:'dl-red',buy:'対象商品500円(税込)以上',method:'WEB',prize:'Tｼｬﾂ･50名\nｺｰﾋｰ･50名',url:'https://ameblo.jp/rsj64177/entry-12965909037.html'},
     {id:'s_2a323002',store:'サミット',maker:'キリングループ',deadline:'7/1(水)23:59',dlClass:'dl-yellow',buy:'サミットにて、対象商品3点以上を含む3,000円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募\n期間:2026年5月1日(金)～6月30日(火)',method:'WEB・ハガキ',prize:'A賞：キリンカップサッカー2026 観戦ペアチケット×40組80名\nB賞：サッカー日本代表 2026 ホーム ジムバッグ×50名',url:'https://cp.kirin.jp/story/37251'},
     {id:'s_5a8ab384',store:'サミット',maker:'カゴメ',deadline:'7/5(日)23:59',dlClass:'dl-green',buy:'サミットにて、各コースに必要な条件を満たすレシートを1口として、LINEで応募\n期間:2026年5月1日(金)～6月30日(火)',method:'LINE',prize:'完熟コース：えらべるPay 10,000円分×3名\n実りコース：えらべるPay 3,000円分×12名\n開花コース：えらべるPay 1,000円分×110名',url:'https://cp-master.com/tomato-charge/summitstore'},
@@ -596,8 +591,6 @@ const allData = {
     {id:'s_be48b8fc',store:'フィール',maker:'丸美屋･アニー',deadline:'7/3(金)23:59',dlClass:'dl-yellow',buy:'愛知県芸術劇場',method:'WEB',prize:'ｱﾆｰ招待･150組300名',url:'https://feel-corp.jp/sale/26Annie%20feel%20HP%20CPgaiyou.pdf'},
     {id:'s_dc134899',store:'フジ',maker:'プリマハム ダイヤモンドホースシュー',deadline:'7/27(月)〆切',dlClass:'dl-green',buy:'対象商品購入レシートで応募',method:'WEB･ハガキ',prize:'ﾀﾞｲﾔﾓﾝﾄﾞﾎｰｽｼｭｰ招待･30組120名',url:'https://ameblo.jp/rsj64177/entry-12967243984.html'},
     {id:'s_78869772',store:'フマキラー',maker:'ポムポムプリン',deadline:'7/31',dlClass:'dl-green',buy:'キッチンアルコール除菌シリーズ\n１０００込、４００込\nフマキラー対象商品を各コースに必要な金額以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'1,000円コース：Toffy遠赤ヒーターオーブントースター（K-HTS2）×30名\n400円コース：オリジナルランチケース×30名\nWチャンス賞：フマキラー商品詰め合わせ＋オリジナルデザインQUOカード500円分×100名',url:'https://fumakilla.jp/alcohol_jyokin/30th/kitchenjyokincampaign/'},
-    {id:'s_0232fc1b',store:'マルエツ',maker:'サントリー',deadline:'5/31\n6/3(水)23:59',dlClass:'dl-red',buy:'サントリー対象商品1品以上を含む2,000円(税込)購入ごとのレシートを1口',method:'WEB',prize:'1等：マルエツ商品券10,000円×5名\n2等：マルエツ商品券5,000円×30名\n3等：マルエツ商品券1,000円×65名',url:'https://www.ichance.jp/cp/maruetsu-suntorycp202605/'},
-    {id:'s_a9e532cd',store:'マルエツ',maker:'片岡物産・トワイニング ティーパーティー',deadline:'5/31(6/3)',dlClass:'dl-red',buy:'トワイニング商品含む1000円(税込)以上レシート\nレシート有効4/1〜5/31',method:'WEB・ハガキ',prize:'A:カップ&ソーサー(20名)\nB:商品券2000円(30名)',url:'https://kenshomin.hatenablog.jp/'},
     {id:'s_1b8cbfff',store:'マルエツ',maker:'フジッコ',deadline:'6/5(金)23:59',dlClass:'dl-red',buy:'マルエツにて、フジッコ対象商品1点以上を含む1,000円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募\n期間:2026年4月20日(月)～5月31日(日)',method:'WEB・ハガキ',prize:'マルエツ商品券1,000円分×200名',url:'https://fujicco-springcp2026.web-in.ne.jp/?code=022'},
     {id:'s_b5bb68dd',store:'マルエツ',maker:'ニップン・永谷園',deadline:'6/7（6/23）',dlClass:'dl-yellow',buy:'WEB・ハガキ\nマルエツにて、キャンペーン対象商品500円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'博多あまおうのこだわりアイス×100名',prize:'気まぐれ',url:'https://www.tv-asahi.co.jp/wakuwaku/'},
     {id:'s_19abed64',store:'ヤオコー',maker:'フジッコ',deadline:'5/31(6/5)',dlClass:'dl-red',buy:'フジッコ含む対象商品\n1000円(税込)以上 購入レシート1口',method:'WEB・ハガキ',prize:'商品券2000円(150名)',url:''},
@@ -655,7 +648,7 @@ const allData = {
     {id:'m_ec4ed466',category:'食品',cat:'cat-food',maker:'タカナシ乳業　MCTヨーグルト購入キャンペーン',deadline:'6/8',dlClass:'dl-red',buy:'MCTヨーグルト\n対象商品購入レシート（3/31～5/31）',method:'LINE・ポイント・ハガキ',prize:'えらべるPay1,000円(250名)・ゴリラのひとつかみ(40名)・イヤホン(10名)',url:'https://ohayo-reuteri.com/shop/pages/reuteri5days'},
     {id:'m_75718b5f',category:'食品',cat:'cat-food',maker:'マルエツ　マルエツ 映画「黒牢城」公開記念キャンペーン',deadline:'6/9（6/10）',dlClass:'dl-red',buy:'マルエツにて、1,000円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'第1弾：「黒牢城」映画鑑賞券ムビチケ×50組100名\n第2弾：サーモス 真空断熱スープジャー 0.4L×50名\nWチャンス：マルエツ商品券1,000円分×50名',url:'https://www.ichance.jp/cp/maruetsu-kokurojocp/'},
     {id:'m_0309810a',category:'食品',cat:'cat-food',maker:'プリマハム　ギルティQUOカード1,000円分プレゼントキャンペーン',deadline:'6/10',dlClass:'dl-red',buy:'ギルティソーセージガーリックバターチーズ・厚切りベーコン・骨なしフライドチキン\nギルティシリーズ1品以上購入レシート',method:'WEB',prize:'ギルティQUOカード1,000円分×各100名',url:'https://www.ichance.jp/cp/primahamguilty/'},
-    {id:'m_a1f1942c',category:'食品',cat:'cat-food',maker:'タカギベーカリー　石窯パンでつながるキャンペーン',deadline:'6/11',dlClass:'dl-yellow',buy:'石窯パン\n対象商品購入レシート\n２点購入',method:'LINE',prize:'パン詰合せ',url:'https://get-cp.jp/campain/pages/top/ishigama26'},
+    {id:'m_a1f1942c',category:'食品',cat:'cat-food',maker:'タカギベーカリー　石窯パンでつながるキャンペーン',deadline:'6/11',dlClass:'dl-red',buy:'石窯パン\n対象商品購入レシート\n２点購入',method:'LINE',prize:'パン詰合せ',url:'https://get-cp.jp/campain/pages/top/ishigama26'},
     {id:'m_ce05468f',category:'食品',cat:'cat-food',maker:'タカキベーカリー　タカキベーカリー･石窯パン',deadline:'6/12(金)23:59',dlClass:'dl-yellow',buy:'タカキベーカリー\n･石窯パン\n対象商品4･2･1',method:'LINE',prize:'4･石窯ﾌｧﾝﾐｰﾃｨﾝｸﾞ･48組\n2･石窯ﾊﾟﾝｾｯﾄ･50名\n1･ｴｺﾊﾞｯｸﾞ･300名',url:'https://www.takaki-bakery.co.jp/ishigama/'},
     {id:'m_4e48f669',category:'食品',cat:'cat-food',maker:'セブンイレブン　セブンイレブン パペットスンスンキャンペーン',deadline:'6/6（6/12）',dlClass:'dl-yellow',buy:'セブンイレブンにて、キャンペーン対象商品100円(税込)購入ごとに印字されるシリアルナンバーを登録し、各コースに必要なシリアルを1口として応募',method:'セブンイレブンにて、キャンペーン対象商品100円(税込)購入',prize:'5シリアルコース：BIGクッションセット(スンスン・ノンノン・ゾンゾン)×100名\n3シリアルコース：オリジナルトートバッグ×300名\n1シリアルコース：450円(税抜)以下のスイーツ無料クーポン(3枚)×1,000名',url:'https://www.sej.co.jp/cmp/ppss2605/receipt/'},
     {id:'m_afbb37c9',category:'食品',cat:'cat-food',maker:'JALカード×ユニバ貸切　JALカード×ユニバ貸切',deadline:'5/18〜6/15(月)',dlClass:'dl-yellow',buy:'5/18〜\nキャンペーン\n懸賞\nJALカード\n×ユニバ貸切',method:'',prize:'賞品',url:'https://www.jal.co.jp/jp/ja/jalcard/information/usjsummer/'},
@@ -1182,6 +1175,15 @@ function renderTab(tabId) {
       if (!grouped[sn]) { grouped[sn] = []; storeOrder.push(sn); }
       grouped[sn].push(item);
     });
+    // 指定店舗を上部に並べ替え（それ以外は元の順のまま後ろへ）
+    const STORE_PRIORITY = ['オーケー','イオン','マルエツ','いなげや','ライフ','ヤオコー','イトーヨーカドー','オリンピック','スギ薬局','西友'];
+    const storeRank = (name) => {
+      for (let i = 0; i < STORE_PRIORITY.length; i++) {
+        if (String(name).startsWith(STORE_PRIORITY[i])) return i;
+      }
+      return 999;
+    };
+    storeOrder.sort((a, b) => storeRank(a) - storeRank(b));
     let html = '';
     storeOrder.forEach(storeName => {
       const groupItems = grouped[storeName];
