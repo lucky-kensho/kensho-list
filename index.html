@@ -405,7 +405,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年6月5日更新　全331件</div>
+  <div class="header-date">2026年6月5日更新　全336件</div>
   <div class="tabs">
     <button class="tab-btn" id="tab-btn-may" onclick="switchTab('may',this)">🗓 前半</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -496,6 +496,7 @@ const STATE_KEY = 'kenshow_state_v3';
 const allData = {
   store: [
     {id:'s_82243229',store:'AJSグループ',maker:'プリマハム',deadline:'6/30（7/5）',dlClass:'dl-yellow',buy:'AJSグループ店舗にて、プリマハム対象商品を、Aコースは950円(税込)以上、Bコースは1,100円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'Aコース：東京ディズニーランド® プライベート・イブニング・パーティーチケット(ペア)×50組100名\nBコース：東京ディズニーリゾート®パークチケット(ペア)×50組100名',url:'https://kenshomin.hatenablog.jp/entry/2026/06/02/140200'},
+    {id:'s_213024b7',store:'Big-A',maker:'コカ・コーラ社',deadline:'6/1～7/5(日)23:59',dlClass:'dl-yellow',buy:'コカ・コーラ社製品\n100円(税抜)につき1P・3Pで応募',method:'LINE',prize:'ドリンクボトル100名・¥1,000分100名',url:'https://lsp-campaign.com/customercp-2026-6/lp.go'},
     {id:'s_1d649897',store:'オリンピック',maker:'プリマハム',deadline:'7/31（8/4）',dlClass:'dl-green',buy:'Olympicにて、プリマハム対象商品950円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'東京ディズニーランド® プライベート・イブニング・パーティーチケット(ペア)×10組20名',url:'https://mrktsec.jp/primaham/2026PEP_olympic0601'},
     {id:'s_0b671290',store:'いなげや',maker:'カゴメ',deadline:'6/3〜6/30(火)23:59',dlClass:'dl-yellow',buy:'対象商品含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'親子体験教室･15組30名',url:'https://www.inageya.co.jp/campaign/20260603_0701.html'},
     {id:'s_79c24441',store:'いなげや',maker:'全農パールライス（岩船米）',deadline:'6/5(金)23:59',dlClass:'dl-red',buy:'食卓応援プレミアム新潟県岩船こしひかり5kg\n岩船こしひかり5kg購入レシート（QRコードから応募）',method:'WEB',prize:'村上牛焼肉用250g(40名)/鮭の切り身セット(40名)/ジェラートセット(40名)',url:'https://www.inageya.co.jp/campaign/20260401_0606.html'},
@@ -526,7 +527,9 @@ const allData = {
     {id:'s_34a84c11',store:'クリエイトSD',maker:'明治',deadline:'6/18',dlClass:'dl-yellow',buy:'明治ブルガリアヨーグルト\n1点購入',method:'アプリ',prize:'ポイント',url:''},
     {id:'s_a2959c96',store:'サミット',maker:'東洋水産',deadline:'6/30消印',dlClass:'dl-yellow',buy:'東洋水産対象商品のバーコードを2枚1口として、郵送で応募',method:'ハガキ',prize:'JCBギフトカード4,000円分×200名\nWチャンス：マルちゃん杯柔道大会オリジナルTシャツ1枚×200名',url:'https://kenshomin.hatenablog.jp/entry/2026/06/02/140100'},
     {id:'s_c252d12d',store:'ドミー',maker:'丸美屋★アニー名古屋公演',deadline:'7/1(水)当日消印有効',dlClass:'dl-yellow',buy:'対象商品購入レシートで応募',method:'ハガキ',prize:'ｱﾆｰﾍﾟｱ･100組200名',url:'https://www.domy.co.jp/specialevent/#event2606_01'},
+    {id:'s_3419979b',store:'ドン・キホーテ',maker:'コカ・コーラ社',deadline:'6/1～7/5(日)23:59',dlClass:'dl-yellow',buy:'コカ・コーラ社製品\n100円(税抜)につき1P・3Pで応募',method:'LINE',prize:'ドリンクボトル450名・¥1,000分450名',url:'https://lsp-campaign.com/customercp-2026-6/lp.go'},
     {id:'s_2cbc577a',store:'ファミリーマート',maker:'',deadline:'',dlClass:'dl-gray',buy:'対象商品購入',method:'',prize:'ネコ',url:''},
+    {id:'s_c20ca14d',store:'マルエツ',maker:'コカ・コーラ社',deadline:'6/1～7/5(日)23:59',dlClass:'dl-yellow',buy:'コカ・コーラ社製品\n100円(税抜)につき1P・3Pで応募',method:'LINE',prize:'¥3,000分200名・¥1,000分300名',url:'https://lsp-campaign.com/customercp-2026-6/lp.go'},
     {id:'s_a9552270',store:'マルエツ',maker:'サッポロビール',deadline:'7/1(水)23:59',dlClass:'dl-yellow',buy:'サッポロビール商品\n1000円(税込)以上',method:'WEB',prize:'BRUNOホットプレート10名・北海道おつまみセット40名(各コース選べる商品2種×3本付)',url:'https://www.iwebms.com/cp/maruetsu_sapporobeer202606/'},
     {id:'s_9640dda9',store:'マルエツ',maker:'夏の食体験ツアー',deadline:'7/3(金)23:59',dlClass:'dl-yellow',buy:'対象商品購入レシートで応募',method:'WEB',prize:'賞品',url:'https://www.iwebms.com/cp/maruetsu-foods2026/'},
     {id:'s_b0d4495f',store:'メルシャン 6月6日は“悪魔の日” HYDE',maker:'悪魔の蔵のワイン',deadline:'6/28（6/30）',dlClass:'dl-yellow',buy:'メルシャン対象商品1,000円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'HYDE コース：オリジナルQUOカード 1,000円分×600名\nディアブロコース：オリジナル ペアグラス×66名',url:'https://cp.kirin.jp/story/36770'},
@@ -535,10 +538,12 @@ const allData = {
     {id:'s_bc7e8d65',store:'ヤオコー',maker:'クラシエ',deadline:'7/19消印',dlClass:'dl-green',buy:'ヤオコーにて、クラシエ対象商品100円(税込)以上を含む300円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'A賞：夏の知育菓子®体験ご招待×各回お子さま15名(合計90名)\nB賞：知育菓子®詰合せ(ミニノート付き)×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/06/01/140400'},
     {id:'s_3dc55a52',store:'ヤオコー',maker:'キーコーヒー',deadline:'7/31（8/10）',dlClass:'dl-green',buy:'ヤオコーにて、キーコーヒー対象商品1点以上を含む500円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'A賞：おうちでイノダコーヒセット×5名\nB賞：ヤオコー商品券2,000円分×50名',url:'https://entry-campaign.com/keycoffee_yaoko'},
     {id:'s_0d70c570',store:'ヤオコー',maker:'サントリーフーズ',deadline:'',dlClass:'dl-gray',buy:'ヤオコーカードを提示のうえ、サントリー「グリーン ダ・カ・ラ GREEN DA・KA・RA やさしいシリーズ」を24本購入で自動応募',method:'ヤオコーカードを提示のうえ、サントリー「グリーン ダ・カ・ラ',prize:'ヤオコーカードポイント 10,000ポイント×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/06/05/140300'},
+    {id:'s_39979c92',store:'ライフ',maker:'コカ・コーラ社',deadline:'6/1～7/5(日)23:59',dlClass:'dl-yellow',buy:'コカ・コーラ社製品\n100円(税抜)につき1P・3Pで応募',method:'LINE',prize:'ドリンクボトル200名・¥1,000分300名',url:'https://lsp-campaign.com/customercp-2026-6/lp.go'},
     {id:'s_cb45513c',store:'ライフ',maker:'アサヒビール',deadline:'6/9',dlClass:'dl-red',buy:'アサヒビール＋スマイルライフの菓子\n500円(税抜)1会計',method:'アプリ',prize:'ポイント',url:''},
     {id:'s_630baa0c',store:'ライフ',maker:'サッポロビール',deadline:'6/24',dlClass:'dl-yellow',buy:'濃い目のレモンサワー・黒ラベル\n500円(税抜)累計',method:'アプリ',prize:'ポイント',url:''},
     {id:'s_b4901e60',store:'ライフ',maker:'亀田製菓',deadline:'6/30',dlClass:'dl-yellow',buy:'亀田製菓\n600円(税抜)以上購入',method:'アプリ',prize:'ポイント',url:''},
     {id:'s_01133b58',store:'ライフ',maker:'キリンビール・ビバレッジ・メルシャン',deadline:'6/30',dlClass:'dl-yellow',buy:'キリンビール・キリンビバレッジ・メルシャン\n500円(税抜)累計',method:'アプリ',prize:'ポイント・商品詰合せ',url:''},
+    {id:'s_604f90be',store:'西友',maker:'コカ・コーラ社',deadline:'6/1～7/5(日)23:59',dlClass:'dl-yellow',buy:'コカ・コーラ社製品\n100円(税抜)につき1P・3Pで応募',method:'LINE',prize:'ドリンクボトル700名・¥1,000分600名',url:'https://lsp-campaign.com/customercp-2026-6/lp.go'},
     {id:'s_b66ba809',store:'西友',maker:'六甲バター',deadline:'6/30（7/10）',dlClass:'dl-green',buy:'西友にて、六甲バター対象商品を含む500円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'A賞：JCBギフトカード10,000円分×10名\nB賞：JCBギフトカード5,000円分×30名\nC賞：JCBギフトカード2,000円分×175名',url:'https://kenshomin.hatenablog.jp/entry/2026/06/05/140200'},
     {id:'s_5560c944',store:'西友',maker:'ライオン・アース製薬・エステー',deadline:'7/31（8/7）',dlClass:'dl-green',buy:'西友にて、対象商品500円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'A賞：日髙のり子さんの宛名入りサイン色紙×20名\nB賞：商品券2,000円分×30名',url:'https://dspcorp.qlear.net/f8zivqgb/top'},
     {id:'s_af432e19',store:'食品館あおば',maker:'ヤマサ醤油',deadline:'7/31（8/7）',dlClass:'dl-green',buy:'食品館あおばにて、ヤマサ醤油商品1点以上を含む500円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'食品館あおば1,200円分×85名',url:'https://kenshomin.hatenablog.jp/entry/2026/06/03/140700'},
