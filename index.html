@@ -943,6 +943,8 @@ function togglePin(id) {
   renderPinnedTab();
   const item = allItems[id];
   if (item) renderTab(item.store ? 'store' : 'maker');
+  renderMayTab();
+  renderUnknownTab();
   updateCount(currentTab);
 }
 
