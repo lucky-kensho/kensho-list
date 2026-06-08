@@ -1018,7 +1018,7 @@ function renderMayTab() {
       return dayA - dayB;
     });
   if (mayItems.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="emoji">🗓</div>5月締切の案件はありません</div>';
+    container.innerHTML = '<div class="empty-state"><div class="emoji">🗓</div>' + _thisM + '月前半締切の案件はありません</div>';
     return;
   }
   let html = '';
