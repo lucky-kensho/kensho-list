@@ -179,6 +179,45 @@
     line-height: 1.5;
     color: #b03060;
   }
+  .new-badge {
+    background: #e74c3c;
+    color: #fff;
+    font-size: 9px;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 1px 6px;
+    margin-right: 4px;
+    vertical-align: middle;
+    display: inline-block;
+  }
+  .sort-toggle {
+    font-size: 12px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 5px 12px;
+    color: #555;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .shoplist-item {
+    background: #fff;
+    border-radius: 10px;
+    padding: 9px 12px;
+    margin-bottom: 7px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .shoplist-store {
+    font-size: 11px;
+    color: #888;
+    font-weight: bold;
+    margin-bottom: 2px;
+  }
+  .shoplist-buy {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+  }
   .card-footer {
     display: flex;
     align-items: center;
@@ -851,6 +890,38 @@ const allData = {
 const allItems = {};
 Object.values(allData).forEach(arr => arr.forEach(item => { allItems[item.id] = item; }));
 
+// ===== 締切日ヘルパー（範囲表記は末尾日付、12月締切が6月に「期限切れ」扱いされないよう180日ルール） =====
+function dlDate(s) {
+  const mms = [...String(s||'').matchAll(/(\d{1,2})\/(\d{1,2})/g)];
+  if (!mms.length) return null;
+  const m = mms[mms.length - 1];
+  const today = new Date(); today.setHours(0,0,0,0);
+  let d = new Date(today.getFullYear(), m[1]-1, +m[2]);
+  if ((today - d) / 86400000 > 180) d = new Date(today.getFullYear()+1, m[1]-1, +m[2]);
+  return d;
+}
+function isExpired(s) {
+  const d = dlDate(s);
+  if (!d) return false;
+  const today = new Date(); today.setHours(0,0,0,0);
+  return d < today;
+}
+
+// ===== 新着マーク（前回開いた時に無かったアイテムにNEWを付ける） =====
+const SEEN_KEY = 'kenshow_seen_v1';
+let _seen = {};
+try { _seen = JSON.parse(localStorage.getItem(SEEN_KEY)) || {}; } catch(e) {}
+const _firstRun = Object.keys(_seen).length === 0;
+const newIds = {};
+Object.keys(allItems).forEach(id => {
+  if (!_seen[id]) {
+    if (!_firstRun) newIds[id] = true;
+    _seen[id] = 1;
+  }
+});
+try { localStorage.setItem(SEEN_KEY, JSON.stringify(_seen)); } catch(e) {}
+function nb(id) { return newIds[id] ? '<span class="new-badge">NEW</span>' : ''; }
+
 function loadState() {
   try { return JSON.parse(localStorage.getItem(STATE_KEY)) || {}; } catch(e) { return {}; }
 }
@@ -965,17 +1036,50 @@ function togglePin(id) {
   updateCount(currentTab);
 }
 
+let shopListMode = false;
+function toggleShopList() {
+  shopListMode = !shopListMode;
+  renderPinnedTab();
+}
+
 function renderPinnedTab() {
   const container = document.getElementById('tab-pin');
   if (!container) return;
   const pinnedItems = Object.values(allData).flat()
-    .filter(i => pinned[i.id] && state[i.id] !== 'deleted')
+    .filter(i => pinned[i.id] && state[i.id] !== 'deleted' && !isExpired(getEff(i).deadline))
     .sort((a,b) => (state[a.id]==='done'?1:0)-(state[b.id]==='done'?1:0));
   if (pinnedItems.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="emoji">⭐</div>ピン留めがありません<br><small style="font-size:12px">各カードの ☆ をタップしてピン留め</small></div>';
     return;
   }
-  let html = '';
+  // 買い物リストモード：未処理ピンの「何を買う？」だけをシンプルに一覧表示
+  if (shopListMode) {
+    const listItems = pinnedItems.filter(i => state[i.id] !== 'done');
+    let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="sort-toggle" onclick="toggleShopList()">📋 カード表示に戻す</button></div>`;
+    if (listItems.length === 0) {
+      html += '<div class="empty-state"><div class="emoji">🎉</div>未処理のピンはありません</div>';
+    } else {
+      const sorted = [...listItems].sort((a,b) => {
+        const la = (a.store || getEff(a).storeTag || a.category || '');
+        const lb = (b.store || getEff(b).storeTag || b.category || '');
+        if (la !== lb) return la < lb ? -1 : 1;
+        const da = dlDate(getEff(a).deadline), db = dlDate(getEff(b).deadline);
+        return (da ? da.getTime() : 9e15) - (db ? db.getTime() : 9e15);
+      });
+      sorted.forEach(item => {
+        const it = getEff(item);
+        const ctx = item.store || it.storeTag || item.category || '';
+        const buyLines = it.buy.replace(/\n/g, '<br>');
+        html += `<div class="shoplist-item">
+          <div class="shoplist-store">📍 ${ctx}・${item.maker}　🗓 ${it.deadline}</div>
+          <div class="shoplist-buy">${buyLines}</div>
+        </div>`;
+      });
+    }
+    container.innerHTML = html;
+    return;
+  }
+  let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="sort-toggle" onclick="toggleShopList()">🛒 買い物リスト表示</button></div>`;
   pinnedItems.forEach(item => {
     const it = getEff(item);
     const isDone = state[item.id] === 'done';
@@ -992,7 +1096,7 @@ function renderPinnedTab() {
         </div>
         <div class="card-body">
           <div class="card-top">
-            <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
+            <div class="maker-name">${nb(item.id)}<span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
             <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
           </div>
           <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
@@ -1056,7 +1160,7 @@ function renderMayTab() {
         </div>
         <div class="card-body">
           <div class="card-top">
-            <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
+            <div class="maker-name">${nb(item.id)}<span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
             <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
           </div>
           <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
@@ -1106,7 +1210,7 @@ function renderUnknownTab() {
         </div>
         <div class="card-body">
           <div class="card-top">
-            <div class="maker-name"><span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
+            <div class="maker-name">${nb(item.id)}<span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
             <div class="deadline-badge dl-gray">🗓 ${it.deadline || '不明'}</div>
           </div>
           <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
@@ -1142,7 +1246,7 @@ function renderSearch(query) {
   let html = '';
   let count = 0;
   ['store','maker'].forEach(tabId => {
-    allData[tabId].filter(i => state[i.id] !== 'deleted').forEach(item => {
+    allData[tabId].filter(i => state[i.id] !== 'deleted' && !isExpired(getEff(i).deadline)).forEach(item => {
       const it = getEff(item);
       const text = [item.maker||'', item.store||'', it.buy||'', item.method||'', item.prize||'', item.category||''].join(' ').toLowerCase();
       if (!text.includes(q)) return;
@@ -1162,7 +1266,7 @@ function renderSearch(query) {
             </div>
             <div class="card-body">
               <div class="card-top">
-                <div class="maker-name"><span class="tab-tag">${tagLabel}</span>${catChip}${storeChip}${item.maker}</div>
+                <div class="maker-name">${nb(item.id)}<span class="tab-tag">${tagLabel}</span>${catChip}${storeChip}${item.maker}</div>
                 <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
               </div>
               <div class="buy-box">
@@ -1191,10 +1295,18 @@ function renderSearch(query) {
   document.getElementById('remaining').textContent = count;
 }
 
+let storeSortMode = 'store';
+try { storeSortMode = localStorage.getItem('kenshow_storesort') || 'store'; } catch(e) {}
+function toggleStoreSort() {
+  storeSortMode = storeSortMode === 'store' ? 'deadline' : 'store';
+  try { localStorage.setItem('kenshow_storesort', storeSortMode); } catch(e) {}
+  renderTab('store');
+}
+
 function renderTab(tabId) {
   const container = document.getElementById('tab-' + tabId);
   const items = allData[tabId];
-  const active = items.filter(i => state[i.id] !== 'deleted');
+  const active = items.filter(i => state[i.id] !== 'deleted' && !isExpired(getEff(i).deadline));
 
   if (active.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="emoji">🎉</div>このタブは完了！<br><small style="font-size:12px">リセットで戻せます</small></div>';
@@ -1213,6 +1325,7 @@ function renderTab(tabId) {
       if (state[item.id] === 'deleted') return;
       const it2 = getEff(item);
       if (!it2.storeTag) return;
+      if (isExpired(it2.deadline)) return;
       const sn = it2.storeTag;
       if (!grouped[sn]) { grouped[sn] = []; storeOrder.push(sn); }
       grouped[sn].push(item);
@@ -1226,7 +1339,53 @@ function renderTab(tabId) {
       return 999;
     };
     storeOrder.sort((a, b) => storeRank(a) - storeRank(b));
-    let html = '';
+
+    // ===== 締切が近い順モード：店舗グループを解除して全カードを締切順に並べる =====
+    if (storeSortMode === 'deadline') {
+      const flat = [];
+      storeOrder.forEach(sn => grouped[sn].forEach(item => flat.push([sn, item])));
+      flat.sort((p, q) => {
+        const da = state[p[1].id]==='done' ? 1 : 0;
+        const db = state[q[1].id]==='done' ? 1 : 0;
+        if (da !== db) return da - db;
+        const ta = dlDate(getEff(p[1]).deadline), tb = dlDate(getEff(q[1]).deadline);
+        return (ta ? ta.getTime() : 9e15) - (tb ? tb.getTime() : 9e15);
+      });
+      let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="sort-toggle" onclick="toggleStoreSort()">📍 店舗ごとに戻す</button></div>`;
+      flat.forEach(([storeName, item]) => {
+        const it = getEff(item);
+        const isDone = state[item.id] === 'done';
+        const buyLines = it.buy.replace(/\n/g, '<br>');
+        const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
+        const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener noreferrer" class="apply-link">🔗 応募</a>` : '';
+        const isPinned = pinned[item.id];
+        html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
+          <div class="card-inner">
+            <div class="check-area" onclick="toggleDone('${item.id}','store')">
+              <div class="check-circle">${isDone ? '✓' : ''}</div>
+            </div>
+            <div class="card-body">
+              <div class="card-top">
+                <div class="maker-name">${nb(item.id)}<span class="pin-context">${storeName}</span>${catChip}${item.maker}</div>
+                <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
+              </div>
+              <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
+              <div class="card-footer">
+                <span class="method-chip">${item.method}</span>
+                <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
+                <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
+                ${linkBtn}
+              </div>
+            </div>
+          </div>
+          <button class="delete-btn" onclick="deleteItem('${item.id}','store')" title="削除">✕</button>
+        </div>`;
+      });
+      container.innerHTML = html;
+      return;
+    }
+
+    let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="sort-toggle" onclick="toggleStoreSort()">⏰ 締切が近い順</button></div>`;
     storeOrder.forEach(storeName => {
       const groupItems = grouped[storeName];
       const remaining = groupItems.filter(i => state[i.id] !== 'done').length;
@@ -1251,7 +1410,7 @@ function renderTab(tabId) {
             </div>
             <div class="card-body">
               <div class="card-top">
-                <div class="maker-name">${catChip}${item.maker}</div>
+                <div class="maker-name">${nb(item.id)}${catChip}${item.maker}</div>
                 <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
               </div>
               <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
@@ -1299,7 +1458,7 @@ function renderTab(tabId) {
           </div>
           <div class="card-body">
             <div class="card-top">
-              <div class="maker-name">${catChip}${storeChip}${item.maker}</div>
+              <div class="maker-name">${nb(item.id)}${catChip}${storeChip}${item.maker}</div>
               <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
             </div>
             <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
@@ -1321,7 +1480,7 @@ function renderTab(tabId) {
 function updateCount(tabId) {
   if (tabId === 'memo') { updateMemoCount(); return; }
   if (tabId === 'pin') {
-    const n = Object.values(allData).flat().filter(i => pinned[i.id] && state[i.id] !== 'deleted' && state[i.id] !== 'done').length;
+    const n = Object.values(allData).flat().filter(i => pinned[i.id] && state[i.id] !== 'deleted' && state[i.id] !== 'done' && !isExpired(getEff(i).deadline)).length;
     document.getElementById('remaining').textContent = n;
     return;
   }
@@ -1351,7 +1510,7 @@ function updateCount(tabId) {
   }
   const items = allData[tabId];
   if (!items) { document.getElementById('remaining').textContent = 0; return; }
-  const n = items.filter(i => state[i.id] !== 'deleted' && state[i.id] !== 'done').length;
+  const n = items.filter(i => state[i.id] !== 'deleted' && state[i.id] !== 'done' && !isExpired(getEff(i).deadline)).length;
   document.getElementById('remaining').textContent = n;
 }
 
