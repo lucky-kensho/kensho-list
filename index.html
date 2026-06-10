@@ -312,46 +312,6 @@
     font-size: 15px;
   }
   .empty-state .emoji { font-size: 46px; margin-bottom: 12px; }
-  .exclusion-section {
-    margin: 16px 12px 30px;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-  }
-  .exclusion-header {
-    background: #f8f0f0;
-    padding: 12px 16px;
-    font-size: 13px;
-    font-weight: bold;
-    color: #999;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    user-select: none;
-  }
-  .exclusion-body { background: white; display: none; }
-  .exclusion-body.open { display: block; }
-  .excl-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    border-bottom: 1px solid #f5f5f5;
-    font-size: 13px;
-    gap: 8px;
-  }
-  .excl-label { flex: 1; color: #bbb; }
-  .restore-btn {
-    font-size: 12px;
-    background: #eafaf1;
-    color: #1e8449;
-    border: none;
-    border-radius: 12px;
-    padding: 4px 10px;
-    cursor: pointer;
-    white-space: nowrap;
-  }
   .search-bar {
     padding: 0 12px 10px;
   }
@@ -536,13 +496,6 @@
   </div>
 </div>
 
-<div class="exclusion-section" id="exclusion-section" style="display:none">
-  <div class="exclusion-header" onclick="toggleExclusion()">
-    <span>🗑 除外リスト（削除済みアイテム）</span>
-    <span id="excl-arrow">▶</span>
-  </div>
-  <div class="exclusion-body" id="exclusion-body"></div>
-</div>
 
 <script>
 const STATE_KEY = 'kenshow_state_v3';
@@ -946,7 +899,6 @@ function saveState() {
 
 let state = loadState();
 let currentTab = 'memo';
-let exclOpen = false;
 
 const TAB_LABELS = {store:'店舗', maker:'食品・日用品', pin:'⭐ ピン', unknown:'不明'};
 let openStores = {};
@@ -1505,7 +1457,6 @@ function renderAll() {
   renderUnknownTab();
   renderMemoList();
   updateCount(currentTab);
-  renderExclusion();
 }
 
 function toggleDone(id, tabId) {
@@ -1541,37 +1492,8 @@ function deleteItem(id, tabId) {
         updateCount('pin');
       }
       else { renderTab(tabId); updateCount(tabId); }
-      renderExclusion();
     }, 280);
   }
-}
-
-function restoreItem(id) {
-  delete state[id];
-  saveState();
-  renderAll();
-}
-
-function renderExclusion() {
-  const deleted = Object.entries(state).filter(([,v]) => v === 'deleted');
-  const section = document.getElementById('exclusion-section');
-  const body = document.getElementById('exclusion-body');
-  if (deleted.length === 0) { section.style.display = 'none'; return; }
-  section.style.display = 'block';
-  let html = '';
-  deleted.forEach(([id]) => {
-    const item = allItems[id];
-    if (!item) return;
-    const label = (item.store || item.category || '') + ' × ' + item.maker;
-    html += `<div class="excl-item"><span class="excl-label">🗑 ${label}</span><button class="restore-btn" onclick="restoreItem('${id}')">戻す</button></div>`;
-  });
-  body.innerHTML = html;
-}
-
-function toggleExclusion() {
-  exclOpen = !exclOpen;
-  document.getElementById('exclusion-body').classList.toggle('open', exclOpen);
-  document.getElementById('excl-arrow').textContent = exclOpen ? '▼' : '▶';
 }
 
 function switchTab(tabId, btn) {
@@ -1758,6 +1680,22 @@ function deleteMemoItem(id) {
     }, 280);
   }
 }
+
+// ===== 古い記録の自動掃除（Excelから消えたアイテムの削除記録・ピン・編集を整理） =====
+(function() {
+  let dirty = false;
+  Object.keys(state).forEach(id => { if (!allItems[id]) { delete state[id]; dirty = true; } });
+  if (dirty) saveState();
+  let pDirty = false;
+  Object.keys(pinned).forEach(id => { if (!allItems[id]) { delete pinned[id]; pDirty = true; } });
+  if (pDirty) savePinned();
+  let eDirty = false;
+  Object.keys(localEdits).forEach(id => { if (!allItems[id]) { delete localEdits[id]; eDirty = true; } });
+  if (eDirty) saveLocalEdits();
+  let sDirty = false;
+  Object.keys(_seen).forEach(id => { if (!allItems[id]) { delete _seen[id]; sDirty = true; } });
+  if (sDirty) { try { localStorage.setItem(SEEN_KEY, JSON.stringify(_seen)); } catch(e) {} }
+})();
 
 renderAll();
 </script>
