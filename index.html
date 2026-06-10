@@ -218,6 +218,23 @@
     line-height: 1.5;
     color: #333;
   }
+  .memo-drag {
+    font-size: 18px;
+    color: #bbb;
+    padding: 4px 12px;
+    margin-right: 18px;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .card.dragging {
+    opacity: 0.65;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transform: scale(1.02);
+    z-index: 10;
+    position: relative;
+  }
   .card-footer {
     display: flex;
     align-items: center;
@@ -446,7 +463,6 @@
   </div>
   <div class="header-date">2026年6月10日更新　全348件</div>
   <div class="tabs">
-    <button class="tab-btn" id="tab-btn-may" onclick="switchTab('may',this)">🗓 前半</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
     <button class="tab-btn" onclick="switchTab('maker',this)">食品・日用品</button>
     <button class="tab-btn" onclick="switchTab('pin',this)">⭐ ピン</button>
@@ -463,7 +479,6 @@
   <span style="color:#ccc;font-size:11px;">✅ チェック ／ ✕ 削除</span>
 </div>
 
-<div id="tab-may"     class="tab-content"></div>
 <div id="tab-unknown" class="tab-content"></div>
 <div id="tab-store"  class="tab-content"></div>
 <div id="tab-maker"  class="tab-content"></div>
@@ -933,9 +948,7 @@ let state = loadState();
 let currentTab = 'memo';
 let exclOpen = false;
 
-const _nowM = new Date().getMonth() + 1;
-const TAB_LABELS = {may:'🗓 ' + _nowM + '月前半', store:'店舗', maker:'食品・日用品', pin:'⭐ ピン', unknown:'不明'};
-(function(){ const b = document.getElementById('tab-btn-may'); if(b) b.textContent = '🗓 ' + _nowM + '月前半'; })();
+const TAB_LABELS = {store:'店舗', maker:'食品・日用品', pin:'⭐ ピン', unknown:'不明'};
 let openStores = {};
 
 function toggleStoreGroup(name) {
@@ -1031,7 +1044,6 @@ function togglePin(id) {
   renderPinnedTab();
   const item = allItems[id];
   if (item) renderTab(item.store ? 'store' : 'maker');
-  renderMayTab();
   renderUnknownTab();
   updateCount(currentTab);
 }
@@ -1109,70 +1121,6 @@ function renderPinnedTab() {
         </div>
       </div>
       <button class="delete-btn" onclick="deleteItem('${item.id}','pin')" title="削除">✕</button>
-    </div>`;
-  });
-  container.innerHTML = html;
-}
-
-function renderMayTab() {
-  const container = document.getElementById('tab-may');
-  if (!container) return;
-  const _mayToday = new Date(); _mayToday.setHours(0,0,0,0);
-  const _thisM = _mayToday.getMonth() + 1;
-  const mayItems = Object.values(allData).flat()
-    .filter(i => {
-      if (state[i.id] === 'deleted') return false;
-      const dl = getEff(i).deadline;
-      const mms = [...String(dl||'').matchAll(/(\d{1,2})\/(\d{1,2})/g)];
-      if (!mms.length) return false;
-      const lastMm = mms[mms.length - 1];
-      const mo = parseInt(lastMm[1]), dy = parseInt(lastMm[2]);
-      if (mo !== _thisM || dy > 15) return false;
-      return new Date(_mayToday.getFullYear(), mo - 1, dy) >= _mayToday;
-    })
-    .sort((a,b) => {
-      const da = state[a.id]==='done' ? 1 : 0;
-      const db = state[b.id]==='done' ? 1 : 0;
-      if (da !== db) return da - db;
-      const _mmA = [...(getEff(a).deadline||'').matchAll(/(\d{1,2})\/(\d{1,2})/g)]; const dayA = _mmA.length ? parseInt(_mmA[_mmA.length-1][2]) : 99;
-      const _mmB = [...(getEff(b).deadline||'').matchAll(/(\d{1,2})\/(\d{1,2})/g)]; const dayB = _mmB.length ? parseInt(_mmB[_mmB.length-1][2]) : 99;
-      return dayA - dayB;
-    });
-  if (mayItems.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="emoji">🗓</div>' + _thisM + '月前半締切の案件はありません</div>';
-    return;
-  }
-  let html = '';
-  mayItems.forEach(item => {
-    const it = getEff(item);
-    const isDone = state[item.id] === 'done';
-    const buyLines = it.buy.replace(/\n/g, '<br>');
-    const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
-    const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
-    const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener noreferrer" class="apply-link">🔗 応募</a>` : '';
-    const srcTab = item.store ? 'store' : 'maker';
-    const ctxLabel = item.store || item.category || '';
-    const isPinned = pinned[item.id];
-    html += `<div class="card${isDone ? ' done' : ''}" id="may-card-${item.id}">
-      <div class="card-inner">
-        <div class="check-area" onclick="toggleDone('${item.id}','may')">
-          <div class="check-circle">${isDone ? '✓' : ''}</div>
-        </div>
-        <div class="card-body">
-          <div class="card-top">
-            <div class="maker-name">${nb(item.id)}<span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
-            <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
-          </div>
-          <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
-          <div class="card-footer">
-            <span class="method-chip">${item.method}</span>
-            <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
-            <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
-            ${linkBtn}
-          </div>
-        </div>
-      </div>
-      <button class="delete-btn" onclick="deleteItem('${item.id}','may')" title="削除">✕</button>
     </div>`;
   });
   container.innerHTML = html;
@@ -1301,6 +1249,14 @@ function toggleStoreSort() {
   storeSortMode = storeSortMode === 'store' ? 'deadline' : 'store';
   try { localStorage.setItem('kenshow_storesort', storeSortMode); } catch(e) {}
   renderTab('store');
+}
+
+let makerSortMode = 'group';
+try { makerSortMode = localStorage.getItem('kenshow_makersort') || 'group'; } catch(e) {}
+function toggleMakerSort() {
+  makerSortMode = makerSortMode === 'group' ? 'deadline' : 'group';
+  try { localStorage.setItem('kenshow_makersort', makerSortMode); } catch(e) {}
+  renderTab('maker');
 }
 
 function renderTab(tabId) {
@@ -1432,13 +1388,58 @@ function renderTab(tabId) {
   }
 
   // maker tab（お店名タグで店舗タブに引越し済みのものは除外）
+  const makerActive = active.filter(i => !getEff(i).storeTag);
+
+  // ===== 締切が近い順モード：食品/日用品の区分を解除して全カードを締切順に並べる =====
+  if (makerSortMode === 'deadline') {
+    const flat = [...makerActive].sort((a,b) => {
+      const da = state[a.id]==='done' ? 1 : 0;
+      const db = state[b.id]==='done' ? 1 : 0;
+      if (da !== db) return da - db;
+      const ta = dlDate(getEff(a).deadline), tb = dlDate(getEff(b).deadline);
+      return (ta ? ta.getTime() : 9e15) - (tb ? tb.getTime() : 9e15);
+    });
+    let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="sort-toggle" onclick="toggleMakerSort()">🥗 区分ごとに戻す</button></div>`;
+    flat.forEach(item => {
+      const it = getEff(item);
+      const isDone = state[item.id] === 'done';
+      const buyLines = it.buy.replace(/\n/g, '<br>');
+      const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
+      const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener noreferrer" class="apply-link">🔗 応募</a>` : '';
+      const isPinned = pinned[item.id];
+      html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
+        <div class="card-inner">
+          <div class="check-area" onclick="toggleDone('${item.id}','maker')">
+            <div class="check-circle">${isDone ? '✓' : ''}</div>
+          </div>
+          <div class="card-body">
+            <div class="card-top">
+              <div class="maker-name">${nb(item.id)}${catChip}${item.maker}</div>
+              <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
+            </div>
+            <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
+            <div class="card-footer">
+              <span class="method-chip">${item.method}</span>
+              <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
+              <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
+              ${linkBtn}
+            </div>
+          </div>
+        </div>
+        <button class="delete-btn" onclick="deleteItem('${item.id}','maker')" title="削除">✕</button>
+      </div>`;
+    });
+    container.innerHTML = html;
+    return;
+  }
+
   const grouped = {};
-  active.filter(i => !getEff(i).storeTag).forEach(item => {
+  makerActive.forEach(item => {
     const key = item.category || '';
     if (!grouped[key]) grouped[key] = [];
     grouped[key].push(item);
   });
-  let html = '';
+  let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="sort-toggle" onclick="toggleMakerSort()">⏰ 締切が近い順</button></div>`;
   for (const [group, groupItems] of Object.entries(grouped)) {
     const icon = group === '食品' ? '🥗' : '🧴';
     html += `<div class="section-label">${icon} ${group}</div>`;
@@ -1484,22 +1485,6 @@ function updateCount(tabId) {
     document.getElementById('remaining').textContent = n;
     return;
   }
-  if (tabId === 'may') {
-    const _ct = new Date(); _ct.setHours(0,0,0,0);
-    const _ctM = _ct.getMonth() + 1;
-    const n = Object.values(allData).flat().filter(i => {
-      if (state[i.id] === 'deleted' || state[i.id] === 'done') return false;
-      const dl = getEff(i).deadline;
-      const mms = [...String(dl||'').matchAll(/(\d{1,2})\/(\d{1,2})/g)];
-      if (!mms.length) return false;
-      const lastMm = mms[mms.length - 1];
-      const mo = parseInt(lastMm[1]), dy = parseInt(lastMm[2]);
-      if (mo !== _ctM || dy > 15) return false;
-      return new Date(_ct.getFullYear(), mo - 1, dy) >= _ct;
-    }).length;
-    document.getElementById('remaining').textContent = n;
-    return;
-  }
   if (tabId === 'unknown') {
     const n = Object.values(allData).flat().filter(i => {
       if (state[i.id] === 'deleted' || state[i.id] === 'done') return false;
@@ -1517,7 +1502,6 @@ function updateCount(tabId) {
 function renderAll() {
   ['store','maker'].forEach(t => renderTab(t));
   renderPinnedTab();
-  renderMayTab();
   renderUnknownTab();
   renderMemoList();
   updateCount(currentTab);
@@ -1527,16 +1511,14 @@ function renderAll() {
 function toggleDone(id, tabId) {
   state[id] = state[id] === 'done' ? undefined : 'done';
   saveState();
-  if (tabId === 'may') { renderMayTab(); }
-  else if (tabId === 'unknown') { renderUnknownTab(); }
+  if (tabId === 'unknown') { renderUnknownTab(); }
   else { renderTab(tabId); }
   const sq = document.getElementById('search-input').value.trim();
   if (sq) { renderSearch(sq); } else { updateCount(tabId); }
 }
 
 function deleteItem(id, tabId) {
-  const cardId = tabId === 'may' ? 'may-card-' + id
-               : tabId === 'unknown' ? 'unk-card-' + id
+  const cardId = tabId === 'unknown' ? 'unk-card-' + id
                : tabId === 'search'  ? 's-card-' + id
                : tabId === 'pin'     ? 'pin-card-' + id
                : 'card-' + id;
@@ -1550,13 +1532,12 @@ function deleteItem(id, tabId) {
         const sq = document.getElementById('search-input').value.trim();
         if (sq) renderSearch(sq);
         updateCount(currentTab);
-      } else if (tabId === 'may') { renderMayTab(); updateCount('may'); }
-      else if (tabId === 'unknown') { renderUnknownTab(); updateCount('unknown'); }
+      } else if (tabId === 'unknown') { renderUnknownTab(); updateCount('unknown'); }
       else if (tabId === 'pin') {
         // ピンタブで消したら元ネタ（店舗・食品タブ）も同時に消す
         renderPinnedTab();
         renderTab('store'); renderTab('maker');
-        renderMayTab(); renderUnknownTab();
+        renderUnknownTab();
         updateCount('pin');
       }
       else { renderTab(tabId); updateCount(tabId); }
@@ -1644,11 +1625,10 @@ function renderMemoList() {
           <div class="card-body">
             <div class="card-top">
               <div class="maker-name">${item.title || '無題'}</div>
+              <div class="memo-drag" title="なぞって並べ替え">⠿</div>
             </div>
             ${item.memo ? `<div class="buy-box"><div class="buy-label">📋 メモ</div>${memoLines}</div>` : ''}
             <div style="display:flex;justify-content:flex-end;gap:5px;padding-top:6px;">
-              <button onclick="moveMemoUp(${item.id})" style="font-size:13px;background:#f0f0f0;color:#555;border:none;border-radius:8px;width:34px;height:28px;cursor:pointer;font-family:inherit;line-height:1;">↑</button>
-              <button onclick="moveMemoDown(${item.id})" style="font-size:13px;background:#f0f0f0;color:#555;border:none;border-radius:8px;width:34px;height:28px;cursor:pointer;font-family:inherit;line-height:1;">↓</button>
               <button onclick="editMemo(${item.id})" style="font-size:12px;background:#f0f0f0;color:#666;border:none;border-radius:8px;padding:4px 10px;cursor:pointer;font-family:inherit;">✏️ 編集</button>
             </div>
           </div>
@@ -1657,7 +1637,60 @@ function renderMemoList() {
       </div>`;
   });
   container.innerHTML = html;
+  attachMemoDrag();
   updateMemoCount();
+}
+
+// ===== メモのドラッグ並べ替え（指でなぞって上下移動） =====
+let _dragCard = null;
+function attachMemoDrag() {
+  document.querySelectorAll('#memo-list .memo-drag').forEach(h => {
+    h.addEventListener('touchstart', memoDragStart, {passive: false});
+    h.addEventListener('mousedown', memoDragStart);
+  });
+}
+function memoDragStart(e) {
+  e.preventDefault();
+  _dragCard = e.currentTarget.closest('.card');
+  if (!_dragCard) return;
+  _dragCard.classList.add('dragging');
+  const move = ev => {
+    ev.preventDefault();
+    const y = ev.touches ? ev.touches[0].clientY : ev.clientY;
+    const container = document.getElementById('memo-list');
+    const cards = [...container.querySelectorAll('.card:not(.dragging)')];
+    let placed = false;
+    for (const c of cards) {
+      const r = c.getBoundingClientRect();
+      if (y < r.top + r.height / 2) {
+        container.insertBefore(_dragCard, c);
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) container.appendChild(_dragCard);
+  };
+  const up = () => {
+    document.removeEventListener('touchmove', move);
+    document.removeEventListener('mousemove', move);
+    document.removeEventListener('touchend', up);
+    document.removeEventListener('mouseup', up);
+    if (_dragCard) _dragCard.classList.remove('dragging');
+    // 画面上の並び順をデータに反映して保存
+    const order = [...document.getElementById('memo-list').querySelectorAll('.card')]
+      .map(c => parseInt(c.id.replace('memo-card-', '')));
+    memoItems.sort((a, b) => {
+      const ia = order.indexOf(a.id), ib = order.indexOf(b.id);
+      return (ia < 0 ? 9999 : ia) - (ib < 0 ? 9999 : ib);
+    });
+    saveMemo();
+    renderMemoList();
+    _dragCard = null;
+  };
+  document.addEventListener('touchmove', move, {passive: false});
+  document.addEventListener('mousemove', move);
+  document.addEventListener('touchend', up);
+  document.addEventListener('mouseup', up);
 }
 
 function updateMemoCount() {
@@ -1712,26 +1745,6 @@ function submitMemo() {
 function toggleMemoDone(id) {
   const item = memoItems.find(i => i.id === id);
   if (item) { item.done = !item.done; saveMemo(); renderMemoList(); }
-}
-
-function moveMemoUp(id) {
-  const active = memoItems.filter(i => !i.deleted);
-  const ai = active.findIndex(i => i.id === id);
-  if (ai <= 0) return;
-  const ia = memoItems.findIndex(i => i.id === id);
-  const ib = memoItems.findIndex(i => i.id === active[ai - 1].id);
-  [memoItems[ia], memoItems[ib]] = [memoItems[ib], memoItems[ia]];
-  saveMemo(); renderMemoList();
-}
-
-function moveMemoDown(id) {
-  const active = memoItems.filter(i => !i.deleted);
-  const ai = active.findIndex(i => i.id === id);
-  if (ai >= active.length - 1) return;
-  const ia = memoItems.findIndex(i => i.id === id);
-  const ib = memoItems.findIndex(i => i.id === active[ai + 1].id);
-  [memoItems[ia], memoItems[ib]] = [memoItems[ib], memoItems[ia]];
-  saveMemo(); renderMemoList();
 }
 
 function deleteMemoItem(id) {
