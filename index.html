@@ -474,6 +474,7 @@
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
     <button class="tab-btn" onclick="switchTab('maker',this)">食品・日用品</button>
     <button class="tab-btn" onclick="switchTab('pin',this)">⭐ ピン</button>
+    <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('unknown',this)">不明</button>
     <button class="tab-btn active" onclick="switchTab('memo',this)">メモ</button>
     <button class="tab-btn" onclick="switchTab('rireki',this)">📔 履歴</button>
@@ -493,6 +494,7 @@
 <div id="tab-maker"  class="tab-content"></div>
 <div id="tab-pin"    class="tab-content"></div>
 <div id="tab-rireki" class="tab-content"></div>
+<div id="tab-new"    class="tab-content"></div>
 <div id="tab-memo"   class="tab-content active">
   <div style="padding:8px 0 12px;">
     <button onclick="toggleMemoForm()" style="width:100%;padding:12px;border:2px dashed #ddd;border-radius:12px;background:white;color:#999;font-size:14px;cursor:pointer;font-family:inherit;">＋ 追加</button>
@@ -973,15 +975,14 @@ const SEEN_KEY = 'kenshow_seen_v1';
 let _seen = {};
 try { _seen = JSON.parse(localStorage.getItem(SEEN_KEY)) || {}; } catch(e) {}
 const _firstRun = Object.keys(_seen).length === 0;
-const newIds = {};
+const _NOW = Date.now();
 Object.keys(allItems).forEach(id => {
-  if (!_seen[id]) {
-    if (!_firstRun) newIds[id] = true;
-    _seen[id] = 1;
-  }
+  if (!_seen[id]) _seen[id] = _firstRun ? 1 : _NOW;  // 初回起動時は基準づくりのみ
 });
 try { localStorage.setItem(SEEN_KEY, JSON.stringify(_seen)); } catch(e) {}
-function nb(id) { return newIds[id] ? '<span class="new-badge">NEW</span>' : ''; }
+// 初めて見てから24時間はNEW扱い
+function isNew(id) { return _seen[id] > 1 && (_NOW - _seen[id]) < 86400000; }
+function nb(id) { return isNew(id) ? '<span class="new-badge">NEW</span>' : ''; }
 
 function loadState() {
   try { return JSON.parse(localStorage.getItem(STATE_KEY)) || {}; } catch(e) { return {}; }
@@ -1090,6 +1091,7 @@ function togglePin(id) {
   const item = allItems[id];
   if (item) renderTab(item.store ? 'store' : 'maker');
   renderUnknownTab();
+  renderNewTab();
   updateCount(currentTab);
 }
 
@@ -1216,6 +1218,58 @@ function renderUnknownTab() {
         </div>
       </div>
       <button class="delete-btn" onclick="deleteItem('${item.id}','unknown')" title="削除">✕</button>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function renderNewTab() {
+  const container = document.getElementById('tab-new');
+  if (!container) return;
+  const newItems = Object.values(allData).flat()
+    .filter(i => isNew(i.id) && state[i.id] !== 'deleted' && !isExpired(getEff(i).deadline))
+    .sort((a,b) => {
+      const da = state[a.id]==='done' ? 1 : 0;
+      const db = state[b.id]==='done' ? 1 : 0;
+      if (da !== db) return da - db;
+      const ta = dlDate(getEff(a).deadline), tb = dlDate(getEff(b).deadline);
+      return (ta ? ta.getTime() : 9e15) - (tb ? tb.getTime() : 9e15);
+    });
+  if (newItems.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="emoji">🆕</div>新着はありません<br><small style="font-size:12px">更新で増えた情報が24時間ここに表示されます</small></div>';
+    return;
+  }
+  let html = '';
+  newItems.forEach(item => {
+    const it = getEff(item);
+    const isDone = state[item.id] === 'done';
+    const buyLines = it.buy.replace(/\n/g, '<br>');
+    const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
+    const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
+    const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener noreferrer" class="apply-link">🔗 応募</a>` : '';
+    const srcTab = item.store ? 'store' : 'maker';
+    const ctxLabel = item.store || item.category || '';
+    const isPinned = pinned[item.id];
+    html += `<div class="card${isDone ? ' done' : ''}" id="newt-card-${item.id}">
+      <div class="card-inner">
+        <div class="check-area" ontouchstart="checkDown('${item.id}','new')" ontouchmove="checkCancel()" ontouchend="checkUp(event,'${item.id}','new')" onmousedown="checkDown('${item.id}','new')" onmouseup="checkUp(event,'${item.id}','new')" onmouseleave="checkCancel()">
+          <div class="check-circle">${isDone ? '✓' : ''}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="maker-name">${nb(item.id)}<span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
+            <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
+          </div>
+          <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
+          <div class="card-footer">
+            <span class="method-chip">${item.method}</span>
+            <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
+            <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
+            ${linkBtn}
+          </div>
+        </div>
+      </div>
+      <button class="delete-btn" onclick="deleteItem('${item.id}','new')" title="削除">✕</button>
     </div>`;
   });
   container.innerHTML = html;
@@ -1540,6 +1594,13 @@ function updateCount(tabId) {
     document.getElementById('remaining').textContent = n;
     return;
   }
+  if (tabId === 'new') {
+    const n = Object.values(allData).flat().filter(i =>
+      isNew(i.id) && state[i.id] !== 'deleted' && state[i.id] !== 'done' && !isExpired(getEff(i).deadline)
+    ).length;
+    document.getElementById('remaining').textContent = n;
+    return;
+  }
   if (tabId === 'unknown') {
     const n = Object.values(allData).flat().filter(i => {
       if (state[i.id] === 'deleted' || state[i.id] === 'done') return false;
@@ -1558,6 +1619,7 @@ function renderAll() {
   ['store','maker'].forEach(t => renderTab(t));
   renderPinnedTab();
   renderUnknownTab();
+  renderNewTab();
   renderMemoList();
   renderHistoryTab();
   updateCount(currentTab);
@@ -1568,10 +1630,8 @@ function toggleDone(id, tabId) {
   state[id] = wasDone ? undefined : 'done';
   saveState();
   if (wasDone) { removeHistory(id); } else { addHistory(id); }
-  if (tabId === 'unknown') { renderUnknownTab(); }
-  else if (tabId === 'store' || tabId === 'maker') { renderTab(tabId); }
-  else { renderTab('store'); renderTab('maker'); }
-  renderPinnedTab();
+  renderTab('store'); renderTab('maker');
+  renderPinnedTab(); renderUnknownTab(); renderNewTab();
   renderHistoryTab();
   const sq = document.getElementById('search-input').value.trim();
   if (sq) { renderSearch(sq); } else { updateCount(currentTab); }
@@ -1695,6 +1755,11 @@ function saveApply() {
 
 // ===== 履歴タブの表示 =====
 const CIRC = ['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩','⑪','⑫','⑬','⑭','⑮','⑯','⑰','⑱','⑲','⑳'];
+let histWonOnly = false;
+function toggleHistWon() {
+  histWonOnly = !histWonOnly;
+  renderHistoryTab();
+}
 function renderHistoryTab() {
   const container = document.getElementById('tab-rireki');
   if (!container) return;
@@ -1712,14 +1777,17 @@ function renderHistoryTab() {
     byMonth[key].push([id, r]);
   });
   const nowYear = new Date().getFullYear();
-  let html = '';
+  const totalWon = entries.filter(([, r]) => r.wonWhat).length;
+  let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:4px;"><button class="sort-toggle" onclick="toggleHistWon()">${histWonOnly ? '📔 すべて表示' : '🎯 当選だけ表示（' + totalWon + '件）'}</button></div>`;
   Object.keys(byMonth).map(Number).sort((a, b) => b - a).forEach(key => {
-    const rows = byMonth[key].sort((a, b) => a[1].ts - b[1].ts);
+    const allRows = byMonth[key].sort((a, b) => a[1].ts - b[1].ts);
     const y = Math.floor(key / 100), mo = key % 100;
-    const wonCount = rows.filter(([, r]) => r.wonWhat).length;
+    const wonCount = allRows.filter(([, r]) => r.wonWhat).length;
+    if (histWonOnly && wonCount === 0) return;
     const monthLabel = (y !== nowYear ? y + '年' : '') + mo + '月';
-    html += `<div class="hist-month">${monthLabel}（${rows.length}件応募${wonCount ? '・' + wonCount + '件当選🎯' : ''}）</div>`;
-    rows.forEach(([id, r], idx) => {
+    html += `<div class="hist-month">${monthLabel}（${allRows.length}件応募${wonCount ? '・' + wonCount + '件当選🎯' : ''}）</div>`;
+    allRows.forEach(([id, r], idx) => {
+      if (histWonOnly && !r.wonWhat) return;
       const num = idx < 20 ? CIRC[idx] : (idx + 1) + '.';
       const names = (r.names || []).join('・');
       const won = r.wonWhat ? ` <span class="hist-won-text">🎯 ${r.wonWhat}</span>` : '';
@@ -1736,6 +1804,7 @@ function deleteItem(id, tabId) {
   const cardId = tabId === 'unknown' ? 'unk-card-' + id
                : tabId === 'search'  ? 's-card-' + id
                : tabId === 'pin'     ? 'pin-card-' + id
+               : tabId === 'new'     ? 'newt-card-' + id
                : 'card-' + id;
   const card = document.getElementById(cardId);
   if (card) {
@@ -1747,15 +1816,15 @@ function deleteItem(id, tabId) {
         const sq = document.getElementById('search-input').value.trim();
         if (sq) renderSearch(sq);
         updateCount(currentTab);
-      } else if (tabId === 'unknown') { renderUnknownTab(); updateCount('unknown'); }
-      else if (tabId === 'pin') {
-        // ピンタブで消したら元ネタ（店舗・食品タブ）も同時に消す
-        renderPinnedTab();
+      } else if (tabId === 'unknown') { renderUnknownTab(); renderNewTab(); updateCount('unknown'); }
+      else if (tabId === 'pin' || tabId === 'new') {
+        // ピン/NEWタブで消したら元ネタ（店舗・食品タブ）も同時に消す
+        renderPinnedTab(); renderNewTab();
         renderTab('store'); renderTab('maker');
         renderUnknownTab();
-        updateCount('pin');
+        updateCount(tabId);
       }
-      else { renderTab(tabId); updateCount(tabId); }
+      else { renderTab(tabId); renderNewTab(); updateCount(tabId); }
     }, 280);
   }
 }
