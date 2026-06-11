@@ -1645,10 +1645,16 @@ function saveHist() {
 function methodAbbr(m) {
   const s = String(m || '');
   if (s.includes('WEB')) return 'w';
-  if (s.includes('LINE')) return 'L';
+  if (s.includes('LINE')) return 'LINE';
   if (s.includes('ハガキ') || s.includes('郵送')) return 'ハ';
   if (s.includes('アプリ')) return 'ア';
   return s.slice(0, 3);
+}
+
+// LINE専用応募（WEB併用でない）の懸賞は、デフォルト名義をMラにする
+function defaultNames(item) {
+  const m = String(item && item.method || '');
+  return (m.includes('LINE') && !m.includes('WEB')) ? ['Mラ'] : ['M'];
 }
 
 function addHistory(id) {
@@ -1661,7 +1667,7 @@ function addHistory(id) {
     ts: now.getTime(),
     date: (now.getMonth() + 1) + '/' + now.getDate(),
     label: (item.store || it.storeTag || item.category || '') + '×' + item.maker,
-    names: ['M'],
+    names: defaultNames(item),
     method: methodAbbr(item.method),
     announce: '',
     wonWhat: ''
@@ -1711,7 +1717,7 @@ function openApply(id) {
               : '';
   document.getElementById('apply-title').textContent = label;
   const PRESET = ['M', 'H', 'Mラ', 'たラ'];
-  const names = rec ? rec.names.slice() : ['M'];
+  const names = rec ? rec.names.slice() : defaultNames(item);
   _applySel = names.filter(n => PRESET.includes(n));
   const free = names.filter(n => !PRESET.includes(n)).join('・');
   document.querySelectorAll('#apply-overlay .name-chip').forEach(b => {
@@ -1739,7 +1745,7 @@ function saveApply() {
     const names = _applySel.slice();
     const free = document.getElementById('apply-name-free').value.trim();
     if (free) free.split(/[・,、\s]+/).forEach(n => { if (n) names.push(n); });
-    rec.names = names.length ? names : ['M'];
+    rec.names = names.length ? names : defaultNames(allItems[id]);
     rec.method = document.getElementById('apply-method').value.trim();
     rec.announce = document.getElementById('apply-announce').value.trim();
     rec.wonWhat = document.getElementById('apply-won').value.trim();
