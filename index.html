@@ -235,6 +235,54 @@
     z-index: 10;
     position: relative;
   }
+  .name-chip {
+    font-size: 14px;
+    font-weight: bold;
+    background: #f0f0f0;
+    color: #666;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    padding: 7px 16px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .name-chip.sel {
+    background: #fdeaea;
+    color: #c0392b;
+    border-color: #e74c3c;
+  }
+  .name-chip.chip-line { background: #e8f8e8; color: #1a7a3a; }
+  .name-chip.chip-line.sel {
+    background: #d4f5d4;
+    color: #0a6a2a;
+    border-color: #2eb84d;
+  }
+  .hist-month {
+    font-size: 14px;
+    font-weight: bold;
+    color: #888;
+    padding: 14px 6px 6px;
+  }
+  .hist-row {
+    background: #fff;
+    border-radius: 10px;
+    padding: 9px 12px;
+    margin-bottom: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #333;
+    cursor: pointer;
+  }
+  .hist-row.won {
+    border: 2px solid #e74c3c;
+    background: #fff5f5;
+  }
+  .hist-won-text {
+    color: #c0392b;
+    font-weight: bold;
+  }
+  .hist-meta { color: #999; font-size: 12px; }
   .card-footer {
     display: flex;
     align-items: center;
@@ -428,6 +476,7 @@
     <button class="tab-btn" onclick="switchTab('pin',this)">⭐ ピン</button>
     <button class="tab-btn" onclick="switchTab('unknown',this)">不明</button>
     <button class="tab-btn active" onclick="switchTab('memo',this)">メモ</button>
+    <button class="tab-btn" onclick="switchTab('rireki',this)">📔 履歴</button>
   </div>
   <div class="search-bar">
     <input type="text" id="search-input" placeholder="🔍 キーワードで検索（メーカー・商品・賞品など）" oninput="onSearchInput(this.value)" autocomplete="off">
@@ -443,6 +492,7 @@
 <div id="tab-store"  class="tab-content"></div>
 <div id="tab-maker"  class="tab-content"></div>
 <div id="tab-pin"    class="tab-content"></div>
+<div id="tab-rireki" class="tab-content"></div>
 <div id="tab-memo"   class="tab-content active">
   <div style="padding:8px 0 12px;">
     <button onclick="toggleMemoForm()" style="width:100%;padding:12px;border:2px dashed #ddd;border-radius:12px;background:white;color:#999;font-size:14px;cursor:pointer;font-family:inherit;">＋ 追加</button>
@@ -465,6 +515,41 @@
 </div>
 
 <div id="tab-search" class="tab-content"></div>
+
+<div id="apply-overlay" class="card-edit-overlay" onclick="if(event.target===this)closeApply()">
+  <div class="card-edit-box">
+    <div style="font-weight:bold;font-size:16px;margin-bottom:6px;">📔 応募を記録</div>
+    <div id="apply-title" style="font-size:13px;color:#888;margin-bottom:12px;"></div>
+    <div style="margin-bottom:10px;">
+      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:5px;letter-spacing:0.4px;">名義（複数タップOK）</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;">
+        <button class="name-chip" data-name="M" onclick="toggleNameChip(this)">M</button>
+        <button class="name-chip" data-name="H" onclick="toggleNameChip(this)">H</button>
+        <button class="name-chip chip-line" data-name="Mラ" onclick="toggleNameChip(this)">Mラ</button>
+        <button class="name-chip chip-line" data-name="たラ" onclick="toggleNameChip(this)">たラ</button>
+      </div>
+      <input id="apply-name-free" type="text" placeholder="その他の名義（Z・Kなど）" style="width:100%;margin-top:7px;padding:7px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">応募方法</div>
+        <input id="apply-method" type="text" style="width:100%;padding:7px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">発表時期</div>
+        <input id="apply-announce" type="text" placeholder="例: 7中" style="width:100%;padding:7px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="font-size:11px;color:#e74c3c;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">🎯 当選したら記入</div>
+      <input id="apply-won" type="text" placeholder="例: ￥2000、食品" style="width:100%;padding:7px 10px;border:1px solid #f5c6c6;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="saveApply()" style="flex:1;padding:10px;background:#e74c3c;color:white;border:none;border-radius:10px;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;">記録する</button>
+      <button onclick="closeApply()" style="padding:10px 14px;background:#f0f0f0;color:#888;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit;">キャンセル</button>
+    </div>
+  </div>
+</div>
 
 <div id="card-edit-overlay" class="card-edit-overlay" onclick="if(event.target===this)closeCardEdit()">
   <div class="card-edit-box">
@@ -1063,7 +1148,7 @@ function renderPinnedTab() {
     const ctxLabel = item.store || item.category || '';
     html += `<div class="card${isDone ? ' done' : ''}" id="pin-card-${item.id}">
       <div class="card-inner">
-        <div class="check-area" onclick="toggleDone('${item.id}','${srcTab}')">
+        <div class="check-area" ontouchstart="checkDown('${item.id}','${srcTab}')" ontouchmove="checkCancel()" ontouchend="checkUp(event,'${item.id}','${srcTab}')" onmousedown="checkDown('${item.id}','${srcTab}')" onmouseup="checkUp(event,'${item.id}','${srcTab}')" onmouseleave="checkCancel()">
           <div class="check-circle">${isDone ? '✓' : ''}</div>
         </div>
         <div class="card-body">
@@ -1113,7 +1198,7 @@ function renderUnknownTab() {
     const isPinned = pinned[item.id];
     html += `<div class="card${isDone ? ' done' : ''}" id="unk-card-${item.id}">
       <div class="card-inner">
-        <div class="check-area" onclick="toggleDone('${item.id}','unknown')">
+        <div class="check-area" ontouchstart="checkDown('${item.id}','unknown')" ontouchmove="checkCancel()" ontouchend="checkUp(event,'${item.id}','unknown')" onmousedown="checkDown('${item.id}','unknown')" onmouseup="checkUp(event,'${item.id}','unknown')" onmouseleave="checkCancel()">
           <div class="check-circle">${isDone ? '✓' : ''}</div>
         </div>
         <div class="card-body">
@@ -1169,7 +1254,7 @@ function renderSearch(query) {
       html += `
         <div class="card${isDone ? ' done' : ''}" id="s-card-${item.id}">
           <div class="card-inner">
-            <div class="check-area" onclick="toggleDone('${item.id}','${tabId}')">
+            <div class="check-area" ontouchstart="checkDown('${item.id}','${tabId}')" ontouchmove="checkCancel()" ontouchend="checkUp(event,'${item.id}','${tabId}')" onmousedown="checkDown('${item.id}','${tabId}')" onmouseup="checkUp(event,'${item.id}','${tabId}')" onmouseleave="checkCancel()">
               <div class="check-circle">${isDone ? '✓' : ''}</div>
             </div>
             <div class="card-body">
@@ -1277,7 +1362,7 @@ function renderTab(tabId) {
         const isPinned = pinned[item.id];
         html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
           <div class="card-inner">
-            <div class="check-area" onclick="toggleDone('${item.id}','store')">
+            <div class="check-area" ontouchstart="checkDown('${item.id}','store')" ontouchmove="checkCancel()" ontouchend="checkUp(event,'${item.id}','store')" onmousedown="checkDown('${item.id}','store')" onmouseup="checkUp(event,'${item.id}','store')" onmouseleave="checkCancel()">
               <div class="check-circle">${isDone ? '✓' : ''}</div>
             </div>
             <div class="card-body">
@@ -1321,7 +1406,7 @@ function renderTab(tabId) {
         const isPinned = pinned[item.id];
         html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
           <div class="card-inner">
-            <div class="check-area" onclick="toggleDone('${item.id}','store')">
+            <div class="check-area" ontouchstart="checkDown('${item.id}','store')" ontouchmove="checkCancel()" ontouchend="checkUp(event,'${item.id}','store')" onmousedown="checkDown('${item.id}','store')" onmouseup="checkUp(event,'${item.id}','store')" onmouseleave="checkCancel()">
               <div class="check-circle">${isDone ? '✓' : ''}</div>
             </div>
             <div class="card-body">
@@ -1369,7 +1454,7 @@ function renderTab(tabId) {
       const isPinned = pinned[item.id];
       html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
         <div class="card-inner">
-          <div class="check-area" onclick="toggleDone('${item.id}','maker')">
+          <div class="check-area" ontouchstart="checkDown('${item.id}','maker')" ontouchmove="checkCancel()" ontouchend="checkUp(event,'${item.id}','maker')" onmousedown="checkDown('${item.id}','maker')" onmouseup="checkUp(event,'${item.id}','maker')" onmouseleave="checkCancel()">
             <div class="check-circle">${isDone ? '✓' : ''}</div>
           </div>
           <div class="card-body">
@@ -1414,7 +1499,7 @@ function renderTab(tabId) {
       const isPinned = pinned[item.id];
       html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
         <div class="card-inner">
-          <div class="check-area" onclick="toggleDone('${item.id}','maker')">
+          <div class="check-area" ontouchstart="checkDown('${item.id}','maker')" ontouchmove="checkCancel()" ontouchend="checkUp(event,'${item.id}','maker')" onmousedown="checkDown('${item.id}','maker')" onmouseup="checkUp(event,'${item.id}','maker')" onmouseleave="checkCancel()">
             <div class="check-circle">${isDone ? '✓' : ''}</div>
           </div>
           <div class="card-body">
@@ -1440,6 +1525,16 @@ function renderTab(tabId) {
 
 function updateCount(tabId) {
   if (tabId === 'memo') { updateMemoCount(); return; }
+  if (tabId === 'rireki') {
+    const now = new Date();
+    const k = now.getFullYear() * 100 + (now.getMonth() + 1);
+    const n = Object.values(hist).filter(r => {
+      const d = new Date(r.ts);
+      return d.getFullYear() * 100 + (d.getMonth() + 1) === k;
+    }).length;
+    document.getElementById('remaining').textContent = n;
+    return;
+  }
   if (tabId === 'pin') {
     const n = Object.values(allData).flat().filter(i => pinned[i.id] && state[i.id] !== 'deleted' && state[i.id] !== 'done' && !isExpired(getEff(i).deadline)).length;
     document.getElementById('remaining').textContent = n;
@@ -1464,16 +1559,177 @@ function renderAll() {
   renderPinnedTab();
   renderUnknownTab();
   renderMemoList();
+  renderHistoryTab();
   updateCount(currentTab);
 }
 
 function toggleDone(id, tabId) {
-  state[id] = state[id] === 'done' ? undefined : 'done';
+  const wasDone = state[id] === 'done';
+  state[id] = wasDone ? undefined : 'done';
   saveState();
+  if (wasDone) { removeHistory(id); } else { addHistory(id); }
   if (tabId === 'unknown') { renderUnknownTab(); }
-  else { renderTab(tabId); }
+  else if (tabId === 'store' || tabId === 'maker') { renderTab(tabId); }
+  else { renderTab('store'); renderTab('maker'); }
+  renderPinnedTab();
+  renderHistoryTab();
   const sq = document.getElementById('search-input').value.trim();
-  if (sq) { renderSearch(sq); } else { updateCount(tabId); }
+  if (sq) { renderSearch(sq); } else { updateCount(currentTab); }
+}
+
+// ===== 応募履歴（手書きノートのアプリ版） =====
+const HIST_KEY = 'kenshow_history_v1';
+let hist = {};
+try { hist = JSON.parse(localStorage.getItem(HIST_KEY)) || {}; } catch(e) {}
+function saveHist() {
+  try { localStorage.setItem(HIST_KEY, JSON.stringify(hist)); } catch(e) {}
+}
+
+function methodAbbr(m) {
+  const s = String(m || '');
+  if (s.includes('WEB')) return 'w';
+  if (s.includes('LINE')) return 'L';
+  if (s.includes('ハガキ') || s.includes('郵送')) return 'ハ';
+  if (s.includes('アプリ')) return 'ア';
+  return s.slice(0, 3);
+}
+
+function addHistory(id) {
+  if (hist[id]) return;
+  const item = allItems[id];
+  if (!item) return;
+  const it = getEff(item);
+  const now = new Date();
+  hist[id] = {
+    ts: now.getTime(),
+    date: (now.getMonth() + 1) + '/' + now.getDate(),
+    label: (item.store || it.storeTag || item.category || '') + '×' + item.maker,
+    names: ['M'],
+    method: methodAbbr(item.method),
+    announce: '',
+    wonWhat: ''
+  };
+  saveHist();
+}
+
+function removeHistory(id) {
+  if (hist[id]) { delete hist[id]; saveHist(); }
+}
+
+// ===== チェックマルの長押し判定 =====
+let _cTimer = null, _cFired = false;
+function checkDown(id, tab) {
+  _cFired = false;
+  clearTimeout(_cTimer);
+  _cTimer = setTimeout(() => { _cFired = true; openApply(id); }, 500);
+}
+function checkCancel() {
+  clearTimeout(_cTimer);
+  _cFired = true;
+}
+function checkUp(e, id, tab) {
+  if (e && e.cancelable) e.preventDefault();
+  clearTimeout(_cTimer);
+  if (_cFired) return;
+  _cFired = true;
+  toggleDone(id, tab);
+}
+
+// ===== 応募記録の小窓 =====
+let applyId = null;
+let _applySel = [];
+function toggleNameChip(btn) {
+  const n = btn.dataset.name;
+  const i = _applySel.indexOf(n);
+  if (i >= 0) { _applySel.splice(i, 1); btn.classList.remove('sel'); }
+  else { _applySel.push(n); btn.classList.add('sel'); }
+}
+
+function openApply(id) {
+  applyId = id;
+  const rec = hist[id];
+  const item = allItems[id];
+  const label = rec ? rec.label
+              : item ? (item.store || getEff(item).storeTag || item.category || '') + '×' + item.maker
+              : '';
+  document.getElementById('apply-title').textContent = label;
+  const PRESET = ['M', 'H', 'Mラ', 'たラ'];
+  const names = rec ? rec.names.slice() : ['M'];
+  _applySel = names.filter(n => PRESET.includes(n));
+  const free = names.filter(n => !PRESET.includes(n)).join('・');
+  document.querySelectorAll('#apply-overlay .name-chip').forEach(b => {
+    b.classList.toggle('sel', _applySel.includes(b.dataset.name));
+  });
+  document.getElementById('apply-name-free').value = free;
+  document.getElementById('apply-method').value = rec ? rec.method : methodAbbr(item ? item.method : '');
+  document.getElementById('apply-announce').value = rec ? rec.announce : '';
+  document.getElementById('apply-won').value = rec ? rec.wonWhat : '';
+  document.getElementById('apply-overlay').classList.add('open');
+}
+
+function closeApply() {
+  document.getElementById('apply-overlay').classList.remove('open');
+  applyId = null;
+}
+
+function saveApply() {
+  if (!applyId) return;
+  const id = applyId;
+  if (state[id] !== 'done') { state[id] = 'done'; saveState(); }
+  if (!hist[id]) addHistory(id);
+  const rec = hist[id];
+  if (rec) {
+    const names = _applySel.slice();
+    const free = document.getElementById('apply-name-free').value.trim();
+    if (free) free.split(/[・,、\s]+/).forEach(n => { if (n) names.push(n); });
+    rec.names = names.length ? names : ['M'];
+    rec.method = document.getElementById('apply-method').value.trim();
+    rec.announce = document.getElementById('apply-announce').value.trim();
+    rec.wonWhat = document.getElementById('apply-won').value.trim();
+    saveHist();
+  }
+  closeApply();
+  renderAll();
+  renderHistoryTab();
+}
+
+// ===== 履歴タブの表示 =====
+const CIRC = ['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩','⑪','⑫','⑬','⑭','⑮','⑯','⑰','⑱','⑲','⑳'];
+function renderHistoryTab() {
+  const container = document.getElementById('tab-rireki');
+  if (!container) return;
+  const entries = Object.entries(hist);
+  if (entries.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="emoji">📔</div>まだ応募記録がありません<br><small style="font-size:12px">カードのマルを押すと自動で記録されます<br>長押しで名義を選べます</small></div>';
+    return;
+  }
+  // 月ごとにまとめる（新しい月が上、月内は応募順）
+  const byMonth = {};
+  entries.forEach(([id, r]) => {
+    const d = new Date(r.ts);
+    const key = d.getFullYear() * 100 + (d.getMonth() + 1);
+    if (!byMonth[key]) byMonth[key] = [];
+    byMonth[key].push([id, r]);
+  });
+  const nowYear = new Date().getFullYear();
+  let html = '';
+  Object.keys(byMonth).map(Number).sort((a, b) => b - a).forEach(key => {
+    const rows = byMonth[key].sort((a, b) => a[1].ts - b[1].ts);
+    const y = Math.floor(key / 100), mo = key % 100;
+    const wonCount = rows.filter(([, r]) => r.wonWhat).length;
+    const monthLabel = (y !== nowYear ? y + '年' : '') + mo + '月';
+    html += `<div class="hist-month">${monthLabel}（${rows.length}件応募${wonCount ? '・' + wonCount + '件当選🎯' : ''}）</div>`;
+    rows.forEach(([id, r], idx) => {
+      const num = idx < 20 ? CIRC[idx] : (idx + 1) + '.';
+      const names = (r.names || []).join('・');
+      const won = r.wonWhat ? ` <span class="hist-won-text">🎯 ${r.wonWhat}</span>` : '';
+      html += `<div class="hist-row${r.wonWhat ? ' won' : ''}" onclick="openApply('${id}')">
+        ${num} ${r.label}　<b>${names}</b>　${r.method || ''}　${r.announce || '－'}${won}
+        <span class="hist-meta">　${r.date}応募</span>
+      </div>`;
+    });
+  });
+  container.innerHTML = html;
 }
 
 function deleteItem(id, tabId) {
