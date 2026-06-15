@@ -1823,7 +1823,6 @@ function renderHistoryTab() {
       const won = r.wonWhat ? ` <span class="hist-won-text">🎯 ${r.wonWhat}</span>` : '';
       html += `<div class="hist-row${r.wonWhat ? ' won' : ''}" onclick="openApply('${id}')">
         ${nums.join('')} ${r.label}　<b>${names}</b>　${r.method || ''}　${r.announce || '－'}${won}
-        <span class="hist-meta">　${r.date}応募</span>
       </div>`;
     });
   });
