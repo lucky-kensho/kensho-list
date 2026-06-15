@@ -1593,7 +1593,7 @@ function updateCount(tabId) {
     const n = Object.values(hist).filter(r => {
       const d = new Date(r.ts);
       return d.getFullYear() * 100 + (d.getMonth() + 1) === k;
-    }).length;
+    }).reduce((s, r) => s + Math.max(1, (r.names || []).length), 0);
     document.getElementById('remaining').textContent = n;
     return;
   }
@@ -1792,21 +1792,29 @@ function renderHistoryTab() {
   });
   const nowYear = new Date().getFullYear();
   const totalWon = entries.filter(([, r]) => r.wonWhat).length;
+  // 名義の数＝口数（最低1口）
+  const kuchi = r => Math.max(1, (r.names || []).length);
+  const numLabel = n => n <= 20 ? CIRC[n - 1] : n + '.';
   let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:4px;"><button class="sort-toggle" onclick="toggleHistWon()">${histWonOnly ? '📔 すべて表示' : '🎯 当選だけ表示（' + totalWon + '件）'}</button></div>`;
   Object.keys(byMonth).map(Number).sort((a, b) => b - a).forEach(key => {
     const allRows = byMonth[key].sort((a, b) => a[1].ts - b[1].ts);
     const y = Math.floor(key / 100), mo = key % 100;
     const wonCount = allRows.filter(([, r]) => r.wonWhat).length;
+    const kuchiTotal = allRows.reduce((s, [, r]) => s + kuchi(r), 0);
     if (histWonOnly && wonCount === 0) return;
     const monthLabel = (y !== nowYear ? y + '年' : '') + mo + '月';
-    html += `<div class="hist-month">${monthLabel}（${allRows.length}件応募${wonCount ? '・' + wonCount + '件当選🎯' : ''}）</div>`;
-    allRows.forEach(([id, r], idx) => {
+    html += `<div class="hist-month">${monthLabel}（${kuchiTotal}口応募${wonCount ? '・' + wonCount + '件当選🎯' : ''}）</div>`;
+    let counter = 0;  // 月内の通し番号（口ごとに加算）
+    allRows.forEach(([id, r]) => {
+      const k = kuchi(r);
+      // この行に割り当てる番号（口数ぶん連番）
+      const nums = [];
+      for (let j = 0; j < k; j++) { counter++; nums.push(numLabel(counter)); }
       if (histWonOnly && !r.wonWhat) return;
-      const num = idx < 20 ? CIRC[idx] : (idx + 1) + '.';
       const names = (r.names || []).join('・');
       const won = r.wonWhat ? ` <span class="hist-won-text">🎯 ${r.wonWhat}</span>` : '';
       html += `<div class="hist-row${r.wonWhat ? ' won' : ''}" onclick="openApply('${id}')">
-        ${num} ${r.label}　<b>${names}</b>　${r.method || ''}　${r.announce || '－'}${won}
+        ${nums.join('')} ${r.label}　<b>${names}</b>　${r.method || ''}　${r.announce || '－'}${won}
         <span class="hist-meta">　${r.date}応募</span>
       </div>`;
     });
