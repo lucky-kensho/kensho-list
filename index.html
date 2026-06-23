@@ -469,7 +469,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年6月23日更新　全403件</div>
+  <div class="header-date">2026年6月23日更新　応募できる<span id="active-count">403</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -1132,6 +1132,8 @@ function togglePin(id) {
   if (item) renderTab(item.store ? 'store' : 'maker');
   renderUnknownTab();
   renderNewTab();
+  const sq = document.getElementById('search-input').value.trim();
+  if (sq) renderSearch(sq);
   updateCount(currentTab);
 }
 
@@ -1618,6 +1620,7 @@ function renderTab(tabId) {
 }
 
 function updateCount(tabId) {
+  updateActiveCount();
   if (tabId === 'memo') { updateMemoCount(); return; }
   if (tabId === 'rireki') {
     const now = new Date();
@@ -1655,6 +1658,16 @@ function updateCount(tabId) {
   document.getElementById('remaining').textContent = n;
 }
 
+// ヘッダーの「応募できる○件」＝期限切れ・応募済み・×削除を除いた、今作業できる件数
+function updateActiveCount() {
+  const el = document.getElementById('active-count');
+  if (!el) return;
+  const n = Object.keys(allItems).filter(id =>
+    state[id] !== 'deleted' && state[id] !== 'done' && !isExpired(getEff(allItems[id]).deadline)
+  ).length;
+  el.textContent = n;
+}
+
 function renderAll() {
   ['store','maker'].forEach(t => renderTab(t));
   renderPinnedTab();
@@ -1662,6 +1675,7 @@ function renderAll() {
   renderNewTab();
   renderMemoList();
   renderHistoryTab();
+  updateActiveCount();
   updateCount(currentTab);
 }
 
