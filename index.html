@@ -283,6 +283,21 @@
     font-weight: bold;
   }
   .hist-meta { color: #999; font-size: 12px; }
+  .hist-num {
+    display: inline-block;
+    min-width: 19px;
+    height: 19px;
+    line-height: 19px;
+    text-align: center;
+    background: #e74c3c;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 0 2px;
+    margin-right: 2px;
+    box-sizing: border-box;
+  }
   .card-footer {
     display: flex;
     align-items: center;
@@ -469,7 +484,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年6月23日更新　応募できる<span id="active-count">407</span>件</div>
+  <div class="header-date">2026年6月24日更新　応募できる<span id="active-count">405</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -493,7 +508,14 @@
 <div id="tab-store"  class="tab-content"></div>
 <div id="tab-maker"  class="tab-content"></div>
 <div id="tab-pin"    class="tab-content"></div>
-<div id="tab-rireki" class="tab-content"></div>
+<div id="tab-rireki" class="tab-content">
+  <div style="display:flex;gap:8px;margin-bottom:8px;">
+    <button class="sort-toggle" onclick="openManualApply()">＋ 手動で追加</button>
+    <button class="sort-toggle" id="hist-won-btn" onclick="toggleHistWon()" style="margin-left:auto;">🎯 当選だけ</button>
+  </div>
+  <input type="text" id="hist-search" oninput="onHistSearch(this.value)" placeholder="🔍 履歴内を検索" autocomplete="off" style="width:100%;padding:9px 12px;border:1px solid #e0e0e0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;margin-bottom:10px;">
+  <div id="rireki-list"></div>
+</div>
 <div id="tab-new"    class="tab-content"></div>
 <div id="tab-memo"   class="tab-content active">
   <div style="padding:8px 0 12px;">
@@ -520,8 +542,11 @@
 
 <div id="apply-overlay" class="card-edit-overlay" onclick="if(event.target===this)closeApply()">
   <div class="card-edit-box">
-    <div style="font-weight:bold;font-size:16px;margin-bottom:6px;">📔 応募を記録</div>
-    <div id="apply-title" style="font-size:13px;color:#888;margin-bottom:12px;"></div>
+    <div style="font-weight:bold;font-size:16px;margin-bottom:8px;">📔 応募を記録</div>
+    <div style="margin-bottom:10px;">
+      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">キャンペーン名（店舗×メーカー）</div>
+      <input id="apply-label" type="text" placeholder="例: オーケー×エバラ 焼肉CP" style="width:100%;padding:7px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
+    </div>
     <div style="margin-bottom:10px;">
       <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:5px;letter-spacing:0.4px;">名義（複数タップOK）</div>
       <div style="display:flex;gap:7px;flex-wrap:wrap;">
@@ -549,6 +574,9 @@
     <div style="display:flex;gap:8px;">
       <button onclick="saveApply()" style="flex:1;padding:10px;background:#e74c3c;color:white;border:none;border-radius:10px;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;">記録する</button>
       <button onclick="closeApply()" style="padding:10px 14px;background:#f0f0f0;color:#888;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit;">キャンセル</button>
+    </div>
+    <div style="text-align:center;margin-top:10px;">
+      <button id="apply-del" onclick="deleteApplyRecord()" style="font-size:12px;background:none;border:none;color:#c0392b;cursor:pointer;font-family:inherit;text-decoration:underline;">🗑 この応募記録を削除</button>
     </div>
   </div>
 </div>
@@ -650,13 +678,13 @@ const allData = {
     {id:'s_b7b75f97',since:1781485553020,store:'スギ薬局',maker:'ライオン',deadline:'7/5（7/12）',dlClass:'dl-yellow',buy:'スギ薬局にて、ライオン対象商品1,000円(税込)購入ごとにスギ薬局アプリで1スタンプを貯め、各コースに必要なスタンプ数を1口として応募',method:'スギ薬局にて、ライオン対象商品1,000円(税込)購入ごとに',prize:'Aコース(スタンプ3個)：スギポイント50,000ポイント×10名\nBコース(スタンプ2個)：スギポイント5,000ポイント×90名\nCコース(スタンプ1個)：スギポイント500ポイント×100名',url:'https://www.sugi-net.jp/sugi-channel/4158'},
     {id:'s_69d6c140',since:1781943911524,store:'スギ薬局',maker:'アサヒ飲料',deadline:'7/12（7/19）',dlClass:'dl-yellow',buy:'スギ薬局にて、アサヒ飲料対象商品500円(税込)購入ごとにスギ薬局アプリで1スタンプを貯め、1スタンプ1口として応募',method:'スギ薬局にて、アサヒ飲料対象商品500円(税込)購入ごとにス',prize:'スーギー・スーニャオリジナルトートバッグ×77名\nWチャンス：スギポイント500ポイント×777名',url:'https://www.sugi-net.jp/sugi-channel/4159'},
     {id:'s_21076569',since:1781485553020,store:'スギ薬局',maker:'持田ヘルスケア',deadline:'7/26（8/2）',dlClass:'dl-green',buy:'スギ薬局にて、持田ヘルスケア対象商品3,000円(税込)購入ごとにスギ薬局アプリで1スタンプを貯め、各コースに必要なスタンプ数を1口として応募',method:'スギ薬局にて、持田ヘルスケア対象商品3,000円(税込)購入',prize:'スタンプ3個コース：エアー4DX ピロー×5名\nスタンプ2個コース：スギポイント30,000ポイント×20名\nスタンプ1個コース：選べるお取り寄せグルメギフトカード×50名',url:'https://www.sugi-net.jp/sugi-channel/4170'},
-    {id:'s_c252d12d',since:0,store:'ドミー',maker:'丸美屋★アニー名古屋公演',deadline:'7/1(水)当日消印有効',dlClass:'dl-yellow',buy:'対象商品購入レシートで応募',method:'ハガキ',prize:'ｱﾆｰﾍﾟｱ･100組200名',url:'https://www.domy.co.jp/specialevent/#event2606_01'},
+    {id:'s_c252d12d',since:0,store:'ドミー',maker:'丸美屋★アニー名古屋公演',deadline:'7/1(水)当日消印有効',dlClass:'dl-red',buy:'対象商品購入レシートで応募',method:'ハガキ',prize:'ｱﾆｰﾍﾟｱ･100組200名',url:'https://www.domy.co.jp/specialevent/#event2606_01'},
     {id:'s_3419979b',since:0,store:'ドン・キホーテ',maker:'コカ・コーラ社',deadline:'6/1～7/5(日)23:59',dlClass:'dl-yellow',buy:'コカ・コーラ社製品\n100円(税抜)につき1P・3Pで応募',method:'LINE',prize:'ドリンクボトル450名・¥1,000分450名',url:'https://lsp-campaign.com/customercp-2026-6/lp.go'},
     {id:'s_bee77a4f',since:0,store:'ニシザワ',maker:'S＆Bカレー',deadline:'7/6(月)〆切',dlClass:'dl-yellow',buy:'対象商品1個以上含\n2000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'ﾚｺﾙﾄ自動調理ﾎﾟｯﾄ･2名\n商品券1000円･10名',url:'https://www.ichance.jp/sb/cp-2026SS/7/'},
     {id:'s_e69ddab8',since:1781485553020,store:'ビッグ・エー',maker:'コカ・コーラ',deadline:'7/5',dlClass:'dl-yellow',buy:'ビッグ・エーにて、コカ・コーラ対象商品を購入したレシートをアップロードして100円(税抜)ごとに1シールを貯め、各コースに必要なシール数を1口として応募',method:'ビッグ・エーにて、コカ・コーラ対象商品を購入したレシートをア',prize:'A賞(10シールコース)：Visa ギフトカード 10,000円分×10名\nB賞(3シールコース)：ステンレスサーモドリンクボトル×100名\nWチャンス賞：Visa eギフト 1,000円分×100名',url:'https://lsp-campaign.com/customercp-2026-6/lp.go'},
     {id:'s_2cbc577a',since:0,store:'ファミリーマート',maker:'',deadline:'',dlClass:'dl-gray',buy:'対象商品購入',method:'',prize:'ネコ',url:''},
     {id:'s_c20ca14d',since:0,store:'マルエツ',maker:'コカ・コーラ社',deadline:'6/1～7/5(日)23:59',dlClass:'dl-yellow',buy:'コカ・コーラ社製品\n100円(税抜)につき1P・3Pで応募',method:'LINE',prize:'¥3,000分200名・¥1,000分300名',url:'https://lsp-campaign.com/customercp-2026-6/lp.go'},
-    {id:'s_a9552270',since:0,store:'マルエツ',maker:'サッポロビール',deadline:'7/1(水)23:59',dlClass:'dl-yellow',buy:'サッポロビール商品\n1000円(税込)以上',method:'WEB',prize:'BRUNOホットプレート10名・北海道おつまみセット40名(各コース選べる商品2種×3本付)',url:'https://www.iwebms.com/cp/maruetsu_sapporobeer202606/'},
+    {id:'s_a9552270',since:0,store:'マルエツ',maker:'サッポロビール',deadline:'7/1(水)23:59',dlClass:'dl-red',buy:'サッポロビール商品\n1000円(税込)以上',method:'WEB',prize:'BRUNOホットプレート10名・北海道おつまみセット40名(各コース選べる商品2種×3本付)',url:'https://www.iwebms.com/cp/maruetsu_sapporobeer202606/'},
     {id:'s_9640dda9',since:0,store:'マルエツ',maker:'夏の食体験ツアー',deadline:'7/3(金)23:59',dlClass:'dl-yellow',buy:'対象商品購入レシートで応募',method:'WEB',prize:'賞品',url:'https://www.iwebms.com/cp/maruetsu-foods2026/'},
     {id:'s_279bd8a7',since:1782202216811,store:'マルエツ',maker:'ミツカン・ヤクルト',deadline:'7/5（7/21）',dlClass:'dl-yellow',buy:'マルエツにて、キャンペーン対象商品500円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'松阪まるよし 松阪牛 焼肉用(バラ)450g×100名',url:'https://www.tv-asahi.co.jp/wakuwaku/'},
     {id:'s_7840c15b',since:0,store:'マルエツ',maker:'エバラ食品工業',deadline:'8/1(土)23:59',dlClass:'dl-green',buy:'プチっと調味料等エバラ食品商品\nエバラ食品含む850円(税込)以上購入',method:'WEB・ハガキ',prize:'STAN.深型ホットプレート50名・(B)マルエツ商品券¥1,000分200名',url:'https://www.ebarafoods.com/shiten/campaign/index00365.html'},
@@ -709,7 +737,7 @@ const allData = {
     {id:'s_f0c24c5c',since:0,store:'いなげや',maker:'秋田米',deadline:'5/1〜7/5(日)23:59',dlClass:'dl-yellow',buy:'対象商品購入ﾚｼｰﾄ応募',method:'WEB',prize:'A･秋田牛豚ｾｯﾄ･40名\nB･秋田ﾊﾑﾊﾞｰﾍﾞｷｭｰｾｯﾄ･70名\nW･商品券1000円･90名',url:'https://www.inageya.co.jp/campaign/20260501_0706.html'},
     {id:'s_b8339128',since:0,store:'いなげや',maker:'全農パールライス',deadline:'7/5',dlClass:'dl-yellow',buy:'秋田県産あきたこまち・サキホコレ5kg\n対象商品購入レシート',method:'WEB',prize:'A:秋田牛・美味豚セット(40名)\nB:秋田高原ハムセット(70名)\nW:商品券1000円(90名)',url:'https://www.inageya.co.jp/campaign/20260501_0706.html'},
     {id:'s_76cf5a45',since:0,store:'いなげや',maker:'ダノンジャパン',deadline:'7/31',dlClass:'dl-green',buy:'ダノン ビオ全商品\nダノン ビオ2個以上含む\n1000円以上 購入レシート',method:'WEB・ハガキ',prize:'A:グラファイトトースター(20名)\nB:商品券2000円(50名)',url:'https://www.inageya.co.jp/campaign/20260501_0801.html'},
-    {id:'s_e09a2ecc',since:0,store:'まいばすけっと',maker:'サントリー',deadline:'7/1',dlClass:'dl-yellow',buy:'対象商品購入',method:'',prize:'1等：5,000 WAON POINT×100口\n2等：100 WAON POINT×3,000口',url:'https://kenshomin.hatenablog.jp/entry/2026/05/22/140100'},
+    {id:'s_e09a2ecc',since:0,store:'まいばすけっと',maker:'サントリー',deadline:'7/1',dlClass:'dl-red',buy:'対象商品購入',method:'',prize:'1等：5,000 WAON POINT×100口\n2等：100 WAON POINT×3,000口',url:'https://kenshomin.hatenablog.jp/entry/2026/05/22/140100'},
     {id:'s_7c15ab71',since:0,store:'イオン',maker:'キユーピー',deadline:'6/21（6/24）',dlClass:'dl-red',buy:'イオン対象店舗にて、イオンお買物アプリの「クーポン・会員コードを使う」をタップして表示されるバーコードをスキャンのうえ、キューピー対象商品1,000円(税抜)以上と野菜・サラダ2,000円(税抜)以上購入して、イオンお買物アプリで応募',method:'イオン対象店舗にて、イオンお買物アプリの「クーポン・会員コー',prize:'食料品1,000円(税抜)引きイオンお買物アプリ値引クーポン×1,000名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/27/140400'},
     {id:'s_61739aea',since:0,store:'イオン',maker:'江崎グリコ',deadline:'6/30',dlClass:'dl-red',buy:'抽選参加カードが設置されたイオンにてにて、「牧場しぼり」1点以上購入したレシートで、WEBから応募',method:'WEB',prize:'1等：WAON POINT 1,000ポイント×最大200名\n2等：WAON POINT 100ポイント×最大2,000名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/27/140300'},
     {id:'s_8930e1e0',since:0,store:'イトーヨーカドー',maker:'プリマハム',deadline:'7/5(日)23:59',dlClass:'dl-yellow',buy:'対象商品購入レシート\n期間:2026年5月1日(金)～6月30日(火)',method:'',prize:'東京ディズニーランド® プライベート・イブニング・パーティーチケット(ペア)×150組300名',url:'https://mrktsec.jp/primaham/2026PEP_itoyokado0501'},
@@ -722,7 +750,7 @@ const allData = {
     {id:'s_d74fabd2',since:0,store:'オーケー',maker:'サントリー',deadline:'7/12（7/13）',dlClass:'dl-yellow',buy:'オーケーにて、サントリー対象商品500円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'A賞：ユニバーサル・スタジオ・ジャパン ペアチケット×25組50名\nB賞：えらべるPay 2,000ポイント×50名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/20/140300'},
     {id:'s_4cf188e9',since:0,store:'オーケー',maker:'キリンビール・キリンビバレッジ',deadline:'7/19（7/21）',dlClass:'dl-yellow',buy:'オーケーにて、対象商品を含む2,500円(税抜)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'A賞：キリンカップサッカー2026観戦ペアチケット×50組100名\nB賞：サッカー日本代表 ティロ26 プロ レインジャケット×20名\nC賞：キリンビール・キリンビバレッジ商品詰合せセット×100名',url:'https://cp.kirin.jp/story/37310'},
     {id:'s_c6d05087',since:0,store:'オーケー',maker:'ダノンジャパン',deadline:'7/31(金)23:59',dlClass:'dl-green',buy:'対象商品購入レシート\n期間:2026年5月1日(金)～7月31日(金)',method:'ダノンビオ全品',prize:'Aコース：アラジン グラファイトトースター2枚焼き×20名\nBコース：オーケー商品券2,000円分×50名',url:''},
-    {id:'s_2a323002',since:0,store:'サミット',maker:'キリングループ',deadline:'7/1(水)23:59',dlClass:'dl-yellow',buy:'サミットにて、対象商品3点以上を含む3,000円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募\n期間:2026年5月1日(金)～6月30日(火)',method:'WEB・ハガキ',prize:'A賞：キリンカップサッカー2026 観戦ペアチケット×40組80名\nB賞：サッカー日本代表 2026 ホーム ジムバッグ×50名',url:'https://cp.kirin.jp/story/37251'},
+    {id:'s_2a323002',since:0,store:'サミット',maker:'キリングループ',deadline:'7/1(水)23:59',dlClass:'dl-red',buy:'サミットにて、対象商品3点以上を含む3,000円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募\n期間:2026年5月1日(金)～6月30日(火)',method:'WEB・ハガキ',prize:'A賞：キリンカップサッカー2026 観戦ペアチケット×40組80名\nB賞：サッカー日本代表 2026 ホーム ジムバッグ×50名',url:'https://cp.kirin.jp/story/37251'},
     {id:'s_5a8ab384',since:0,store:'サミット',maker:'カゴメ',deadline:'7/5(日)23:59',dlClass:'dl-yellow',buy:'サミットにて、各コースに必要な条件を満たすレシートを1口として、LINEで応募\n期間:2026年5月1日(金)～6月30日(火)',method:'LINE',prize:'完熟コース：えらべるPay 10,000円分×3名\n実りコース：えらべるPay 3,000円分×12名\n開花コース：えらべるPay 1,000円分×110名',url:'https://cp-master.com/tomato-charge/summitstore'},
     {id:'s_4a122d6f',since:0,store:'サミット',maker:'ダノンジャパン',deadline:'7/31消印',dlClass:'dl-green',buy:'対象商品購入',method:'',prize:'Aコース：アラジン グラファイトトースター2枚焼き×20名\nBコース：サミット商品券2,000円分×50名',url:'https://form.qooker.jp/Q/ja/biocpsummit2605/receiver/?pd_underbar_flag=1&pd_17=hagaki'},
     {id:'s_4789990b',since:0,store:'ジェーソン',maker:'フマキラー',deadline:'6/30（7/7）',dlClass:'dl-yellow',buy:'ジェーソンにて、フマキラー商品500円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'A賞：JCBギフトカード5,000円分×10名\nB賞：ハーゲンダッツギフト券×20名\nWチャンス賞：フマキラー商品詰め合わせ(3,000円相当)×20名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/15/140400'},
@@ -736,7 +764,6 @@ const allData = {
     {id:'s_be48b8fc',since:0,store:'フィール',maker:'丸美屋･アニー',deadline:'7/3(金)23:59',dlClass:'dl-yellow',buy:'愛知県芸術劇場',method:'WEB',prize:'ｱﾆｰ招待･150組300名',url:'https://feel-corp.jp/sale/26Annie%20feel%20HP%20CPgaiyou.pdf'},
     {id:'s_dc134899',since:0,store:'フジ',maker:'プリマハム ダイヤモンドホースシュー',deadline:'7/27(月)〆切',dlClass:'dl-green',buy:'対象商品購入レシートで応募',method:'WEB･ハガキ',prize:'ﾀﾞｲﾔﾓﾝﾄﾞﾎｰｽｼｭｰ招待･30組120名',url:'https://ameblo.jp/rsj64177/entry-12967243984.html'},
     {id:'s_78869772',since:0,store:'フマキラー',maker:'ポムポムプリン',deadline:'7/31',dlClass:'dl-green',buy:'キッチンアルコール除菌シリーズ\n１０００込、４００込\nフマキラー対象商品を各コースに必要な金額以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'1,000円コース：Toffy遠赤ヒーターオーブントースター（K-HTS2）×30名\n400円コース：オリジナルランチケース×30名\nWチャンス賞：フマキラー商品詰め合わせ＋オリジナルデザインQUOカード500円分×100名',url:'https://fumakilla.jp/alcohol_jyokin/30th/kitchenjyokincampaign/'},
-    {id:'s_b5bb68dd',since:0,store:'マルエツ',maker:'ニップン・永谷園',deadline:'6/7（6/23）',dlClass:'dl-red',buy:'WEB・ハガキ\nマルエツにて、キャンペーン対象商品500円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'博多あまおうのこだわりアイス×100名',prize:'気まぐれ',url:'https://www.tv-asahi.co.jp/wakuwaku/'},
     {id:'s_61264ee6',since:0,store:'ヤオコー',maker:'久原醤油',deadline:'7/3(金)',dlClass:'dl-yellow',buy:'ヤオコーにて久原醤油対象商品2品を含む1,500円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'A賞：練習見学会付き観戦チケット×20組40名\nB賞：選手直筆サイン入りユニフォーム×10名\nC賞：ヤオコー商品券3,000円分×20名\n特別賞：久原醤油商品詰め合わせセット×30名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/01/140300'},
     {id:'s_eac128a8',since:0,store:'ヤオコー',maker:'ロッテ',deadline:'7/5(日)消印',dlClass:'dl-yellow',buy:'ヤオコーにて、ロッテ対象商品500円(税抜)以上購入したレシートを1口として、郵送で応募\n期間:2026年5月1日(金)～6月30日(火)',method:'ハガキ',prize:'オリジナルコアラのマーチが無料で作れちゃうクーポン×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/05/06/140300'},
     {id:'s_c7d57c66',since:0,store:'ヤオコー',maker:'ダノンジャパン',deadline:'7/31(金)23:59',dlClass:'dl-green',buy:'対象商品購入レシート\n期間:2026年5月1日(金)～7月31日(金)',method:'',prize:'Aコース：アラジン グラファイトトースター2枚焼き×20名\nBコース：ヤオコー商品券2,000円分×50名',url:'https://form.qooker.jp/Q/ja/biocpyaoko2605/receiver/?pd_underbar_flag=1&pd_17=hagaki'},
@@ -783,7 +810,6 @@ const allData = {
     {id:'m_4fa70e3b',since:0,category:'日用品',cat:'cat-daily',maker:'カビキラーアルコール除菌　ショーンと一緒にLet’s除菌！キャンペーン',deadline:'',dlClass:'dl-gray',buy:'カビキラーアルコール除菌シリーズ\n※詳細は公式サイトを確認してください。\n対象商品購入レシート',method:'LINE',prize:'※詳細は公式サイトを確認してください。\n※詳細は公式サイト、応募用紙等をご確認下さい。',url:'https://kabikiller-shaun.campar.jp/'},
     {id:'m_7b8ba6ea',since:0,category:'日用品',cat:'cat-daily',maker:'エステー　消臭力ゴミ箱用×脱臭炭ゴミ箱用',deadline:'46203',dlClass:'dl-gray',buy:'・消臭力 ゴミ箱用 2個入 シトラスミントの香り\n・消臭力 ゴミ箱用 コバエよけ効果プラス 2個入 メントールスカッシュの香り\n・消臭力 ゴミ箱用 抗菌効果プラ\n対象商品×1\n購入レシート',method:'WEB',prize:'えらべるPay 5,393円分…100名',url:'https://campaign.cp.dline.jp/gomikusa2026/'},
     {id:'m_c214234d',since:0,category:'日用品',cat:'cat-daily',maker:'シック　シック･イントゥイション',deadline:'',dlClass:'dl-gray',buy:'対象商品1点以上',method:'WEB',prize:'A･ｻｲﾝ+ﾍｱﾊﾞﾝﾄﾞ･5名\nB･ｽﾋﾟｰｶｰ･30名\nC･Amazon1000円･500名',url:'https://schick.campaigns.jp/lp/intuition26'},
-    {id:'m_67634c1e',since:0,category:'食品',cat:'cat-food',maker:'明治　明治･生のとき',deadline:'5/18〜6/23(火)23:59',dlClass:'dl-red',buy:'対象商品購入レシートで応募',method:'WEB',prize:'5･JTB3万円･50名\n2･QUO5000円･100名',url:'https://www.meiji.co.jp/products/brand/namaneri/cmp/close2605/'},
     {id:'m_30373188',since:0,category:'食品',cat:'cat-food',maker:'スベルティ✕スギ薬局50周年記念キャンペーン　スベルティ✕スギ薬局50周年記念キャンペーン',deadline:'6/21（6/28）',dlClass:'dl-red',buy:'スギ薬局にて、対象商品2,200円(税込)購入ごとにスギ薬局アプリで1スタンプを貯め、1スタンプ1口として応募',method:'スギ薬局にて、対象商品2,200円(税込)購入ごとにスギ薬局',prize:'Aコース：選べる体験ギフト 贅沢ホテルスパ×15名\nBコース：Relax Gift(RED)×15名\nCコース：スギポイント5,000ポイント×20名',url:'https://www.sugi-net.jp/sugi-channel/3976'},
     {id:'m_e0dca53a',since:0,category:'食品',cat:'cat-food',maker:'アメリカンビーフ　アメリカンビーフ',deadline:'5/18〜6/28(日)23:59',dlClass:'dl-red',buy:'応募ｼｰﾙｼﾘｱﾙ№応募',method:'WEB',prize:'A･ｻｰﾛｲﾝｽﾃｰｷ1kg･100名\nB･ﾄｰﾄﾊﾞｯｸﾞ･900名',url:'https://www.americanmeat.jp/csm/topics/beef_fathersday2026_cp/'},
     {id:'m_75e2206f',since:0,category:'食品',cat:'cat-food',maker:'米国食肉輸出連合会　米国食肉輸出連合会 買って当たる!!父の日ビーフの日キャンペーン',deadline:'6/28',dlClass:'dl-red',buy:'キャンペーンシールの貼られたアメリカンビーフ(米国産牛肉)商品を購入し、キャンペーンサイトからシール中面に記載のシリアルナンバーで応募',method:'キャンペーンシールの貼られたアメリカンビーフ(米国産牛肉)商',prize:'A賞：アメリカンビーフ サーロインステーキ 1kg×100名\nB賞：アメリカンビーフ オリジナルトートバッグ×900名',url:'https://www.americanmeat.jp/index.html'},
@@ -839,7 +865,7 @@ const allData = {
     {id:'m_d99265eb',since:0,category:'日用品',cat:'cat-daily',maker:'フマキラー　フマキラー アウトドアにはフマキラーキャンペーン 第1弾',deadline:'6/30',dlClass:'dl-red',buy:'フマキラー対象商品500円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'A賞 手軽に ソロキャン賞：フマキラー×『ゆるキャン△』　オリジナルロゴ入りLOGOSグリルアタッシュmini×10名\nB賞 なかよし ゆるキャン△賞：フマキラー×『ゆるキャン△』　オリジナルフェイスタオル＆オリジナルペアアクリルスタンド×90名\nWチャンス賞：フマキラー×『ゆるキャン△』オリジナルQUOカード 500円分＋フマキラー商品詰め合わせセット×100名',url:'https://fumakilla.jp/yurucamp/'},
     {id:'m_6d7ae691',since:0,category:'日用品',cat:'cat-daily',maker:'金鳥　シンカトリ Wチャンスキャンペーン',deadline:'6/30(火)23:59',dlClass:'dl-red',buy:'シンカトリ（各種）\n対象商品1000円(税込)以上 購入レシート\n複数口応募可',method:'WEB',prize:'QUOPay1万円(20名)\nQUOPay1000円(2000名)',url:''},
     {id:'m_3b5ee409',since:0,category:'日用品',cat:'cat-daily',maker:'金鳥　ムエンダーズシリーズ これでおうちの敵と無縁だ！CP',deadline:'6/30(火)',dlClass:'dl-red',buy:'ムエンダーズシリーズ\nA:対象商品1800円(税込)以上 購入レシート\nB:対象商品900円(税込)以上 購入レシート',method:'WEB',prize:'A:QUOPay1万円(40名)\nB:QUOPay5000円(60名)\nW:QUOPay1000円(100名)',url:''},
-    {id:'m_cbf83b7f',since:0,category:'食品',cat:'cat-food',maker:'サントリー　サントリー･ザピール',deadline:'7/1(水)23:59',dlClass:'dl-yellow',buy:'対象商品購入レシートで応募',method:'WEB',prize:'A･ﾙｸﾙｰｾﾞｾｯﾄ･100名\nB･ｱﾗｼﾞﾝﾄｰｽﾀｰ･100名',url:'https://mobile.suntory.co.jp/cpn/wnb/thepeel/20260601/?fromid=camp_list'},
+    {id:'m_cbf83b7f',since:0,category:'食品',cat:'cat-food',maker:'サントリー　サントリー･ザピール',deadline:'7/1(水)23:59',dlClass:'dl-red',buy:'対象商品購入レシートで応募',method:'WEB',prize:'A･ﾙｸﾙｰｾﾞｾｯﾄ･100名\nB･ｱﾗｼﾞﾝﾄｰｽﾀｰ･100名',url:'https://mobile.suntory.co.jp/cpn/wnb/thepeel/20260601/?fromid=camp_list'},
     {id:'m_64e5782e',since:0,category:'食品',cat:'cat-food',maker:'八社会　八社会 Vマーク感謝フェア',deadline:'6/30（7/2）',dlClass:'dl-yellow',buy:'対象店舗にて、Vマーク商品を含む1,500円(税込)以上購入したレシートを1口として、LINEまたは郵送で応募',method:'LINE・ハガキ',prize:'A賞：日髙良実シェフと楽しむ「リストランテ アクアパッツァ」ランチご招待×60組120名\nB賞：ブイーナぬいぐるみ×500名\nC賞：商品券2,000円分×2,250名',url:'https://get-cp.jp/campain/pages/top/v-mark2606'},
     {id:'m_6ada5e2b',since:0,category:'食品',cat:'cat-food',maker:'Vマーク　Vマーク',deadline:'7/2(木)〆切',dlClass:'dl-yellow',buy:'対象商品購入レシートで応募',method:'LINE･ハガキ',prize:'A･ﾗﾝﾁ招待･60組120名\nB･ぬいぐるみ･500名\nC･商品券2000円･2250名',url:'https://ameblo.jp/rsj64177/entry-12967450696.html'},
     {id:'m_5adb1ff9',since:0,category:'食品',cat:'cat-food',maker:'マルエツ　マルエツ 2026夏の食体験ツアー',deadline:'6/30（7/3）',dlClass:'dl-yellow',buy:'対象商品購入',method:'',prize:'画像出典：\n2026マルエツ夏の食体験ツアー｜マルエツ',url:'https://www.iwebms.com/cp/maruetsu-foods2026/'},
@@ -1769,14 +1795,16 @@ function toggleNameChip(btn) {
   else { _applySel.push(n); btn.classList.add('sel'); }
 }
 
+let applyManual = false;
 function openApply(id) {
   applyId = id;
+  applyManual = false;
   const rec = hist[id];
   const item = allItems[id];
   const label = rec ? rec.label
               : item ? (item.store || getEff(item).storeTag || item.category || '') + '×' + item.maker
               : '';
-  document.getElementById('apply-title').textContent = label;
+  document.getElementById('apply-label').value = label;
   const PRESET = ['M', 'H', 'Mラ', 'たラ'];
   const names = rec ? rec.names.slice() : defaultNames(item);
   _applySel = names.filter(n => PRESET.includes(n));
@@ -1788,7 +1816,26 @@ function openApply(id) {
   document.getElementById('apply-method').value = rec ? rec.method : methodAbbr(item ? item.method : '');
   document.getElementById('apply-announce').value = rec ? rec.announce : '';
   document.getElementById('apply-won').value = rec ? rec.wonWhat : '';
+  document.getElementById('apply-del').style.display = rec ? 'inline-block' : 'none';
   document.getElementById('apply-overlay').classList.add('open');
+}
+
+// 履歴タブの「＋手動で追加」用：カードに紐づかない空の記録を開く
+function openManualApply() {
+  applyId = 'man_' + Date.now();
+  applyManual = true;
+  document.getElementById('apply-label').value = '';
+  _applySel = ['M'];
+  document.querySelectorAll('#apply-overlay .name-chip').forEach(b => {
+    b.classList.toggle('sel', b.dataset.name === 'M');
+  });
+  document.getElementById('apply-name-free').value = '';
+  document.getElementById('apply-method').value = '';
+  document.getElementById('apply-announce').value = '';
+  document.getElementById('apply-won').value = '';
+  document.getElementById('apply-del').style.display = 'none';
+  document.getElementById('apply-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('apply-label').focus(), 80);
 }
 
 function closeApply() {
@@ -1799,14 +1846,23 @@ function closeApply() {
 function saveApply() {
   if (!applyId) return;
   const id = applyId;
-  if (state[id] !== 'done') { state[id] = 'done'; saveState(); }
-  if (!hist[id]) addHistory(id);
+  const label = document.getElementById('apply-label').value.trim();
+  if (applyManual) {
+    if (!label) { alert('キャンペーン名を入力してください'); return; }
+    const now = new Date();
+    hist[id] = { ts: now.getTime(), date: (now.getMonth()+1)+'/'+now.getDate(),
+      label: label, names: ['M'], method: '', announce: '', wonWhat: '', manual: true };
+  } else {
+    if (state[id] !== 'done') { state[id] = 'done'; saveState(); }
+    if (!hist[id]) addHistory(id);
+  }
   const rec = hist[id];
   if (rec) {
+    if (label) rec.label = label;
     const names = _applySel.slice();
     const free = document.getElementById('apply-name-free').value.trim();
     if (free) free.split(/[・,、\s]+/).forEach(n => { if (n) names.push(n); });
-    rec.names = names.length ? names : defaultNames(allItems[id]);
+    rec.names = names.length ? names : (applyManual ? ['M'] : defaultNames(allItems[id]));
     rec.method = document.getElementById('apply-method').value.trim();
     rec.announce = document.getElementById('apply-announce').value.trim();
     rec.wonWhat = document.getElementById('apply-won').value.trim();
@@ -1817,17 +1873,35 @@ function saveApply() {
   renderHistoryTab();
 }
 
+// 応募記録を削除（カード紐づきなら✓も外す）
+function deleteApplyRecord() {
+  if (!applyId) return;
+  const id = applyId;
+  if (hist[id]) { delete hist[id]; saveHist(); }
+  if (state[id] === 'done') { state[id] = undefined; saveState(); }
+  closeApply();
+  renderAll();
+  renderHistoryTab();
+}
+
 // ===== 履歴タブの表示 =====
-const CIRC = ['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩','⑪','⑫','⑬','⑭','⑮','⑯','⑰','⑱','⑲','⑳'];
 let histWonOnly = false;
+let histSearch = '';
 function toggleHistWon() {
   histWonOnly = !histWonOnly;
   renderHistoryTab();
 }
+function onHistSearch(v) {
+  histSearch = v.trim().toLowerCase();
+  renderHistoryTab();
+}
 function renderHistoryTab() {
-  const container = document.getElementById('tab-rireki');
+  const container = document.getElementById('rireki-list');
   if (!container) return;
   const entries = Object.entries(hist);
+  const totalWon = entries.filter(([, r]) => r.wonWhat).length;
+  const wonBtn = document.getElementById('hist-won-btn');
+  if (wonBtn) wonBtn.textContent = histWonOnly ? '📔 すべて' : '🎯 当選だけ（' + totalWon + '）';
   if (entries.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="emoji">📔</div>まだ応募記録がありません<br><small style="font-size:12px">カードのマルを押すと自動で記録されます<br>長押しで名義を選べます</small></div>';
     return;
@@ -1841,26 +1915,31 @@ function renderHistoryTab() {
     byMonth[key].push([id, r]);
   });
   const nowYear = new Date().getFullYear();
-  const totalWon = entries.filter(([, r]) => r.wonWhat).length;
-  // 名義の数＝口数（最低1口）
   const kuchi = r => Math.max(1, (r.names || []).length);
-  const numLabel = n => n <= 20 ? CIRC[n - 1] : n + '.';
-  let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:4px;"><button class="sort-toggle" onclick="toggleHistWon()">${histWonOnly ? '📔 すべて表示' : '🎯 当選だけ表示（' + totalWon + '件）'}</button></div>`;
+  const matchSearch = r => !histSearch ||
+    [r.label, (r.names||[]).join(' '), r.method, r.announce, r.wonWhat]
+      .join(' ').toLowerCase().includes(histSearch);
+  let html = '';
+  let shown = 0;
   Object.keys(byMonth).map(Number).sort((a, b) => b - a).forEach(key => {
     const allRows = byMonth[key].sort((a, b) => a[1].ts - b[1].ts);
     const y = Math.floor(key / 100), mo = key % 100;
     const wonCount = allRows.filter(([, r]) => r.wonWhat).length;
     const kuchiTotal = allRows.reduce((s, [, r]) => s + kuchi(r), 0);
     if (histWonOnly && wonCount === 0) return;
+    // この月で実際に表示される行があるか（検索・当選フィルタ後）
+    const visible = allRows.filter(([, r]) => matchSearch(r) && (!histWonOnly || r.wonWhat));
+    if (visible.length === 0) return;
     const monthLabel = (y !== nowYear ? y + '年' : '') + mo + '月';
     html += `<div class="hist-month">${monthLabel}（${kuchiTotal}口応募${wonCount ? '・' + wonCount + '件当選🎯' : ''}）</div>`;
     let counter = 0;  // 月内の通し番号（口ごとに加算）
     allRows.forEach(([id, r]) => {
       const k = kuchi(r);
-      // この行に割り当てる番号（口数ぶん連番）
       const nums = [];
-      for (let j = 0; j < k; j++) { counter++; nums.push(numLabel(counter)); }
+      for (let j = 0; j < k; j++) { counter++; nums.push('<span class="hist-num">' + counter + '</span>'); }
       if (histWonOnly && !r.wonWhat) return;
+      if (!matchSearch(r)) return;
+      shown++;
       const names = (r.names || []).join('・');
       const won = r.wonWhat ? ` <span class="hist-won-text">🎯 ${r.wonWhat}</span>` : '';
       html += `<div class="hist-row${r.wonWhat ? ' won' : ''}" onclick="openApply('${id}')">
@@ -1868,6 +1947,7 @@ function renderHistoryTab() {
       </div>`;
     });
   });
+  if (shown === 0) html += '<div class="empty-state"><div class="emoji">🔍</div>該当する記録がありません</div>';
   container.innerHTML = html;
 }
 
