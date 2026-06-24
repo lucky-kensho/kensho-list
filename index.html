@@ -1728,24 +1728,26 @@ try { hist = JSON.parse(localStorage.getItem(HIST_KEY)) || {}; } catch(e) {}
 function saveHist() {
   try { localStorage.setItem(HIST_KEY, JSON.stringify(hist)); } catch(e) {}
 }
+// 既存履歴の応募方法「ハ」を「〶」に統一
+(function() {
+  let changed = false;
+  Object.values(hist).forEach(r => { if (r.method === 'ハ') { r.method = '〶'; changed = true; } });
+  if (changed) saveHist();
+})();
 
 function methodAbbr(m) {
   const s = String(m || '');
   if (s.includes('WEB')) return 'w';
   if (s.includes('LINE')) return 'LINE';
-  if (s.includes('ハガキ') || s.includes('郵送')) return 'ハ';
+  if (s.includes('ハガキ') || s.includes('郵送')) return '〶';
   if (s.includes('アプリ')) return 'ア';
   return s.slice(0, 3);
 }
 
-// 応募方法に応じてデフォルト名義を決める
-// LINE専用→Mラ / ハガキ専用→〶 / それ以外→M
+// LINE専用応募（WEB併用でない）の懸賞は、デフォルト名義をMラにする
 function defaultNames(item) {
   const m = String(item && item.method || '');
-  const hasWeb = m.includes('WEB');
-  if (m.includes('LINE') && !hasWeb) return ['Mラ'];
-  if ((m.includes('ハガキ') || m.includes('郵送')) && !hasWeb && !m.includes('LINE')) return ['〶'];
-  return ['M'];
+  return (m.includes('LINE') && !m.includes('WEB')) ? ['Mラ'] : ['M'];
 }
 
 function addHistory(id) {
