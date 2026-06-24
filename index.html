@@ -1738,10 +1738,14 @@ function methodAbbr(m) {
   return s.slice(0, 3);
 }
 
-// LINE専用応募（WEB併用でない）の懸賞は、デフォルト名義をMラにする
+// 応募方法に応じてデフォルト名義を決める
+// LINE専用→Mラ / ハガキ専用→〶 / それ以外→M
 function defaultNames(item) {
   const m = String(item && item.method || '');
-  return (m.includes('LINE') && !m.includes('WEB')) ? ['Mラ'] : ['M'];
+  const hasWeb = m.includes('WEB');
+  if (m.includes('LINE') && !hasWeb) return ['Mラ'];
+  if ((m.includes('ハガキ') || m.includes('郵送')) && !hasWeb && !m.includes('LINE')) return ['〶'];
+  return ['M'];
 }
 
 function addHistory(id) {
