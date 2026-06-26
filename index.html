@@ -1541,7 +1541,13 @@ function renderTab(tabId) {
         <div class="store-bar-meta"><span class="store-bar-count">${remaining}件</span><span class="store-bar-arrow${isOpen ? ' open' : ''}">▶</span></div>
       </div>
       <div class="store-cards${isOpen ? ' open' : ''}">`;
-      const sorted = [...groupItems].sort((a,b) => (state[a.id]==='done'?1:0)-(state[b.id]==='done'?1:0));
+      const sorted = [...groupItems].sort((a,b) => {
+        const da = state[a.id]==='done' ? 1 : 0;
+        const db = state[b.id]==='done' ? 1 : 0;
+        if (da !== db) return da - db;
+        const ta = dlDate(getEff(a).deadline), tb = dlDate(getEff(b).deadline);
+        return (ta ? ta.getTime() : 9e15) - (tb ? tb.getTime() : 9e15);
+      });
       sorted.forEach(item => {
         const it = getEff(item);
         const isDone = state[item.id] === 'done';
