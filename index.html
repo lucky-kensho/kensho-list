@@ -1473,8 +1473,10 @@ function renderTab(tabId) {
     const grouped = {};
     const storeOrder = [];
     active.forEach(item => {
-      if (!grouped[item.store]) { grouped[item.store] = []; storeOrder.push(item.store); }
-      grouped[item.store].push(item);
+      // 店名を手編集していればそちらのグループへ（西友などへ移動できる）
+      const sn = getEff(item).storeTag || item.store;
+      if (!grouped[sn]) { grouped[sn] = []; storeOrder.push(sn); }
+      grouped[sn].push(item);
     });
     // 食品・日用品タブからお店名タグで「引越し」してきたアイテムを追加
     (allData.maker || []).forEach(item => {
