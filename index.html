@@ -1962,12 +1962,6 @@ function renderHistoryTab() {
   container.innerHTML = html;
 }
 
-let histOpenMonths = {};
-function toggleHistMonth(key) {
-  histOpenMonths[key] = !histOpenMonths[key];
-  renderHistoryTab();
-}
-
 function deleteItem(id, tabId) {
   const cardId = tabId === 'unknown' ? 'unk-card-' + id
                : tabId === 'search'  ? 's-card-' + id
