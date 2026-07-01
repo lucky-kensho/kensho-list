@@ -1860,6 +1860,13 @@ function deleteApplyRecord() {
 // ===== 履歴タブの表示 =====
 let histWonOnly = false;
 let histSearch = '';
+let histOpenMonths = {};  // 月キー→開閉状態（未設定なら当月のみ開）
+function toggleHistMonth(key) {
+  const nowKey = new Date().getFullYear() * 100 + (new Date().getMonth() + 1);
+  const cur = histOpenMonths[key] !== undefined ? histOpenMonths[key] : (key === nowKey);
+  histOpenMonths[key] = !cur;
+  renderHistoryTab();
+}
 function toggleHistWon() {
   histWonOnly = !histWonOnly;
   renderHistoryTab();
