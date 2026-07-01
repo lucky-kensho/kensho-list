@@ -1907,11 +1907,31 @@ function renderHistoryTab() {
     if (!byMonth[key]) byMonth[key] = [];
     byMonth[key].push([id, r]);
   });
-  const nowYear = new Date().getFullYear();
+  const now = new Date();
+  const nowYear = now.getFullYear();
+  const nowKey = nowYear * 100 + (now.getMonth() + 1);
   const kuchi = r => Math.max(1, (r.names || []).length);
   const matchSearch = r => !histSearch ||
     [r.label, (r.names||[]).join(' '), r.method, r.announce, r.wonWhat]
       .join(' ').toLowerCase().includes(histSearch);
+  // 月内の行HTMLを組み立てて返す
+  const buildRows = (allRows) => {
+    let rowsHtml = '', cnt = 0, vis = 0;
+    allRows.forEach(([id, r]) => {
+      const k = kuchi(r);
+      const nums = [];
+      for (let j = 0; j < k; j++) { cnt++; nums.push('<span class="hist-num">' + cnt + '</span>'); }
+      if (histWonOnly && !r.wonWhat) return;
+      if (!matchSearch(r)) return;
+      vis++;
+      const names = (r.names || []).join('・');
+      const won = r.wonWhat ? ` <span class="hist-won-text">🎯 ${r.wonWhat}</span>` : '';
+      rowsHtml += `<div class="hist-row${r.wonWhat ? ' won' : ''}" onclick="openApply('${id}')">
+        ${nums.join('')} ${r.label}　<b>${names}</b>　${r.method || ''}　${r.announce || '－'}${won}
+      </div>`;
+    });
+    return { html: rowsHtml, visible: vis };
+  };
   let html = '';
   let shown = 0;
   Object.keys(byMonth).map(Number).sort((a, b) => b - a).forEach(key => {
@@ -1920,28 +1940,32 @@ function renderHistoryTab() {
     const wonCount = allRows.filter(([, r]) => r.wonWhat).length;
     const kuchiTotal = allRows.reduce((s, [, r]) => s + kuchi(r), 0);
     if (histWonOnly && wonCount === 0) return;
-    // この月で実際に表示される行があるか（検索・当選フィルタ後）
-    const visible = allRows.filter(([, r]) => matchSearch(r) && (!histWonOnly || r.wonWhat));
-    if (visible.length === 0) return;
+    const built = buildRows(allRows);
+    if (built.visible === 0) return;
+    shown += built.visible;
     const monthLabel = (y !== nowYear ? y + '年' : '') + mo + '月';
-    html += `<div class="hist-month">${monthLabel}（${kuchiTotal}口応募${wonCount ? '・' + wonCount + '件当選🎯' : ''}）</div>`;
-    let counter = 0;  // 月内の通し番号（口ごとに加算）
-    allRows.forEach(([id, r]) => {
-      const k = kuchi(r);
-      const nums = [];
-      for (let j = 0; j < k; j++) { counter++; nums.push('<span class="hist-num">' + counter + '</span>'); }
-      if (histWonOnly && !r.wonWhat) return;
-      if (!matchSearch(r)) return;
-      shown++;
-      const names = (r.names || []).join('・');
-      const won = r.wonWhat ? ` <span class="hist-won-text">🎯 ${r.wonWhat}</span>` : '';
-      html += `<div class="hist-row${r.wonWhat ? ' won' : ''}" onclick="openApply('${id}')">
-        ${nums.join('')} ${r.label}　<b>${names}</b>　${r.method || ''}　${r.announce || '－'}${won}
-      </div>`;
-    });
+    const summary = `${kuchiTotal}口応募${wonCount ? '・' + wonCount + '件当選🎯' : ''}`;
+    if (key === nowKey) {
+      // 当月は展開表示
+      html += `<div class="hist-month">${monthLabel}（${summary}）</div>` + built.html;
+    } else {
+      // 過去月は折りたたみバー（検索中は自動で開く）
+      const isOpen = histOpenMonths[key] || !!histSearch;
+      html += `<div class="store-bar" onclick="toggleHistMonth(${key})">
+        <div class="store-bar-name">📅 ${monthLabel}</div>
+        <div class="store-bar-meta"><span class="store-bar-count">${summary}</span><span class="store-bar-arrow${isOpen ? ' open' : ''}">▶</span></div>
+      </div>
+      <div class="store-cards${isOpen ? ' open' : ''}">${built.html}</div>`;
+    }
   });
   if (shown === 0) html += '<div class="empty-state"><div class="emoji">🔍</div>該当する記録がありません</div>';
   container.innerHTML = html;
+}
+
+let histOpenMonths = {};
+function toggleHistMonth(key) {
+  histOpenMonths[key] = !histOpenMonths[key];
+  renderHistoryTab();
 }
 
 function deleteItem(id, tabId) {
