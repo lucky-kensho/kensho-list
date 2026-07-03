@@ -516,7 +516,6 @@
     <button class="tab-btn" onclick="switchTab('maker',this)">メーカー</button>
     <button class="tab-btn" onclick="switchTab('pin',this)">⭐ ピン</button>
     <button class="tab-btn" onclick="switchTab('again',this)">🔁 もう一口</button>
-    <button class="tab-btn" onclick="switchTab('unknown',this)">不明</button>
     <button class="tab-btn active" onclick="switchTab('memo',this)">メモ</button>
     <button class="tab-btn" onclick="switchTab('rireki',this)">📔 履歴</button>
   </div>
@@ -530,7 +529,6 @@
   <span style="color:#ccc;font-size:11px;">✅ チェック ／ ✕ 削除</span>
 </div>
 
-<div id="tab-unknown" class="tab-content"></div>
 <div id="tab-store"  class="tab-content"></div>
 <div id="tab-maker"  class="tab-content"></div>
 <div id="tab-pin"    class="tab-content"></div>
@@ -1148,7 +1146,6 @@ function togglePin(id) {
   renderPinnedTab();
   const item = allItems[id];
   if (item) renderTab(item.store ? 'store' : 'maker');
-  renderUnknownTab();
   renderNewTab();
   const sq = document.getElementById('search-input').value.trim();
   if (sq) renderSearch(sq);
@@ -1171,7 +1168,6 @@ function toggleAgain(id) {
   renderPinnedTab();
   const item = allItems[id];
   if (item) renderTab(item.store ? 'store' : 'maker');
-  renderUnknownTab();
   renderNewTab();
   const sq = document.getElementById('search-input').value.trim();
   if (sq) renderSearch(sq);
@@ -1299,85 +1295,22 @@ function renderPinnedTab() {
   container.innerHTML = html;
 }
 
-function renderUnknownTab() {
-  const container = document.getElementById('tab-unknown');
-  if (!container) return;
-  const unknownItems = Object.values(allData).flat()
-    .filter(i => {
-      if (state[i.id] === 'deleted') return false;
-      const dl = getEff(i).deadline;
-      return !String(dl||'').match(/\d{1,2}\/\d{1,2}/);
-    })
-    .sort((a,b) => (state[a.id]==='done'?1:0)-(state[b.id]==='done'?1:0));
-  if (unknownItems.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="emoji">✅</div>締切不明の案件はありません</div>';
-    return;
-  }
-  let html = '';
-  unknownItems.forEach(item => {
-    const it = getEff(item);
-    const isDone = state[item.id] === 'done';
-    const buyLines = it.buy.replace(/\n/g, '<br>');
-    const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
-    const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
-    const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener noreferrer" class="apply-link">🔗 応募</a>` : '';
-    const srcTab = item.store ? 'store' : 'maker';
-    const ctxLabel = item.store || item.category || '';
-    const isPinned = pinned[item.id];
-    html += `<div class="card${isDone ? ' done' : ''}" id="unk-card-${item.id}">
-      <div class="card-inner">
-        <div class="check-area" ontouchstart="checkDown('${item.id}','unknown')" ontouchmove="checkCancel()" ontouchend="checkUp(event,'${item.id}','unknown')" onmousedown="checkDown('${item.id}','unknown')" onmouseup="checkUp(event,'${item.id}','unknown')" onmouseleave="checkCancel()">
-          <div class="check-circle">${isDone ? '✓' : ''}</div>
-        </div>
-        <div class="card-body">
-          <div class="card-top">
-            <div class="maker-name">${nb(item.id)}<span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
-            <div class="deadline-badge dl-gray">🗓 ${it.deadline || '不明'}</div>
-          </div>
-          <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
-          <div class="card-footer">
-            <span class="method-chip">${item.method}</span>
-            <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
-            <button class="again-btn${again[item.id] ? ' active' : ''}" onclick="toggleAgain('${item.id}')" title="もう一口">🔁</button>
-            <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
-            ${linkBtn}
-          </div>
-        </div>
-      </div>
-      <button class="delete-btn" onclick="deleteItem('${item.id}','unknown')" title="削除">✕</button>
-    </div>`;
-  });
-  container.innerHTML = html;
-}
-
 function renderNewTab() {
   const container = document.getElementById('tab-new');
   if (!container) return;
-  const newItems = Object.values(allData).flat()
-    .filter(i => isNew(i.id) && state[i.id] !== 'deleted' && !isExpired(getEff(i).deadline))
-    .sort((a,b) => {
-      const da = state[a.id]==='done' ? 1 : 0;
-      const db = state[b.id]==='done' ? 1 : 0;
-      if (da !== db) return da - db;
-      const ta = dlDate(getEff(a).deadline), tb = dlDate(getEff(b).deadline);
-      return (ta ? ta.getTime() : 9e15) - (tb ? tb.getTime() : 9e15);
-    });
-  if (newItems.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="emoji">🆕</div>新着はありません<br><small style="font-size:12px">更新で増えた情報が24時間ここに表示されます</small></div>';
-    return;
-  }
-  let html = '';
-  newItems.forEach(item => {
+  // NEWタブのカード生成（gray=trueで締切不明用のグレーバッジ）
+  const mkCard = (item, gray) => {
     const it = getEff(item);
     const isDone = state[item.id] === 'done';
     const buyLines = it.buy.replace(/\n/g, '<br>');
     const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
     const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
     const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener noreferrer" class="apply-link">🔗 応募</a>` : '';
-    const srcTab = item.store ? 'store' : 'maker';
     const ctxLabel = item.store || item.category || '';
     const isPinned = pinned[item.id];
-    html += `<div class="card${isDone ? ' done' : ''}" id="newt-card-${item.id}">
+    const badge = gray ? `<div class="deadline-badge dl-gray">🗓 ${it.deadline || '不明'}</div>`
+                       : `<div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>`;
+    return `<div class="card${isDone ? ' done' : ''}" id="newt-card-${item.id}">
       <div class="card-inner">
         <div class="check-area" ontouchstart="checkDown('${item.id}','new')" ontouchmove="checkCancel()" ontouchend="checkUp(event,'${item.id}','new')" onmousedown="checkDown('${item.id}','new')" onmouseup="checkUp(event,'${item.id}','new')" onmouseleave="checkCancel()">
           <div class="check-circle">${isDone ? '✓' : ''}</div>
@@ -1385,7 +1318,7 @@ function renderNewTab() {
         <div class="card-body">
           <div class="card-top">
             <div class="maker-name">${nb(item.id)}<span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
-            <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
+            ${badge}
           </div>
           <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
           <div class="card-footer">
@@ -1399,7 +1332,38 @@ function renderNewTab() {
       </div>
       <button class="delete-btn" onclick="deleteItem('${item.id}','new')" title="削除">✕</button>
     </div>`;
-  });
+  };
+  const newItems = Object.values(allData).flat()
+    .filter(i => isNew(i.id) && state[i.id] !== 'deleted' && !isExpired(getEff(i).deadline))
+    .sort((a,b) => {
+      const da = state[a.id]==='done' ? 1 : 0;
+      const db = state[b.id]==='done' ? 1 : 0;
+      if (da !== db) return da - db;
+      const ta = dlDate(getEff(a).deadline), tb = dlDate(getEff(b).deadline);
+      return (ta ? ta.getTime() : 9e15) - (tb ? tb.getTime() : 9e15);
+    });
+  // 締切不明（NEW表示中のものは上のリストに出るので除外して二重表示を防ぐ）
+  const unknownItems = Object.values(allData).flat()
+    .filter(i => {
+      if (state[i.id] === 'deleted' || isNew(i.id)) return false;
+      const dl = getEff(i).deadline;
+      return !String(dl||'').match(/\d{1,2}\/\d{1,2}/);
+    })
+    .sort((a,b) => (state[a.id]==='done'?1:0)-(state[b.id]==='done'?1:0));
+  if (newItems.length === 0 && unknownItems.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="emoji">🆕</div>新着はありません<br><small style="font-size:12px">更新で増えた情報が24時間ここに表示されます</small></div>';
+    return;
+  }
+  let html = '';
+  if (newItems.length === 0) {
+    html += '<div style="font-size:12px;color:#999;margin-bottom:8px;">🆕 新着はありません（更新で増えた情報が24時間ここに表示されます）</div>';
+  } else {
+    newItems.forEach(item => { html += mkCard(item, false); });
+  }
+  if (unknownItems.length > 0) {
+    html += '<div style="font-size:12px;color:#999;margin:16px 0 8px;font-weight:bold;">🗓 締切不明のキャンペーン</div>';
+    unknownItems.forEach(item => { html += mkCard(item, true); });
+  }
   container.innerHTML = html;
 }
 
@@ -1742,15 +1706,11 @@ function updateCount(tabId) {
     return;
   }
   if (tabId === 'new') {
-    const n = Object.values(allData).flat().filter(i =>
-      isNew(i.id) && state[i.id] !== 'deleted' && state[i.id] !== 'done' && !isExpired(getEff(i).deadline)
-    ).length;
-    document.getElementById('remaining').textContent = n;
-    return;
-  }
-  if (tabId === 'unknown') {
+    // NEW＋締切不明（このタブに表示される未処理カードの合計）
     const n = Object.values(allData).flat().filter(i => {
       if (state[i.id] === 'deleted' || state[i.id] === 'done') return false;
+      if (isExpired(getEff(i).deadline)) return false;
+      if (isNew(i.id)) return true;
       return !String(getEff(i).deadline||'').match(/\d{1,2}\/\d{1,2}/);
     }).length;
     document.getElementById('remaining').textContent = n;
@@ -1776,7 +1736,6 @@ function renderAll() {
   ['store','maker'].forEach(t => renderTab(t));
   renderPinnedTab();
   renderAgainTab();
-  renderUnknownTab();
   renderNewTab();
   renderMemoList();
   renderHistoryTab();
@@ -1790,7 +1749,7 @@ function toggleDone(id, tabId) {
   saveState();
   if (wasDone) { removeHistory(id); } else { addHistory(id); }
   renderTab('store'); renderTab('maker');
-  renderPinnedTab(); renderUnknownTab(); renderNewTab();
+  renderPinnedTab(); renderNewTab();
   renderHistoryTab();
   const sq = document.getElementById('search-input').value.trim();
   if (sq) { renderSearch(sq); } else { updateCount(currentTab); }
@@ -2093,8 +2052,7 @@ function renderHistoryTab() {
 }
 
 function deleteItem(id, tabId) {
-  const cardId = tabId === 'unknown' ? 'unk-card-' + id
-               : tabId === 'search'  ? 's-card-' + id
+  const cardId = tabId === 'search'  ? 's-card-' + id
                : tabId === 'pin'     ? 'pin-card-' + id
                : tabId === 'new'     ? 'newt-card-' + id
                : 'card-' + id;
@@ -2108,12 +2066,10 @@ function deleteItem(id, tabId) {
         const sq = document.getElementById('search-input').value.trim();
         if (sq) renderSearch(sq);
         updateCount(currentTab);
-      } else if (tabId === 'unknown') { renderUnknownTab(); renderNewTab(); updateCount('unknown'); }
-      else if (tabId === 'pin' || tabId === 'new') {
+      } else if (tabId === 'pin' || tabId === 'new') {
         // ピン/NEWタブで消したら元ネタ（店舗・食品タブ）も同時に消す
         renderPinnedTab(); renderNewTab();
         renderTab('store'); renderTab('maker');
-        renderUnknownTab();
         updateCount(tabId);
       }
       else { renderTab(tabId); renderNewTab(); updateCount(tabId); }
