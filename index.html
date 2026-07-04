@@ -613,7 +613,7 @@
     <div style="font-weight:bold;font-size:16px;margin-bottom:14px;">📝 カード情報を編集</div>
     <div style="margin-bottom:10px;">
       <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">🏪 店名</div>
-      <input id="edit-store" type="text" placeholder="複数の店は「、」で区切る（例:イオン、マルエツ）" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
+      <input id="edit-store" type="text" placeholder="複数の店は空白か「、」で区切る（例:イオン マルエツ）" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
     </div>
     <div style="margin-bottom:10px;">
       <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">締切</div>
@@ -1054,9 +1054,9 @@ let currentTab = 'memo';
 
 const TAB_LABELS = {store:'店舗', maker:'メーカー', pin:'⭐ ピン'};
 
-// 店名タグの複数指定（「、」や「,」区切り）を配列に分解
+// 店名タグの複数指定（「、」「,」または空白区切り）を配列に分解
 function splitStores(s) {
-  return String(s || '').split(/[、,]+/).map(x => x.trim()).filter(Boolean);
+  return String(s || '').split(/[、,\s]+/).map(x => x.trim()).filter(Boolean);
 }
 let openStores = {};
 
