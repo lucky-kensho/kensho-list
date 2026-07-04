@@ -613,7 +613,7 @@
     <div style="font-weight:bold;font-size:16px;margin-bottom:14px;">📝 カード情報を編集</div>
     <div style="margin-bottom:10px;">
       <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">🏪 店名</div>
-      <input id="edit-store" type="text" placeholder="" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
+      <input id="edit-store" type="text" placeholder="複数の店は「、」で区切る（例:イオン、マルエツ）" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
     </div>
     <div style="margin-bottom:10px;">
       <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">締切</div>
@@ -1052,7 +1052,12 @@ function saveState() {
 let state = loadState();
 let currentTab = 'memo';
 
-const TAB_LABELS = {store:'店舗', maker:'メーカー', pin:'⭐ ピン', unknown:'不明'};
+const TAB_LABELS = {store:'店舗', maker:'メーカー', pin:'⭐ ピン'};
+
+// 店名タグの複数指定（「、」や「,」区切り）を配列に分解
+function splitStores(s) {
+  return String(s || '').split(/[、,]+/).map(x => x.trim()).filter(Boolean);
+}
 let openStores = {};
 
 function toggleStoreGroup(name) {
@@ -1468,9 +1473,12 @@ function renderTab(tabId) {
     const storeOrder = [];
     active.forEach(item => {
       // 店名を手編集していればそちらのグループへ（西友などへ移動できる）
-      const sn = getEff(item).storeTag || item.store;
-      if (!grouped[sn]) { grouped[sn] = []; storeOrder.push(sn); }
-      grouped[sn].push(item);
+      // 「、」区切りで複数店舗のグループに同時表示できる
+      const sns = splitStores(getEff(item).storeTag || item.store);
+      (sns.length ? sns : ['店名なし']).forEach(sn => {
+        if (!grouped[sn]) { grouped[sn] = []; storeOrder.push(sn); }
+        grouped[sn].push(item);
+      });
     });
     // 食品・日用品タブからお店名タグで「引越し」してきたアイテムを追加
     (allData.maker || []).forEach(item => {
@@ -1478,9 +1486,10 @@ function renderTab(tabId) {
       const it2 = getEff(item);
       if (!it2.storeTag) return;
       if (isExpired(it2.deadline)) return;
-      const sn = it2.storeTag;
-      if (!grouped[sn]) { grouped[sn] = []; storeOrder.push(sn); }
-      grouped[sn].push(item);
+      splitStores(it2.storeTag).forEach(sn => {
+        if (!grouped[sn]) { grouped[sn] = []; storeOrder.push(sn); }
+        grouped[sn].push(item);
+      });
     });
     // 指定店舗を上部に並べ替え（それ以外は元の順のまま後ろへ）
     const STORE_PRIORITY = ['オーケー','イオン','マルエツ','いなげや','ライフ','ヤオコー','イトーヨーカドー','オリンピック','スギ薬局','西友'];
@@ -1495,7 +1504,12 @@ function renderTab(tabId) {
     // ===== 締切が近い順モード：店舗グループを解除して全カードを締切順に並べる =====
     if (storeSortMode === 'deadline') {
       const flat = [];
-      storeOrder.forEach(sn => grouped[sn].forEach(item => flat.push([sn, item])));
+      const seenFlat = new Set();  // 複数店舗タグの重複表示を防ぐ（締切順では1回だけ）
+      storeOrder.forEach(sn => grouped[sn].forEach(item => {
+        if (seenFlat.has(item.id)) return;
+        seenFlat.add(item.id);
+        flat.push([sn, item]);
+      }));
       flat.sort((p, q) => {
         const da = state[p[1].id]==='done' ? 1 : 0;
         const db = state[q[1].id]==='done' ? 1 : 0;
@@ -1539,6 +1553,7 @@ function renderTab(tabId) {
     }
 
     let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="sort-toggle" onclick="toggleStoreSort()">⏰ 締切が近い順</button></div>`;
+    const idSeen = {};  // 複数店舗に出る同一カードのID衝突防止
     storeOrder.forEach(storeName => {
       const groupItems = grouped[storeName];
       const remaining = groupItems.filter(i => state[i.id] !== 'done').length;
@@ -1562,7 +1577,9 @@ function renderTab(tabId) {
         const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
         const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener noreferrer" class="apply-link">🔗 応募</a>` : '';
         const isPinned = pinned[item.id];
-        html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
+        idSeen[item.id] = (idSeen[item.id] || 0) + 1;
+        const domId = idSeen[item.id] > 1 ? `card-${item.id}-${idSeen[item.id]}` : `card-${item.id}`;
+        html += `<div class="card${isDone ? ' done' : ''}" id="${domId}">
           <div class="card-inner">
             <div class="check-area" ontouchstart="checkDown('${item.id}','store')" ontouchmove="checkCancel()" ontouchend="checkUp(event,'${item.id}','store')" onmousedown="checkDown('${item.id}','store')" onmouseup="checkUp(event,'${item.id}','store')" onmouseleave="checkCancel()">
               <div class="check-circle">${isDone ? '✓' : ''}</div>
