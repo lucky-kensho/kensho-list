@@ -504,6 +504,8 @@
 </head>
 <body>
 
+<div id="update-banner" onclick="applyUpdate()" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#2e7d32;color:#fff;padding:13px 12px;font-weight:bold;font-size:14px;text-align:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.35);">🔄 新しい情報があります — ここをタップで更新</div>
+
 <header>
   <div class="header-top">
     <h1>🛒 懸賞買い物リスト</h1>
@@ -2311,6 +2313,32 @@ function deleteMemoItem(id) {
   if (eDirty) saveLocalEdits();
   try { localStorage.removeItem('kenshow_seen_v1'); } catch(e) {}  // 旧NEW判定の保存データは不要
 })();
+
+// ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
+const BUILD_STAMP = 1783589986360;
+let lastUpdateCheck = 0;
+function checkForUpdate() {
+  if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
+  const nowT = Date.now();
+  if (nowT - lastUpdateCheck < 120000) return;  // 確認は2分に1回まで
+  lastUpdateCheck = nowT;
+  fetch(location.pathname + '?uc=' + nowT, {cache: 'no-store'})
+    .then(r => r.text())
+    .then(t => {
+      const m = t.match(/BUILD_STAMP = (\d+)/);
+      if (m && Number(m[1]) > BUILD_STAMP) {
+        document.getElementById('update-banner').style.display = 'block';
+      }
+    })
+    .catch(() => {});  // 圏外などは静かに諦めて次の機会に
+}
+function applyUpdate() {
+  location.replace(location.pathname + '?r=' + Date.now());
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') checkForUpdate();
+});
+checkForUpdate();
 
 renderAll();
 </script>
