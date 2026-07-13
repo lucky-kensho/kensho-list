@@ -511,7 +511,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年7月13日更新　応募できる<span id="active-count">400</span>件</div>
+  <div class="header-date">2026年7月13日更新　応募できる<span id="active-count">401</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -750,6 +750,7 @@ const allData = {
     {id:'s_1fafe812',since:1783673719096,announce:'',store:'夢庵・藍屋',maker:'',deadline:'',dlClass:'dl-gray',buy:'夢庵\n藍屋\n対象商品メニュー注文\n応募ハガキ配布',method:'WEB・ハガキ',prize:'米4kg・50名\nオリーブ牛・30名\n酒・20名\n生しらす・20名\nレモンジャム&サブレ・20名\nすかいらーく優待3000円・50名',url:'https://www.skylark.co.jp/campaign1/'},
     {id:'s_c12114a2',since:1782974124834,announce:'',store:'東海CGC',maker:'',deadline:'7/1〜7/31(金)〆切',dlClass:'dl-yellow',buy:'対象商品含む\n2000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB・店頭',prize:'商品券5000円・100名\n商品券1000円・3000名\nW・WEB応募限定',url:'https://www.ichance.jp/toukaicgc/summer_campaign2026/'},
     {id:'s_f298331a',since:1783758716401,announce:'9中',store:'竹下製菓 ブラックモンブラン',maker:'WIND',deadline:'9/7',dlClass:'dl-green',buy:'「ブラックモンブランチョコミント」を1本以上含む竹下製菓のアイス商品330円(税込)以上購入したレシートを1口として、LINEで応募',method:'LINE',prize:'ブラックモンブラン×WIND AND SEA プレミアムコラボTシャツ×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/07/11/090500'},
+    {id:'s_2e90f11b',since:1783904099717,announce:'',store:'食品館あおば',maker:'マルホンごま油',deadline:'7/16〜9/15(水)当日消印有効',dlClass:'dl-green',buy:'対象商品含\n2000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'ハガキ',prize:'A食事券1万円コースペア・3組6名\nB商品券1200円・34名',url:'https://ameblo.jp/rsj64177/entry-12972554848.html'},
     {id:'s_29e37d64',since:1783414728109,announce:'',store:'食品館あおば',maker:'紀文',deadline:'7/31（8/4）',dlClass:'dl-yellow',buy:'食品館あおばにて、紀文商品3点以上かつ300円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'食品館あおば商品券1,500円分×60名',url:'https://kenshomin.hatenablog.jp/entry/2026/07/07/140800'},
     {id:'s_d3b94019',since:1783414728109,announce:'',store:'食品館あおば',maker:'丸美屋',deadline:'7/31消印',dlClass:'dl-yellow',buy:'食品館あおばにて、丸美屋対象商品1点以上を含む500円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'食品館あおば商品券1,200円分×120名',url:'https://kenshomin.hatenablog.jp/entry/2026/07/07/140600'},
     {id:'s_339d5c1c',since:1783414728109,announce:'',store:'食品館あおば',maker:'エバラ食品',deadline:'8/31消印',dlClass:'dl-green',buy:'食品館あおばにて、エバラ商品1品以上を含む500円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'食品館あおば商品券1,500円分×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/07/07/140700'},
@@ -2335,7 +2336,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1783902526681;
+const BUILD_STAMP = 1783904099692;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
