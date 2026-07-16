@@ -1246,6 +1246,7 @@ function renderAgainTab() {
   let html = '<div style="font-size:12px;color:#999;margin-bottom:8px;">🔁 もう一口応募したいキャンペーン（締切が近い順）</div>';
   againItems.forEach(item => {
     const it = getEff(item);
+    const isDone = state[item.id] === 'done';
     const buyLines = it.buy.replace(/\n/g, '<br>');
     const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
     const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
@@ -1253,6 +1254,9 @@ function renderAgainTab() {
     const ctxLabel = item.store || item.category || '';
     html += `<div class="card" id="again-card-${item.id}">
       <div class="card-inner">
+        <div class="check-area" onclick="openApply('${item.id}')" title="応募を記録">
+          <div class="check-circle">${isDone ? '✓' : ''}</div>
+        </div>
         <div class="card-body">
           <div class="card-top">
             <div class="maker-name">${nb(item.id)}<span class="pin-context">${ctxLabel}</span>${catChip}${storeChip}${item.maker}</div>
@@ -2071,9 +2075,10 @@ function renderHistoryTab() {
   const matchSearch = r => !histSearch ||
     [r.label, (r.names||[]).join(' '), r.method, r.announce, r.wonWhat]
       .join(' ').toLowerCase().includes(histSearch);
-  // 月内の行HTMLを組み立てて返す
+  // 月内の行HTMLを組み立てて返す（番号は応募順に付け、表示は新しい応募が上）
   const buildRows = (allRows) => {
-    let rowsHtml = '', cnt = 0, vis = 0;
+    const rows = [];
+    let cnt = 0, vis = 0;
     allRows.forEach(([id, r]) => {
       const k = kuchi(r);
       const nums = [];
@@ -2083,11 +2088,11 @@ function renderHistoryTab() {
       vis++;
       const names = (r.names || []).join('・');
       const won = r.wonWhat ? ` <span class="hist-won-text">🎯 ${r.wonWhat}</span>` : '';
-      rowsHtml += `<div class="hist-row${r.wonWhat ? ' won' : ''}" onclick="openApply('${id}')">
+      rows.push(`<div class="hist-row${r.wonWhat ? ' won' : ''}" onclick="openApply('${id}')">
         ${nums.join('')} ${r.label}　<b>${names}</b>　${r.method || ''}　${r.announce || '－'}${won}
-      </div>`;
+      </div>`);
     });
-    return { html: rowsHtml, visible: vis };
+    return { html: rows.reverse().join(''), visible: vis };
   };
   let html = '';
   let shown = 0;
@@ -2348,7 +2353,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1784199490140;
+const BUILD_STAMP = 1784199913794;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
