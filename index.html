@@ -511,7 +511,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年7月20日更新　応募できる<span id="active-count">446</span>件</div>
+  <div class="header-date">2026年7月20日更新　応募できる<span id="active-count">447</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -684,6 +684,7 @@ const allData = {
     {id:'s_13d22cbd',since:1783902414997,announce:'',store:'イトーヨーカドー',maker:'スポンサー6社',deadline:'7/27(月)〆切',dlClass:'dl-red',buy:'対象商品1290円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB・ハガキ',prize:'パークチケットペア・300組600名',url:'https://entry-systems.jp/six_official_sponsor/2026summer/image/registrations/input'},
     {id:'s_a0834938',since:1783321747754,announce:'9中',store:'イトーヨーカドー',maker:'永谷園',deadline:'7/31（8/3）',dlClass:'dl-yellow',buy:'イトーヨーカドーにて、永谷園対象商品1品以上を含む2,500円(税込)以上購入したレシートを1口として応募',method:'イトーヨーカドーにて、永谷園対象商品1品以上を含む2,500',prize:'A賞：大相撲九月場所 4人マス席×3組12名\nB賞：大相撲九月場所 イス席(ペア)×10組20名\nC賞：永谷園 バスタオル×30名\nD賞：共通商品券3,000円分×100名',url:'https://get-cp.jp/campain/pages/top/ngtcp342'},
     {id:'s_6b7294e2',since:1783321747754,announce:'9下',store:'イトーヨーカドー',maker:'エバラ食品',deadline:'8/31（9/1）',dlClass:'dl-green',buy:'対象商品購入',method:'',prize:'A賞：和牛カタログギフト 和牛苑「光」コース×90名\nB賞：共通商品券2,000円分×300名',url:'https://www.ebarafoods.com/shiten/campaign/index00367.html'},
+    {id:'s_0e2c235a',since:1784551291882,announce:'',store:'イトーヨーカドー、ヨークマート、西友、ドン・キホーテ、マルエツ、イオン',maker:'サントリー',deadline:'10/7',dlClass:'dl-green',buy:'サントリーペットボトル飲料300〜1250ml（特茶・特水・伊右衛門プラス・黒烏龍茶OTPP・胡麻麦茶等は対象外）\nサントリーペットボトル飲料を1点以上含むレシートでWEB応募（対象商品1本＝1pt）。レシート期間5/11〜9/30。暑さ対策商品の同時購入orケース購入で口数2倍',method:'WEB',prize:'えらべるPay 1万円分20名・5千円分40名・1千円分100名（20/10/5ptコース）',url:'https://campaign.ms-cp.jp/suntory-summer-cp/lp'},
     {id:'s_ab9252da',since:1783902414997,announce:'',store:'ウエルシア',maker:'大塚製薬',deadline:'9/3(木)23:59',dlClass:'dl-green',buy:'対象商品2点以上含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'Fitbit Inspire・20名\n和牛カタログ1万円・50名\nポカリセット・100名\nW・200ポイント・2000名',url:'https://m.e-welcia.com/drug/202607_otsuka_summer_cp?utm_source=welcia&utm_medium=matome&utm_campaign=202607_otsuka_summer_cp_024'},
     {id:'s_ec233143',since:1782895923776,announce:'8/7',store:'エコス',maker:'対象商品(メーカー横断)',deadline:'7/31',dlClass:'dl-yellow',buy:'対象商品\n店内1000円(税込)購入',method:'アプリ',prize:'500ポイント',url:''},
     {id:'s_128ff0e8',since:1783149282339,announce:'8下',store:'エコスグループ',maker:'ハウス食品',deadline:'7/31（8/1）',dlClass:'dl-yellow',buy:'エコスグループ対象店舗にて、ハウス食品グループ商品1点以上を含む500円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'お米 国産銘柄米(5kg)×50名\nWチャンス：ハウス食品商品詰め合わせ×50名',url:'https://kenshomin.hatenablog.jp/entry/2026/07/04/140600'},
@@ -2391,7 +2392,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1784551091704;
+const BUILD_STAMP = 1784551291870;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
