@@ -511,7 +511,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年7月25日更新　応募できる<span id="active-count">463</span>件</div>
+  <div class="header-date">2026年7月25日更新　応募できる<span id="active-count">469</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -740,6 +740,11 @@ const allData = {
     {id:'s_417749e1',since:1784273394516,announce:'',store:'スギ薬局',maker:'ミツカン',deadline:'8/2（8/9）',dlClass:'dl-yellow',buy:'スギ薬局にて、ミツカン対象商品1品購入ごとにスギ薬局アプリで1スタンプを貯め、1スタンプ1口として応募',method:'スギ薬局にて、ミツカン対象商品1品購入ごとにスギ薬局アプリで',prize:'スギポイント10,000ポイント×20名',url:'https://www.sugi-net.jp/sugi-channel/4460'},
     {id:'s_34f5db9c',since:1782895363499,announce:'9下',store:'スギ薬局',maker:'グリコ',deadline:'8/31',dlClass:'dl-green',buy:'グリコ アイス・食品・お菓子\n500円(税込)購入',method:'アプリ',prize:'ポイント',url:''},
     {id:'s_2d92840a',since:1783902414997,announce:'',store:'スーパーアルプス',maker:'明治',deadline:'8/4(火)当日消印有効',dlClass:'dl-yellow',buy:'対象商品\n3品以上含\n1080円(税込)以上',method:'ハガキ',prize:'Aうかい食事券2万円・20名\nB商品券2000円・30名',url:'https://superalps.info/スーパーアルプスx明治共同企画%E3%80%80うかいグルー/'},
+    {id:'s_00200b47',since:1784965511439,announce:'',store:'セイムス',maker:'夏トクジャンボ',deadline:'7/31',dlClass:'dl-red',buy:'対象店舗での買い物\n500円(税込)以上購入で1口。ポイント貯め系＋その場系',method:'アプリ',prize:'2Pカタログギフト・1Pえらべるペイ',url:''},
+    {id:'s_f0f37f69',since:1784965511439,announce:'',store:'セイムス',maker:'暑さ対策キャンペーン',deadline:'7/31',dlClass:'dl-red',buy:'inゼリーミニ・タブレット\n対象商品を500円(税込)以上購入',method:'アプリ',prize:'詳細はアプリ参照',url:''},
+    {id:'s_5eebd2a3',since:1784965511439,announce:'',store:'セイムス',maker:'虫ケア用品キャンペーン',deadline:'8/31',dlClass:'dl-green',buy:'虫ケア用品\n虫ケア用品を2点購入',method:'アプリ',prize:'5000ポイント',url:''},
+    {id:'s_bec50b70',since:1784965511439,announce:'',store:'セイムス',maker:'夏の飲料キャンペーン',deadline:'8/31',dlClass:'dl-green',buy:'アイスコーヒー・水・お茶\n対象飲料を500円(税込)以上購入',method:'アプリ',prize:'詳細はアプリ参照',url:''},
+    {id:'s_d579bedc',since:1784965511439,announce:'',store:'セイムス',maker:'キリン生活サポートキャンペーン',deadline:'8/31',dlClass:'dl-green',buy:'氷結・キリンビール・グリーンラベル\nキリン対象商品を700円(税込)以上購入',method:'アプリ',prize:'詳細はアプリ参照',url:''},
     {id:'s_250ea7a2',since:1784199490174,announce:'',store:'セブンイレブン',maker:'ちいかわ',deadline:'8/5(水)23:59',dlClass:'dl-yellow',buy:'対象商品を1度に\n100円(税込)以上購入\nﾚｼｰﾄに',method:'LINE',prize:'5ライトセット・100名\n3アロハシャツパンツ・300名\n1QUOPay1000円・1000名',url:'https://www.sej.co.jp/cmp/ck2607/receipt/'},
     {id:'s_37c6c041',since:1783902414997,announce:'',store:'タイヨー',maker:'エバラ食品',deadline:'●9/4(金)〆切',dlClass:'dl-green',buy:'対象商品含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB(ハガキ)',prize:'吸煙焼肉グリル・10名\n商品券2000円・60名',url:'https://www.ebarafoods.com/shiten/campaign/index00400.html'},
     {id:'s_43ffc8a5',since:1783902414997,announce:'',store:'ダイソー',maker:'ハウス食品',deadline:'7/1〜8/31(月)23:59',dlClass:'dl-green',buy:'対象商品2点以上含\n200円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'カタログ3000円・25名\nJCB2000円・25名\nハウスセット1000円・100名',url:'https://get-cp.jp/campain/pages/top/housecp26'},
@@ -782,6 +787,7 @@ const allData = {
     {id:'s_2df3fc12',since:1783499498029,announce:'',store:'ライフ',maker:'丸大食品',deadline:'8/9（8/14）',dlClass:'dl-yellow',buy:'ライフにて、燻製屋ウインナーまたは燻製屋ウインナーレモン＆パセリどちらか1品を含む丸大食品対象商品500円(税抜)以上、かつ総額1,500円(税抜)以上を購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'映画コース：プレミアムチケット×5家族20名\nものまねコース：ものまねショーチケット×5家族20名',url:'https://questant.jp/q/LIFE_marudai202607'},
     {id:'s_e280d6b4',since:1783675276513,announce:'',store:'ライフ',maker:'キリン・キッコーマン',deadline:'8/12',dlClass:'dl-yellow',buy:'キリンビール商品、キッコーマン商品(豆乳除く)\nキリン ビール商品・キッコーマン商品(豆乳除く)500円(税抜)以上購入',method:'ライフアプリ',prize:'ポイント',url:''},
     {id:'s_252c678f',since:1783499498029,announce:'10上',store:'ライフ',maker:'テーブルマーク',deadline:'8/31（9/7）',dlClass:'dl-green',buy:'ライフにて、テーブルマーク対象商品1品以上を含む500円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'ライフ商品券2,000円分×50名',url:'https://ndpb.f.msgs.jp/n/form/c/v1/ndpb/forms/PWB3ymCSWdWBNUXem-eCR'},
+    {id:'s_7ce8770a',since:1784965511439,announce:'',store:'ライフ',maker:'ニチレイフレッシュ・あまに豚',deadline:'',dlClass:'dl-gray',buy:'あまに豚 精肉・惣菜・冷凍等各種\nあまに豚製品を含む合計540円(税込)以上購入レシートでWEB応募',method:'WEB',prize:'ライフ商品券',url:'https://amani-life.jp/'},
     {id:'s_3a06c7e1',since:1783902414997,announce:'',store:'不二家・アンパンマン',maker:'対象企業',deadline:'7/1〜7/31(金)〆切',dlClass:'dl-red',buy:'不二家アンパンマン商品1品以上含\n不二家商品300円(税込)以上\n購入ﾚｼｰﾄ応募',method:'期間',prize:'',url:'https://krs.bz/fujiya_cp/m/ap?e_37=1'},
     {id:'s_9b77d5df',since:1784718104590,announce:'',store:'丸久',maker:'サラダクラブ',deadline:'●9/3(木)〆切',dlClass:'dl-green',buy:'対象商品300(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB・ハガキ',prize:'A・プレートグリル・10名\nB・商品券1000円・20名',url:'https://marukyu.saladclub-cp.jp'},
     {id:'s_1fafe812',since:1783673719096,announce:'',store:'夢庵・藍屋',maker:'',deadline:'',dlClass:'dl-gray',buy:'夢庵\n藍屋\n対象商品メニュー注文\n応募ハガキ配布',method:'WEB・ハガキ',prize:'米4kg・50名\nオリーブ牛・30名\n酒・20名\n生しらす・20名\nレモンジャム&サブレ・20名\nすかいらーく優待3000円・50名',url:'https://www.skylark.co.jp/campaign1/'},
@@ -2408,7 +2414,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1784962855009;
+const BUILD_STAMP = 1784965511414;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
