@@ -511,7 +511,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年8月1日更新　応募できる<span id="active-count">294</span>件</div>
+  <div class="header-date">2026年8月1日更新　応募できる<span id="active-count">293</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -650,7 +650,6 @@ const allData = {
     {id:'s_ee941d47',since:1785565536372,announce:'',store:'イオン',maker:'',deadline:'9/7(月)23:59',dlClass:'dl-green',buy:'対象商品400円(税込)以上含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'Aコードレスミキサー・19名\nBメロン・50名\nC商品券1000・436名',url:'https://iicoto.info/campaign/2608milk/'},
     {id:'s_a439e558',since:1785565536372,announce:'',store:'イオン',maker:'',deadline:'9/7(月)23:59',dlClass:'dl-green',buy:'AB\n対象商品3点以上含\n3000円(税込)',method:'WEB',prize:'A宿泊ペア・25名\nBオートクッカー・25名\nC松坂牛・150名\nD商品券3000円・950',url:'https://iicoto.info/campaign/2608nod/'},
     {id:'s_c5e9b08b',since:1785565536372,announce:'',store:'ネスレ日本 キットカット',maker:'スパイダーマン',deadline:'8/31（9/15）',dlClass:'dl-green',buy:'キットカット対象商品500円(税抜)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'A賞：限定コラボデザインパーカー×50名\nB賞：限定コラボデザインメモブロック×200名\nC賞：限定コラボデザインステッカー(2枚1組)×300名',url:'https://kitkat.nestle.jp/'},
-    {id:'s_12474fab',since:1785591579106,announce:'',store:'ハローデイ',maker:'オタフク・キリンビバレッジ',deadline:'8/1〜8/31(月)当日消印有効',dlClass:'dl-yellow',buy:'対象商品1品以上含\n500円(税込)\n購入ﾚｼｰﾄ応募',method:'ハガキ',prize:'焼きそば紅茶教室\nW・焼きそば調理セット',url:'https://www.halloday.co.jp/4643.html'},
     {id:'s_e2054bbb',since:1785565536372,announce:'',store:'フジパンストアー・ホテル食パン',maker:'',deadline:'8/1〜8/31(月)23:59',dlClass:'dl-yellow',buy:'対象商品1本分\n購入ﾚｼｰﾄ応募',method:'LINE',prize:'選べるギフトカタログ・30名\n選べるギフトカタログ・50名\nJCB5000円・100名',url:'https://get-cp.jp/campain/pages/top/fujipan-26'},
     {id:'s_8d035099',since:1785565536372,announce:'11中',store:'ヤオコー',maker:'明治',deadline:'9/30',dlClass:'dl-green',buy:'対象商品購入',method:'',prize:'A賞 5,000円コース：ヤオコー商品券10万円分×4名\nB賞 2,500円コース：ヤオコー商品券5万円分×8名\nC賞 500円コース：ヤオコー商品券2,000円分×100名\nWチャンス賞：ヤオコーカードポイント500P×200名',url:'https://nc.yaoko-net.com/campaigns/2608meiji'},
     {id:'s_a54885f5',since:1785565536372,announce:'',store:'ヤマイチ',maker:'ヤマザキビスケット',deadline:'8/31消印',dlClass:'dl-yellow',buy:'ヤマイチにて、ヤマザキビスケット商品150円(税込)ごとのレシートを1口として、郵送で応募',method:'ハガキ',prize:'商品券1,000円分×20名',url:'https://kenshomin.hatenablog.jp/entry/2026/08/01/140100'},
@@ -2245,7 +2244,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1785591579089;
+const BUILD_STAMP = 1785591895446;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
