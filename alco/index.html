@@ -1041,6 +1041,11 @@ $("importFile").addEventListener("change", function(){
 window.addEventListener("resize", function(){ if(!$("pane-chart").hidden) renderChart(); });
 
 /* ================= 起動 ================= */
+if("serviceWorker" in navigator){
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("sw.js").catch(function(){});
+  });
+}
 refreshDrinkOrder();
 renderDrinkButtons();
 renderSettings();
