@@ -118,6 +118,23 @@ body{
 
 h2{font-size:13px;color:var(--ink2);margin:20px 0 8px;font-weight:700;letter-spacing:.04em}
 
+/* ---------- 記録する日 ---------- */
+.daypick{
+  display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);
+  border-radius:16px;padding:9px 12px;margin-bottom:11px;box-shadow:var(--shadow);
+}
+.daypick .lb{font-size:12px;color:var(--ink2);flex:none}
+.daypick input[type=date]{
+  flex:1;min-width:0;font-family:inherit;font-size:15px;padding:5px 8px;
+  border:1px solid var(--axis);border-radius:10px;background:var(--page);color:var(--ink);
+}
+.todaybtn{
+  flex:none;font-family:inherit;font-size:12.5px;padding:6px 11px;border-radius:999px;
+  border:1px solid var(--line);background:var(--btn);color:var(--ink2);cursor:pointer;
+}
+.daypick.past{border-color:var(--accent)}
+.daypick.past .lb{color:var(--accent);font-weight:700}
+
 /* ---------- drink buttons ---------- */
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .dbtn{
@@ -264,10 +281,16 @@ dialog h3 svg{width:22px;height:22px}
 
   <!-- ===== 記録 ===== -->
   <section id="pane-log">
+    <div class="daypick">
+      <span class="lb">記録する日</span>
+      <input type="date" id="logDate">
+      <button id="dateToday" class="todaybtn">今日</button>
+    </div>
+
     <div class="grid" id="drinkBtns"></div>
     <button class="dbtn wide" id="btnOther" style="margin-top:9px">＋ その他（量を入力）</button>
 
-    <h2>今日の記録</h2>
+    <h2 id="logListTitle">今日の記録</h2>
     <ul class="log" id="todayList"></ul>
   </section>
 
@@ -293,7 +316,8 @@ dialog h3 svg{width:22px;height:22px}
     </div>
 
     <h2 id="dayTitle">日にちをタップすると中身が出ます</h2>
-    <ul class="log" id="dayList"></ul>
+    <button class="btn ghost" id="addToDay" hidden>この日に記録を追加する</button>
+    <ul class="log" id="dayList" style="margin-top:8px"></ul>
   </section>
 
   <!-- ===== グラフ ===== -->
@@ -334,19 +358,6 @@ dialog h3 svg{width:22px;height:22px}
         厚生労働省の飲酒ガイドライン（2024年）では、生活習慣病のリスクが高まる量は
         <b>女性で1日20g以上</b>、男性で40g以上とされています。初期値は20gです。
       </div>
-    </div>
-
-    <div class="row">
-      <label class="hd">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 13l4-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M2.5 17h19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        1日の区切り
-      </label>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span class="note">朝</span>
-        <input type="number" id="dayStart" min="0" max="12" step="1" inputmode="numeric" style="width:84px">
-        <span class="note">時から翌日あつかい</span>
-      </div>
-      <div class="note" style="margin-top:6px">深夜0時をまたいで飲んでも同じ日にまとまります。</div>
     </div>
 
     <div class="row">
@@ -403,6 +414,25 @@ dialog h3 svg{width:22px;height:22px}
   </div>
 </dialog>
 
+<dialog id="editDlg">
+  <h3>記録をなおす</h3>
+  <div class="f3">
+    <div><span class="lab">名前</span><input type="text" id="e-name"></div>
+    <div><span class="lab">量(ml)</span><input type="number" id="e-ml" inputmode="decimal"></div>
+    <div><span class="lab">度数(%)</span><input type="number" id="e-abv" inputmode="decimal" step="0.1"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 110px;gap:6px;margin-top:10px">
+    <div><span class="lab">日付</span><input type="date" id="e-date"></div>
+    <div><span class="lab">時刻</span><input type="time" id="e-time"></div>
+  </div>
+  <div id="e-preview" class="note" style="margin-top:10px"></div>
+  <div class="dlg-actions">
+    <button class="btn ghost" id="e-cancel">やめる</button>
+    <button class="btn" id="e-ok">保存</button>
+  </div>
+  <button class="linkbtn" id="e-del" style="width:100%;color:var(--over);margin-top:4px">この記録を削除する</button>
+</dialog>
+
 <div id="toast"></div>
 
 <script>
@@ -411,21 +441,22 @@ dialog h3 svg{width:22px;height:22px}
 
 /* ================= データ ================= */
 var KEY = "sake_log_v1";
-var DRINKS_VERSION = 2;
+var DRINKS_VERSION = 3;
 var DEFAULT_DRINKS = [
-  {id:"b1", name:"ビール 5%",     ml:350, abv:5},
-  {id:"b2", name:"ビール 4%",     ml:350, abv:4},
-  {id:"b3", name:"ビール 4.5%",   ml:350, abv:4.5},
-  {id:"b4", name:"ビール 500ml",  ml:500, abv:5},
-  {id:"b5", name:"チューハイ 4%", ml:350, abv:4},
-  {id:"b6", name:"チューハイ 5%", ml:350, abv:5},
-  {id:"b7", name:"ノンアル",      ml:350, abv:0}
+  {id:"b1", name:"ビール 5%",       ml:350, abv:5},
+  {id:"b2", name:"ビール 4%",       ml:350, abv:4},
+  {id:"b3", name:"ビール 4.5%",     ml:350, abv:4.5},
+  {id:"b4", name:"ビール 500ml",    ml:500, abv:5},
+  {id:"b8", name:"ビール 中ジョッキ", ml:435, abv:5},
+  {id:"b5", name:"チューハイ 4%",   ml:350, abv:4},
+  {id:"b6", name:"チューハイ 5%",   ml:350, abv:5},
+  {id:"b7", name:"ノンアル",        ml:350, abv:0}
 ];
 
 var S = load();
 
 function load(){
-  var base = {drinks: DEFAULT_DRINKS.slice(), logs: [], limit: 20, dayStart: 5, dv: DRINKS_VERSION};
+  var base = {drinks: DEFAULT_DRINKS.slice(), logs: [], limit: 20, dv: DRINKS_VERSION};
   try{
     var raw = localStorage.getItem(KEY);
     if(!raw) return base;
@@ -433,15 +464,19 @@ function load(){
     if(Array.isArray(o.drinks) && o.drinks.length) base.drinks = o.drinks;
     if(Array.isArray(o.logs)) base.logs = o.logs;
     if(typeof o.limit === "number") base.limit = o.limit;
-    if(typeof o.dayStart === "number") base.dayStart = o.dayStart;
     base.dv = (typeof o.dv === "number") ? o.dv : 1;
 
     // 初期ボタンを新しい内容に入れ替える（自分で追加したもの "u..." があれば触らない）
-    if(base.dv < DRINKS_VERSION){
+    if(base.dv < 2){
       var customized = base.drinks.some(function(d){ return String(d.id).charAt(0) === "u"; });
       if(!customized) base.drinks = DEFAULT_DRINKS.slice();
-      base.dv = DRINKS_VERSION;
     }
+    // 中ジョッキを足す（すでに同じものがあれば足さない）
+    if(base.dv < 3){
+      var hasJokki = base.drinks.some(function(d){ return d.ml === 435 && d.abv === 5; });
+      if(!hasJokki) base.drinks.push({id:"b8", name:"ビール 中ジョッキ", ml:435, abv:5});
+    }
+    base.dv = DRINKS_VERSION;
   }catch(e){}
   return base;
 }
@@ -457,7 +492,6 @@ function pad(n){ return n<10 ? "0"+n : ""+n; }
 
 function dayKeyOf(ts){
   var d = new Date(ts);
-  d.setHours(d.getHours() - S.dayStart);
   return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
 }
 function keyToDate(k){
@@ -466,9 +500,15 @@ function keyToDate(k){
 }
 function keyBack(n){
   var d = new Date();
-  d.setHours(d.getHours() - S.dayStart);
   d.setDate(d.getDate() - n);
   return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+}
+// 記録タブでいま選んでいる日（null なら今日）
+var selDate = null;
+function curKey(){ return selDate || keyBack(0); }
+function keyLabel(k){
+  var d = keyToDate(k);
+  return (d.getMonth()+1)+"月"+d.getDate()+"日("+WD[d.getDay()]+")";
 }
 function totalOf(key){
   var t = 0;
@@ -533,7 +573,11 @@ function popHeart(x, y, ch){
 
 /* --- ヒーロー --- */
 function renderHero(){
-  var g = totalOf(keyBack(0));
+  var key = curKey();
+  var isToday = (key === keyBack(0));
+  document.querySelector(".hero-label").textContent =
+    (isToday ? "今日" : keyLabel(key)) + "の純アルコール量";
+  var g = totalOf(key);
   $("todayG").textContent = r1(g);
   var pct = S.limit>0 ? Math.min(100, g/S.limit*100) : 0;
   var gz = $("gauge");
@@ -613,13 +657,22 @@ function renderDrinkButtons(){
 }
 
 /* --- 記録の追加・削除 --- */
+// 選んでいる日の記録時刻。今日ならいまの時刻、過去の日なら20時（あとから直せる）
+function stampFor(key){
+  if(key === keyBack(0)) return Date.now();
+  var d = keyToDate(key);
+  d.setHours(20, 0, 0, 0);
+  return d.getTime();
+}
 function addLog(name, ml, abv){
+  var key = curKey();
   S.logs.push({
     id: Date.now()+"_"+Math.random().toString(36).slice(2,7),
-    ts: Date.now(), name: name, ml: ml, abv: abv, g: grams(ml, abv)
+    ts: stampFor(key), name: name, ml: ml, abv: abv, g: grams(ml, abv)
   });
   save(); renderAll();
-  toast(name+" を記録（+"+r1(grams(ml,abv))+"g）");
+  var when = (key === keyBack(0)) ? "" : keyLabel(key)+"に ";
+  toast(when+name+" を記録（+"+r1(grams(ml,abv))+"g）");
 }
 function delLog(id){
   S.logs = S.logs.filter(function(l){ return l.id !== id; });
@@ -643,7 +696,13 @@ function logRow(l){
   sm.textContent = l.ml+"ml ・ "+l.abv+"%";
   n.appendChild(sm);
   li.querySelector(".g").textContent = r1(l.g)+"g";
-  li.querySelector(".del").addEventListener("click", function(){ delLog(l.id); });
+  li.querySelector(".del").addEventListener("click", function(ev){
+    ev.stopPropagation();
+    delLog(l.id);
+  });
+  li.style.cursor = "pointer";
+  li.title = "タップするとなおせます";
+  li.addEventListener("click", function(){ openEdit(l.id); });
   return li;
 }
 function fillList(ul, key, emptyMsg){
@@ -659,7 +718,38 @@ function fillList(ul, key, emptyMsg){
   items.forEach(function(l){ ul.appendChild(logRow(l)); });
 }
 function renderTodayList(){
-  fillList($("todayList"), keyBack(0), "まだ記録はありません。上のボタンをポンと押すだけでOK。");
+  var key = curKey();
+  var isToday = (key === keyBack(0));
+  $("logDate").value = key;
+  $("logListTitle").textContent = (isToday ? "今日" : keyLabel(key)) + "の記録";
+  document.querySelector(".daypick").classList.toggle("past", !isToday);
+  fillList($("todayList"), key,
+    isToday ? "まだ記録はありません。上のボタンをポンと押すだけでOK。"
+            : "この日の記録はありません。上のボタンを押すとこの日に入ります。");
+}
+
+/* --- 記録をなおすダイアログ --- */
+var editingId = null;
+
+function openEdit(id){
+  var l = null;
+  for(var i=0;i<S.logs.length;i++) if(S.logs[i].id === id) l = S.logs[i];
+  if(!l) return;
+  editingId = id;
+  var d = new Date(l.ts);
+  $("e-name").value = l.name;
+  $("e-ml").value   = l.ml;
+  $("e-abv").value  = l.abv;
+  $("e-date").value = dayKeyOf(l.ts);
+  $("e-time").value = pad(d.getHours())+":"+pad(d.getMinutes());
+  updateEditPreview();
+  $("editDlg").showModal();
+}
+function updateEditPreview(){
+  var ml = parseFloat($("e-ml").value), abv = parseFloat($("e-abv").value);
+  $("e-preview").textContent = (ml > 0 && abv >= 0)
+    ? "純アルコール " + r1(grams(ml, abv)) + "g になります"
+    : "量と度数を入れてください";
 }
 
 /* ================= カレンダー ================= */
@@ -742,9 +832,11 @@ function renderDayList(){
   var ul = $("dayList");
   if(!selKey){
     $("dayTitle").textContent = "日にちをタップすると中身が出ます";
+    $("addToDay").hidden = true;
     ul.innerHTML = "";
     return;
   }
+  $("addToDay").hidden = false;
   var dt = keyToDate(selKey);
   var tot = totalOf(selKey);
   $("dayTitle").textContent =
@@ -896,7 +988,6 @@ function renderTiles(){
 /* ================= 設定 ================= */
 function renderSettings(){
   $("limitInput").value = S.limit;
-  $("dayStart").value = S.dayStart;
   var box = $("drinkEditor");
   box.innerHTML = "";
   S.drinks.forEach(function(d){
@@ -935,11 +1026,73 @@ Object.keys(panes).forEach(function(tid){
       $(panes[t]).hidden = (t !== tid);
     });
     // 並び替えは記録画面に戻ってきたときだけ。押した直後にボタンが動くと押し間違えるため
-    if(tid === "tab-log"){ refreshDrinkOrder(); renderDrinkButtons(); }
+    if(tid === "tab-log"){
+      refreshDrinkOrder(); renderDrinkButtons();
+      renderHero(); renderTodayList();
+    }
     if(tid === "tab-cal") renderCalendar();
     if(tid === "tab-set") renderSettings();
     if(tid === "tab-chart") renderChart();
   });
+});
+
+/* --- 記録する日の切り替え --- */
+$("logDate").addEventListener("change", function(){
+  var v = this.value;
+  if(!v){ selDate = null; }
+  else if(v > keyBack(0)){ toast("未来の日には記録できません"); selDate = null; }
+  else { selDate = (v === keyBack(0)) ? null : v; }
+  renderAll();
+});
+$("dateToday").addEventListener("click", function(){
+  selDate = null;
+  renderAll();
+});
+$("addToDay").addEventListener("click", function(){
+  if(!selKey) return;
+  selDate = (selKey === keyBack(0)) ? null : selKey;
+  $("tab-log").click();
+  window.scrollTo(0, 0);
+});
+
+/* --- 記録をなおすダイアログ --- */
+$("e-ml").addEventListener("input", updateEditPreview);
+$("e-abv").addEventListener("input", updateEditPreview);
+$("e-cancel").addEventListener("click", function(){ $("editDlg").close(); });
+$("e-del").addEventListener("click", function(){
+  if(!editingId) return;
+  $("editDlg").close();
+  delLog(editingId);
+  editingId = null;
+  toast("削除しました");
+});
+$("e-ok").addEventListener("click", function(){
+  if(!editingId) return;
+  var name = $("e-name").value.trim();
+  var ml = parseFloat($("e-ml").value), abv = parseFloat($("e-abv").value);
+  var dv = $("e-date").value, tv = $("e-time").value || "20:00";
+  if(!name || !(ml > 0) || !(abv >= 0)){ toast("名前・量・度数を入れてください"); return; }
+  if(!dv){ toast("日付を入れてください"); return; }
+  if(dv > keyBack(0)){ toast("未来の日には記録できません"); return; }
+
+  var d = keyToDate(dv);
+  var hm = tv.split(":");
+  d.setHours(+hm[0] || 0, +hm[1] || 0, 0, 0);
+
+  for(var i=0;i<S.logs.length;i++){
+    if(S.logs[i].id === editingId){
+      S.logs[i].name = name;
+      S.logs[i].ml = ml;
+      S.logs[i].abv = abv;
+      S.logs[i].g = grams(ml, abv);
+      S.logs[i].ts = d.getTime();
+      break;
+    }
+  }
+  editingId = null;
+  $("editDlg").close();
+  save(); renderAll();
+  toast("なおしました");
 });
 
 $("calPrev").addEventListener("click", function(){
@@ -987,12 +1140,6 @@ $("limitInput").addEventListener("change", function(){
   S.limit = isNaN(v) ? 0 : Math.max(0, v);
   save(); renderAll();
 });
-$("dayStart").addEventListener("change", function(){
-  var v = parseInt(this.value, 10);
-  S.dayStart = (isNaN(v)||v<0||v>12) ? 5 : v;
-  this.value = S.dayStart;
-  save(); renderAll();
-});
 $("addDrink").addEventListener("click", function(){
   var name = $("nd-name").value.trim();
   var ml = parseFloat($("nd-ml").value), abv = parseFloat($("nd-abv").value);
@@ -1027,7 +1174,6 @@ $("importFile").addEventListener("change", function(){
         drinks: (Array.isArray(o.drinks) && o.drinks.length) ? o.drinks : DEFAULT_DRINKS.slice(),
         logs: o.logs,
         limit: typeof o.limit === "number" ? o.limit : 20,
-        dayStart: typeof o.dayStart === "number" ? o.dayStart : 5,
         dv: DRINKS_VERSION
       };
       save(); refreshDrinkOrder(); renderDrinkButtons(); renderSettings(); renderAll();
@@ -1046,6 +1192,7 @@ if("serviceWorker" in navigator){
     navigator.serviceWorker.register("sw.js").catch(function(){});
   });
 }
+$("logDate").max = keyBack(0);
 refreshDrinkOrder();
 renderDrinkButtons();
 renderSettings();
