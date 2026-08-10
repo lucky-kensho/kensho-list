@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff6f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="飲酒記録">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<title>飲酒記録</title>
+<style>
+:root{
+  color-scheme: light;
+  --page:#fff6f2; --surface:#fffdfc;
+  --ink:#3b2f2b; --ink2:#6b5a54; --muted:#a09089;
+  --grid:#f0e4de; --axis:#dcc9c1; --line:rgba(90,60,50,.12);
+  --series:#2a78d6; --over:#d03b3b; --good:#0ca30c;
+  --accent:#d8628c; --on-accent:#ffffff; --accent-soft:#ffe4ee;
+  --c-rest:#e6f4e8; --c-ok:#dde9fa; --c-over:#fadfdf;
+  --btn:#ffffff;
+  --shadow:0 2px 10px rgba(180,120,110,.10);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme: dark;
+    --page:#0d0d0d; --surface:#1c1a1a;
+    --ink:#ffffff; --ink2:#c9bdb9; --muted:#8f8480;
+    --grid:#2e2b2a; --axis:#3d3937; --line:rgba(255,255,255,.10);
+    --series:#3987e5; --over:#e66767; --good:#0ca30c;
+    --accent:#e888ac; --on-accent:#1c1a1a; --accent-soft:#3a2830;
+    --c-rest:#1d3324; --c-ok:#17304d; --c-over:#3d2222;
+    --btn:#252222;
+    --shadow:0 2px 10px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--page); color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI","Hiragino Kaku Gothic ProN",sans-serif;
+  font-size:16px; line-height:1.55;
+  padding:0 0 env(safe-area-inset-bottom);
+  -webkit-tap-highlight-color:transparent;
+}
+.wrap{max-width:520px;margin:0 auto;padding:10px 14px 90px}
+
+/* ---------- title ---------- */
+.title{display:flex;align-items:center;gap:7px;padding:6px 2px 10px}
+.title h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.02em}
+.title .sub{font-size:11px;color:var(--muted);margin-left:auto}
+
+/* ---------- hero ---------- */
+.hero{
+  background:var(--surface); border:1px solid var(--line); border-radius:22px;
+  padding:14px 16px 15px; margin-bottom:14px; box-shadow:var(--shadow);
+  position:relative; overflow:hidden;
+}
+.hero::before{
+  content:""; position:absolute; right:-34px; top:-34px; width:110px; height:110px;
+  border-radius:50%; background:var(--accent-soft); opacity:.55;
+}
+.hero-top{display:flex;align-items:center;gap:12px;position:relative}
+.cat{width:76px;height:76px;flex:none}
+.hero-num{display:flex;align-items:baseline;gap:4px}
+.hero-num b{font-size:42px;font-weight:800;line-height:1}
+.hero-num span{font-size:17px;color:var(--ink2)}
+.hero-label{font-size:12px;color:var(--ink2);letter-spacing:.03em}
+.gauge{height:13px;border-radius:7px;background:var(--grid);overflow:hidden;margin-top:11px;position:relative}
+.gauge i{display:block;height:100%;border-radius:7px;background:var(--series);transition:width .3s ease;width:0}
+.gauge.over i{background:var(--over)}
+.hero-sub{margin-top:9px;font-size:13px;color:var(--ink2);position:relative}
+.hero-sub.over{color:var(--over);font-weight:600}
+.hero-sub.rest{color:var(--good);font-weight:600}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:5px;margin-bottom:14px}
+.tabs button{
+  flex:1;padding:9px 2px;border:1px solid var(--line);background:var(--btn);
+  color:var(--ink2);border-radius:14px;font-size:12.5px;font-family:inherit;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap;
+}
+.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+.tabs svg{width:15px;height:15px;flex:none}
+
+/* ---------- カレンダー ---------- */
+.calhead{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.calhead button{
+  width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--btn);
+  color:var(--ink);font-size:18px;font-family:inherit;cursor:pointer;line-height:1;
+}
+.calhead button:disabled{opacity:.35;cursor:default}
+#calTitle{flex:1;text-align:center;font-size:16px;font-weight:700}
+.calgrid{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:var(--surface);
+  border:1px solid var(--line);border-radius:18px;padding:10px 8px;box-shadow:var(--shadow);
+}
+.calgrid .wd{text-align:center;font-size:11px;color:var(--muted);padding-bottom:2px}
+.calgrid .wd.sun{color:#d05a6e}
+.calgrid .wd.sat{color:#5a8fd0}
+.cell{
+  aspect-ratio:1/1.1;border-radius:11px;border:1.5px solid transparent;background:transparent;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  font-family:inherit;color:var(--ink);cursor:pointer;padding:2px;
+}
+.cell.blank{visibility:hidden;cursor:default}
+.cell .d{font-size:12.5px;font-weight:600}
+.cell .v{font-size:9.5px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.cell.rest{background:var(--c-rest)} .cell.rest .v{color:var(--good);font-weight:700}
+.cell.ok{background:var(--c-ok)}     .cell.ok .v{color:var(--series);font-weight:700}
+.cell.over{background:var(--c-over)} .cell.over .v{color:var(--over);font-weight:700}
+.cell.today{box-shadow:inset 0 0 0 1.5px var(--axis)}
+.cell.sel{border-color:var(--accent)}
+.callegend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--ink2);padding:9px 4px 0}
+.callegend i{display:inline-block;width:11px;height:11px;border-radius:4px;margin-right:5px;vertical-align:-1px}
+
+h2{font-size:13px;color:var(--ink2);margin:20px 0 8px;font-weight:700;letter-spacing:.04em}
+
+/* ---------- drink buttons ---------- */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.dbtn{
+  background:var(--btn);border:1px solid var(--line);border-radius:18px;
+  padding:12px 13px;font-family:inherit;color:var(--ink);box-shadow:var(--shadow);
+  cursor:pointer;width:100%;display:block;text-align:left;transition:transform .08s;
+}
+.dbtn:active{transform:scale(.96)}
+.dbtn .n{font-size:15px;font-weight:700;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dbtn .m{font-size:11.5px;color:var(--muted);display:block;margin-top:1px}
+.dbtn .g{font-size:12px;color:var(--accent);font-weight:700;display:block;margin-top:3px}
+.wide{grid-column:1 / -1;text-align:center;color:var(--ink2);border-style:dashed;box-shadow:none;background:transparent}
+
+/* ---------- list ---------- */
+ul.log{list-style:none;margin:0;padding:0}
+ul.log li{
+  display:flex;align-items:center;gap:9px;background:var(--surface);
+  border:1px solid var(--line);border-radius:16px;padding:9px 12px;margin-bottom:7px;
+}
+ul.log .t{font-size:11.5px;color:var(--muted);width:42px;flex:none;font-variant-numeric:tabular-nums}
+ul.log .n{flex:1;font-size:14.5px;min-width:0}
+ul.log .n small{color:var(--muted);font-size:11px;display:block}
+ul.log .g{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+ul.log .del{
+  border:none;background:none;color:var(--muted);font-size:20px;line-height:1;
+  padding:4px 0 4px 6px;cursor:pointer;font-family:inherit;
+}
+.empty{
+  color:var(--ink2);font-size:13.5px;padding:18px 14px;text-align:center;
+  background:var(--accent-soft);border-radius:16px;
+}
+
+/* ---------- stat tiles ---------- */
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 9px;box-shadow:var(--shadow)}
+.tile .k{font-size:10.5px;color:var(--muted)}
+.tile .v{font-size:21px;font-weight:800;margin-top:1px}
+.tile .v small{font-size:11px;font-weight:400;color:var(--ink2);margin-left:2px}
+
+/* ---------- chart ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 10px 8px;position:relative;box-shadow:var(--shadow)}
+.seg{display:flex;gap:6px;margin-bottom:10px}
+.seg button{
+  padding:6px 13px;border:1px solid var(--line);background:var(--btn);color:var(--ink2);
+  border-radius:999px;font-size:13px;font-family:inherit;cursor:pointer;
+}
+.seg button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+svg.chart{display:block;width:100%;height:auto;touch-action:manipulation}
+.legend{display:flex;gap:13px;font-size:11.5px;color:var(--ink2);padding:6px 4px 2px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+#tip{
+  position:absolute;pointer-events:none;background:var(--ink);color:var(--surface);
+  font-size:12px;padding:6px 9px;border-radius:9px;white-space:nowrap;opacity:0;
+  transition:opacity .12s;transform:translate(-50%,-100%);z-index:5;
+}
+table.tbl{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+table.tbl th,table.tbl td{text-align:left;padding:6px 4px;border-bottom:1px solid var(--grid)}
+table.tbl td.num{text-align:right;font-variant-numeric:tabular-nums}
+.linkbtn{background:none;border:none;color:var(--accent);font-size:13px;font-family:inherit;padding:8px 0;cursor:pointer;font-weight:600}
+
+/* ---------- settings ---------- */
+.row{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:13px;margin-bottom:9px;box-shadow:var(--shadow)}
+.row label.hd{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:6px;margin-bottom:7px;font-weight:700}
+.row label.hd svg{width:16px;height:16px}
+input[type=text],input[type=number]{
+  font-family:inherit;font-size:16px;padding:9px 10px;border:1px solid var(--axis);
+  border-radius:12px;background:var(--page);color:var(--ink);width:100%;
+}
+.f3{display:grid;grid-template-columns:1fr 78px 68px;gap:6px;align-items:end}
+.f3 .lab{font-size:11px;color:var(--muted);display:block;margin-bottom:3px}
+.btn{
+  font-family:inherit;font-size:15px;padding:11px 14px;border-radius:14px;
+  border:1px solid var(--accent);background:var(--accent);color:var(--on-accent);
+  cursor:pointer;width:100%;font-weight:700;
+}
+.btn.ghost{background:var(--btn);color:var(--ink);border-color:var(--line);font-weight:600}
+.mini{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--grid)}
+.mini:last-child{border-bottom:none}
+.mini .n{flex:1;font-size:14px}
+.mini .n small{color:var(--muted);display:block;font-size:11.5px}
+.note{font-size:12.5px;color:var(--ink2);line-height:1.75}
+.note b{color:var(--ink)}
+
+/* ---------- modal ---------- */
+dialog{
+  border:none;border-radius:22px;padding:18px;background:var(--surface);color:var(--ink);
+  width:min(92vw,380px);box-shadow:0 10px 40px rgba(0,0,0,.28);
+}
+dialog::backdrop{background:rgba(60,40,40,.45)}
+dialog h3{margin:0 0 12px;font-size:16.5px;display:flex;align-items:center;gap:7px}
+dialog h3 svg{width:22px;height:22px}
+.dlg-actions{display:flex;gap:8px;margin-top:14px}
+
+/* ---------- toast ---------- */
+#toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(10px);
+  background:var(--ink);color:var(--surface);padding:10px 18px;border-radius:999px;
+  font-size:14px;opacity:0;transition:.2s;pointer-events:none;z-index:50;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- ふわっと出るハート ---------- */
+.pop{position:fixed;pointer-events:none;z-index:60;font-size:22px;animation:floatup .9s ease-out forwards}
+@keyframes floatup{
+  0%{opacity:1;transform:translate(-50%,0) scale(.7)}
+  100%{opacity:0;transform:translate(-50%,-70px) scale(1.2)}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="title">
+    <h1>飲酒記録</h1>
+    <span class="sub">データはこの端末の中だけ</span>
+  </div>
+
+  <div class="hero">
+    <div class="hero-top">
+      <div id="catBox"></div>
+      <div>
+        <div class="hero-label">今日の純アルコール量</div>
+        <div class="hero-num"><b id="todayG">0</b><span>g</span></div>
+      </div>
+    </div>
+    <div class="gauge" id="gauge"><i></i></div>
+    <div class="hero-sub" id="todaySub"></div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-log" aria-selected="true">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>記録
+    </button>
+    <button role="tab" id="tab-cal" aria-selected="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 10.5h16M9 3.5v3M15 3.5v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>暦
+    </button>
+    <button role="tab" id="tab-chart" aria-selected="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>グラフ
+    </button>
+    <button role="tab" id="tab-set" aria-selected="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>設定
+    </button>
+  </div>
+
+  <!-- ===== 記録 ===== -->
+  <section id="pane-log">
+    <div class="grid" id="drinkBtns"></div>
+    <button class="dbtn wide" id="btnOther" style="margin-top:9px">＋ その他（量を入力）</button>
+
+    <h2>今日の記録</h2>
+    <ul class="log" id="todayList"></ul>
+  </section>
+
+  <!-- ===== カレンダー ===== -->
+  <section id="pane-cal" hidden>
+    <div class="calhead">
+      <button id="calPrev" aria-label="前の月">‹</button>
+      <div id="calTitle"></div>
+      <button id="calNext" aria-label="次の月">›</button>
+    </div>
+
+    <div class="tiles">
+      <div class="tile"><div class="k">この月の合計</div><div class="v"><span id="mSum">0</span><small>g</small></div></div>
+      <div class="tile"><div class="k">休肝日</div><div class="v"><span id="mRest">0</span><small>日</small></div></div>
+      <div class="tile"><div class="k">目安を超えた日</div><div class="v"><span id="mOver">0</span><small>日</small></div></div>
+    </div>
+
+    <div class="calgrid" id="calGrid"></div>
+    <div class="callegend">
+      <span><i style="background:var(--c-rest)"></i>休肝日（0g）</span>
+      <span><i style="background:var(--c-ok)"></i>目安の範囲内</span>
+      <span><i style="background:var(--c-over)"></i>目安を超えた日</span>
+    </div>
+
+    <h2 id="dayTitle">日にちをタップすると中身が出ます</h2>
+    <ul class="log" id="dayList"></ul>
+  </section>
+
+  <!-- ===== グラフ ===== -->
+  <section id="pane-chart" hidden>
+    <div class="tiles">
+      <div class="tile"><div class="k">直近7日の合計</div><div class="v"><span id="s7">0</span><small>g</small></div></div>
+      <div class="tile"><div class="k">1日平均</div><div class="v"><span id="savg">0</span><small>g</small></div></div>
+      <div class="tile"><div class="k">7日中の休肝日</div><div class="v"><span id="srest">0</span><small>日</small></div></div>
+    </div>
+
+    <div class="seg" role="tablist">
+      <button role="tab" id="rg-14" aria-selected="true">2週間</button>
+      <button role="tab" id="rg-13w" aria-selected="false">3か月（週ごと）</button>
+    </div>
+
+    <div class="card">
+      <svg class="chart" id="chart" viewBox="0 0 340 190" preserveAspectRatio="xMidYMid meet" role="img" aria-label="純アルコール量の推移"></svg>
+      <div id="tip"></div>
+      <div class="legend">
+        <span><i style="background:var(--series)"></i>目安の範囲内</span>
+        <span><i style="background:var(--over)"></i>目安を超えた日 ⚠</span>
+        <span>┈ 目安ライン</span>
+      </div>
+    </div>
+    <button class="linkbtn" id="toggleTable">表で見る ▾</button>
+    <div id="tableWrap" hidden></div>
+  </section>
+
+  <!-- ===== 設定 ===== -->
+  <section id="pane-set" hidden>
+    <div class="row">
+      <label class="hd" for="limitInput">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        1日の目安（純アルコール g）
+      </label>
+      <input type="number" id="limitInput" min="0" max="200" step="1" inputmode="numeric">
+      <div class="note" style="margin-top:8px">
+        厚生労働省の飲酒ガイドライン（2024年）では、生活習慣病のリスクが高まる量は
+        <b>女性で1日20g以上</b>、男性で40g以上とされています。初期値は20gです。
+      </div>
+    </div>
+
+    <div class="row">
+      <label class="hd">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 13l4-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M2.5 17h19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        1日の区切り
+      </label>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="note">朝</span>
+        <input type="number" id="dayStart" min="0" max="12" step="1" inputmode="numeric" style="width:84px">
+        <span class="note">時から翌日あつかい</span>
+      </div>
+      <div class="note" style="margin-top:6px">深夜0時をまたいで飲んでも同じ日にまとまります。</div>
+    </div>
+
+    <div class="row">
+      <label class="hd">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.3-7-9.2A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.8C19 15.7 12 20 12 20z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        よく飲むお酒（ワンタップ登録）
+      </label>
+      <div id="drinkEditor"></div>
+      <div class="f3" style="margin-top:10px">
+        <div><span class="lab">名前</span><input type="text" id="nd-name" placeholder="ビール350"></div>
+        <div><span class="lab">量(ml)</span><input type="number" id="nd-ml" inputmode="decimal"></div>
+        <div><span class="lab">度数(%)</span><input type="number" id="nd-abv" inputmode="decimal" step="0.1"></div>
+      </div>
+      <button class="btn ghost" id="addDrink" style="margin-top:8px">この内容で追加</button>
+    </div>
+
+    <div class="row">
+      <label class="hd">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v10m0 0l-3.5-3.5M12 13l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v3h16v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        データの控え（バックアップ）
+      </label>
+      <div class="note" style="margin-bottom:10px">
+        記録はこのスマホ（ブラウザ）の中だけに保存されています。インターネットには一切送られません。
+        そのぶん<b>機種変更やブラウザのデータ削除で消えます</b>。ときどき控えを保存してください。
+      </div>
+      <button class="btn ghost" id="exportBtn">控えを書き出す</button>
+      <button class="btn ghost" id="importBtn" style="margin-top:8px">控えから戻す</button>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+    </div>
+
+    <div class="row">
+      <div class="note">
+        <b>純アルコール量の計算</b><br>
+        量(ml) × 度数(%) ÷ 100 × 0.8 = 純アルコール(g)<br>
+        例：ビール500ml・5% → 500 × 0.05 × 0.8 = 20g
+      </div>
+    </div>
+  </section>
+</div>
+
+<dialog id="otherDlg">
+  <h3>量を入力して記録</h3>
+  <div class="f3">
+    <div><span class="lab">名前（任意）</span><input type="text" id="o-name" placeholder="ワイン"></div>
+    <div><span class="lab">量(ml)</span><input type="number" id="o-ml" inputmode="decimal"></div>
+    <div><span class="lab">度数(%)</span><input type="number" id="o-abv" inputmode="decimal" step="0.1"></div>
+  </div>
+  <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px">
+    <input type="checkbox" id="o-save" style="width:18px;height:18px">よく飲むお酒に登録する
+  </label>
+  <div class="dlg-actions">
+    <button class="btn ghost" id="o-cancel">やめる</button>
+    <button class="btn" id="o-ok">記録する</button>
+  </div>
+</dialog>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ================= データ ================= */
+var KEY = "sake_log_v1";
+var DRINKS_VERSION = 2;
+var DEFAULT_DRINKS = [
+  {id:"b1", name:"ビール 5%",     ml:350, abv:5},
+  {id:"b2", name:"ビール 4%",     ml:350, abv:4},
+  {id:"b3", name:"ビール 4.5%",   ml:350, abv:4.5},
+  {id:"b4", name:"ビール 500ml",  ml:500, abv:5},
+  {id:"b5", name:"チューハイ 4%", ml:350, abv:4},
+  {id:"b6", name:"チューハイ 5%", ml:350, abv:5},
+  {id:"b7", name:"ノンアル",      ml:350, abv:0}
+];
+
+var S = load();
+
+function load(){
+  var base = {drinks: DEFAULT_DRINKS.slice(), logs: [], limit: 20, dayStart: 5, dv: DRINKS_VERSION};
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(!raw) return base;
+    var o = JSON.parse(raw);
+    if(Array.isArray(o.drinks) && o.drinks.length) base.drinks = o.drinks;
+    if(Array.isArray(o.logs)) base.logs = o.logs;
+    if(typeof o.limit === "number") base.limit = o.limit;
+    if(typeof o.dayStart === "number") base.dayStart = o.dayStart;
+    base.dv = (typeof o.dv === "number") ? o.dv : 1;
+
+    // 初期ボタンを新しい内容に入れ替える（自分で追加したもの "u..." があれば触らない）
+    if(base.dv < DRINKS_VERSION){
+      var customized = base.drinks.some(function(d){ return String(d.id).charAt(0) === "u"; });
+      if(!customized) base.drinks = DEFAULT_DRINKS.slice();
+      base.dv = DRINKS_VERSION;
+    }
+  }catch(e){}
+  return base;
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); }
+  catch(e){ toast("保存できませんでした"); }
+}
+
+/* ================= 計算・日付 ================= */
+function grams(ml, abv){ return ml * (abv/100) * 0.8; }
+function r1(n){ return Math.round(n*10)/10; }
+function pad(n){ return n<10 ? "0"+n : ""+n; }
+
+function dayKeyOf(ts){
+  var d = new Date(ts);
+  d.setHours(d.getHours() - S.dayStart);
+  return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+}
+function keyToDate(k){
+  var p = k.split("-");
+  return new Date(+p[0], +p[1]-1, +p[2]);
+}
+function keyBack(n){
+  var d = new Date();
+  d.setHours(d.getHours() - S.dayStart);
+  d.setDate(d.getDate() - n);
+  return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+}
+function totalOf(key){
+  var t = 0;
+  for(var i=0;i<S.logs.length;i++) if(dayKeyOf(S.logs[i].ts)===key) t += S.logs[i].g;
+  return t;
+}
+function labelOf(key){
+  var d = keyToDate(key);
+  return (d.getMonth()+1)+"/"+d.getDate();
+}
+var WD = ["日","月","火","水","木","金","土"];
+
+/* ================= イラスト ================= */
+/* ねこ（3つの表情） */
+function catSVG(mood){
+  var face =
+    '<path d="M17 27 L19 9 L34 20 Z" fill="#ffd7b3" stroke="#b07a5c" stroke-width="2.2" stroke-linejoin="round"/>'+
+    '<path d="M59 27 L57 9 L42 20 Z" fill="#ffd7b3" stroke="#b07a5c" stroke-width="2.2" stroke-linejoin="round"/>'+
+    '<ellipse cx="38" cy="42" rx="25" ry="22" fill="#ffeadb" stroke="#b07a5c" stroke-width="2.2"/>'+
+    '<ellipse cx="19" cy="48" rx="5.2" ry="3.3" fill="#f7a8bd" opacity=".8"/>'+
+    '<ellipse cx="57" cy="48" rx="5.2" ry="3.3" fill="#f7a8bd" opacity=".8"/>'+
+    '<path d="M8 38h7M8 44h7M63 38h-7M63 44h-7" stroke="#c99a7e" stroke-width="1.6" stroke-linecap="round"/>'+
+    '<path d="M36.5 45h3" stroke="#b07a5c" stroke-width="2.4" stroke-linecap="round"/>';
+  var eyes;
+  if(mood === "sleep"){
+    eyes = '<path d="M25 40q5 6 10 0M41 40q5 6 10 0" stroke="#5a4034" stroke-width="2.4" stroke-linecap="round" fill="none"/>'+
+           '<path d="M35 48q3 3 6 0" stroke="#b07a5c" stroke-width="2" stroke-linecap="round" fill="none"/>'+
+           '<text x="60" y="16" font-size="13" fill="#8fa8c9" font-family="system-ui" font-weight="700">z</text>'+
+           '<text x="52" y="9" font-size="10" fill="#8fa8c9" font-family="system-ui" font-weight="700">z</text>';
+  }else if(mood === "worry"){
+    eyes = '<ellipse cx="30" cy="41" rx="3" ry="3.4" fill="#5a4034"/>'+
+           '<ellipse cx="46" cy="41" rx="3" ry="3.4" fill="#5a4034"/>'+
+           '<path d="M25 37l7 -3M51 37l-7 -3" stroke="#5a4034" stroke-width="2" stroke-linecap="round"/>'+
+           '<path d="M34 51q4 -4 8 0" stroke="#b07a5c" stroke-width="2" stroke-linecap="round" fill="none"/>'+
+           '<path d="M63 22q3.5 4.5 0 7 -3.5 -2.5 0 -7z" fill="#8fc4e3" stroke="#5b96bb" stroke-width="1.2"/>';
+  }else{
+    eyes = '<path d="M25 42q5 -7 10 0M41 42q5 -7 10 0" stroke="#5a4034" stroke-width="2.6" stroke-linecap="round" fill="none"/>'+
+           '<path d="M32 47q3 4 6 0q3 4 6 0" stroke="#b07a5c" stroke-width="2" stroke-linecap="round" fill="none"/>';
+  }
+  return '<svg class="cat" viewBox="0 0 72 72" aria-hidden="true">'+face+eyes+'</svg>';
+}
+
+/* ================= 画面部品 ================= */
+var $ = function(id){ return document.getElementById(id); };
+
+function toast(msg){
+  var t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(function(){ t.classList.remove("show"); }, 1800);
+}
+function popHeart(x, y, ch){
+  var e = document.createElement("div");
+  e.className = "pop";
+  e.textContent = ch;
+  e.style.left = x+"px";
+  e.style.top = y+"px";
+  document.body.appendChild(e);
+  setTimeout(function(){ e.remove(); }, 950);
+}
+
+/* --- ヒーロー --- */
+function renderHero(){
+  var g = totalOf(keyBack(0));
+  $("todayG").textContent = r1(g);
+  var pct = S.limit>0 ? Math.min(100, g/S.limit*100) : 0;
+  var gz = $("gauge");
+  gz.querySelector("i").style.width = pct+"%";
+  var over = S.limit>0 && g > S.limit;
+  gz.classList.toggle("over", over);
+
+  var sub = $("todaySub");
+  sub.classList.remove("over","rest");
+  var mood = "happy";
+  if(g === 0){
+    mood = "sleep";
+    sub.classList.add("rest");
+    sub.textContent = "今日はまだ0g。休肝日にできたらえらい！";
+  }else if(S.limit <= 0){
+    sub.textContent = "目安は設定していません";
+  }else if(over){
+    mood = "worry";
+    sub.classList.add("over");
+    sub.textContent = "目安 "+S.limit+"g を "+r1(g-S.limit)+"g 超えています。お水も飲もう";
+  }else if(r1(g) >= S.limit){
+    sub.textContent = "目安 "+S.limit+"g ちょうどです";
+  }else{
+    sub.textContent = "目安 "+S.limit+"g まで あと "+r1(S.limit-g)+"g";
+  }
+  $("catBox").innerHTML = catSVG(mood);
+}
+
+/* --- ワンタップボタン（よく使う順） --- */
+var drinkOrder = null;
+
+function usageCount(d){
+  var c = 0;
+  for(var i=0;i<S.logs.length;i++){
+    var l = S.logs[i];
+    if(l.name === d.name && l.ml === d.ml && l.abv === d.abv) c++;
+  }
+  return c;
+}
+// 押した回数が多い順。同じ回数なら登録順のまま
+function refreshDrinkOrder(){
+  var idx = {};
+  S.drinks.forEach(function(d,i){ idx[d.id] = i; });
+  drinkOrder = S.drinks.slice().sort(function(a,b){
+    var ca = usageCount(a), cb = usageCount(b);
+    if(cb !== ca) return cb - ca;
+    return idx[a.id] - idx[b.id];
+  });
+}
+
+function renderDrinkButtons(){
+  var box = $("drinkBtns");
+  box.innerHTML = "";
+  if(!drinkOrder) refreshDrinkOrder();
+  // 消したお酒が並び順に残らないようにする
+  var alive = {};
+  S.drinks.forEach(function(d){ alive[d.id] = true; });
+  drinkOrder = drinkOrder.filter(function(d){ return alive[d.id]; });
+  S.drinks.forEach(function(d){
+    if(!drinkOrder.some(function(x){ return x.id === d.id; })) drinkOrder.push(d);
+  });
+
+  drinkOrder.forEach(function(d){
+    var b = document.createElement("button");
+    b.className = "dbtn";
+    b.innerHTML = '<span class="n"></span><span class="m"></span><span class="g"></span>';
+    b.querySelector(".n").textContent = d.name;
+    b.querySelector(".m").textContent = d.ml+"ml ・ "+d.abv+"%";
+    b.querySelector(".g").textContent = r1(grams(d.ml,d.abv))+"g";
+    b.addEventListener("click", function(ev){
+      var r = b.getBoundingClientRect();
+      popHeart(r.left + r.width/2, r.top, d.abv === 0 ? "🌿" : "♡");
+      addLog(d.name, d.ml, d.abv);
+    });
+    box.appendChild(b);
+  });
+}
+
+/* --- 記録の追加・削除 --- */
+function addLog(name, ml, abv){
+  S.logs.push({
+    id: Date.now()+"_"+Math.random().toString(36).slice(2,7),
+    ts: Date.now(), name: name, ml: ml, abv: abv, g: grams(ml, abv)
+  });
+  save(); renderAll();
+  toast(name+" を記録（+"+r1(grams(ml,abv))+"g）");
+}
+function delLog(id){
+  S.logs = S.logs.filter(function(l){ return l.id !== id; });
+  save(); renderAll();
+}
+
+/* --- 記録リスト（今日ぶん・カレンダーの1日ぶん 共通） --- */
+function logsOf(key){
+  return S.logs.filter(function(l){ return dayKeyOf(l.ts)===key; })
+               .sort(function(a,b){ return b.ts-a.ts; });
+}
+function logRow(l){
+  var li = document.createElement("li");
+  var d = new Date(l.ts);
+  li.innerHTML = '<span class="t"></span><span class="n"></span><span class="g"></span>'+
+    '<button class="del" aria-label="削除">×</button>';
+  li.querySelector(".t").textContent = d.getHours()+":"+pad(d.getMinutes());
+  var n = li.querySelector(".n");
+  n.textContent = l.name;
+  var sm = document.createElement("small");
+  sm.textContent = l.ml+"ml ・ "+l.abv+"%";
+  n.appendChild(sm);
+  li.querySelector(".g").textContent = r1(l.g)+"g";
+  li.querySelector(".del").addEventListener("click", function(){ delLog(l.id); });
+  return li;
+}
+function fillList(ul, key, emptyMsg){
+  var items = logsOf(key);
+  ul.innerHTML = "";
+  if(!items.length){
+    var p = document.createElement("div");
+    p.className = "empty";
+    p.textContent = emptyMsg;
+    ul.appendChild(p);
+    return;
+  }
+  items.forEach(function(l){ ul.appendChild(logRow(l)); });
+}
+function renderTodayList(){
+  fillList($("todayList"), keyBack(0), "まだ記録はありません。上のボタンをポンと押すだけでOK。");
+}
+
+/* ================= カレンダー ================= */
+var calY, calM, selKey = null;   // calM は 0〜11
+
+function keyOf(y, m, d){ return y+"-"+pad(m+1)+"-"+pad(d); }
+
+function renderCalendar(){
+  var today = keyBack(0);
+  var tp = today.split("-");
+  var tY = +tp[0], tM = +tp[1]-1;
+  if(calY === undefined){ calY = tY; calM = tM; }
+
+  $("calTitle").textContent = calY+"年"+(calM+1)+"月";
+  $("calNext").disabled = (calY > tY) || (calY === tY && calM >= tM);
+
+  var first = new Date(calY, calM, 1);
+  var days  = new Date(calY, calM+1, 0).getDate();
+  var lead  = first.getDay();
+
+  var g = $("calGrid");
+  g.innerHTML = "";
+  ["日","月","火","水","木","金","土"].forEach(function(w, i){
+    var e = document.createElement("div");
+    e.className = "wd" + (i===0 ? " sun" : i===6 ? " sat" : "");
+    e.textContent = w;
+    g.appendChild(e);
+  });
+  for(var i=0;i<lead;i++){
+    var b = document.createElement("div");
+    b.className = "cell blank";
+    g.appendChild(b);
+  }
+
+  var mSum = 0, mRest = 0, mOver = 0;
+  for(var d=1; d<=days; d++){
+    var key = keyOf(calY, calM, d);
+    var future = key > today;
+    var tot = future ? 0 : totalOf(key);
+    var cell = document.createElement("button");
+    cell.className = "cell";
+    cell.innerHTML = '<span class="d"></span><span class="v"></span>';
+    cell.querySelector(".d").textContent = d;
+
+    if(future){
+      cell.querySelector(".v").textContent = "";
+      cell.disabled = true;
+      cell.style.opacity = ".4";
+    }else{
+      mSum += tot;
+      if(tot === 0){
+        cell.classList.add("rest");
+        cell.querySelector(".v").textContent = "休";
+        mRest++;
+      }else if(S.limit > 0 && tot > S.limit){
+        cell.classList.add("over");
+        cell.querySelector(".v").textContent = r1(tot);
+        mOver++;
+      }else{
+        cell.classList.add("ok");
+        cell.querySelector(".v").textContent = r1(tot);
+      }
+      if(key === today) cell.classList.add("today");
+      if(key === selKey) cell.classList.add("sel");
+      (function(k){
+        cell.addEventListener("click", function(){ selKey = k; renderCalendar(); });
+      })(key);
+    }
+    g.appendChild(cell);
+  }
+
+  $("mSum").textContent  = r1(mSum);
+  $("mRest").textContent = mRest;
+  $("mOver").textContent = mOver;
+
+  renderDayList();
+}
+
+function renderDayList(){
+  var ul = $("dayList");
+  if(!selKey){
+    $("dayTitle").textContent = "日にちをタップすると中身が出ます";
+    ul.innerHTML = "";
+    return;
+  }
+  var dt = keyToDate(selKey);
+  var tot = totalOf(selKey);
+  $("dayTitle").textContent =
+    (dt.getMonth()+1)+"月"+dt.getDate()+"日("+WD[dt.getDay()]+")　合計 "+r1(tot)+"g";
+  fillList(ul, selKey, "この日は記録がありません（休肝日）");
+}
+
+/* ================= グラフ ================= */
+var range = 14;
+
+function series(){
+  var out = [], i;
+  if(range === 14){
+    for(i=13;i>=0;i--){
+      var k = keyBack(i);
+      var d = keyToDate(k);
+      out.push({
+        key:k, g: totalOf(k), label: labelOf(k),
+        full: (d.getMonth()+1)+"月"+d.getDate()+"日("+WD[d.getDay()]+")",
+        limit: S.limit
+      });
+    }
+  }else{
+    for(i=12;i>=0;i--){
+      var sum = 0, first = null, last = null;
+      for(var j=0;j<7;j++){
+        var kk = keyBack(i*7 + (6-j));
+        if(j===0) first = kk;
+        last = kk;
+        sum += totalOf(kk);
+      }
+      out.push({
+        key:first, g:sum, label: labelOf(first),
+        full: labelOf(first)+"〜"+labelOf(last),
+        limit: S.limit*7
+      });
+    }
+  }
+  return out;
+}
+
+function roundTopPath(x,y,w,h,r){
+  if(h <= 0) return "";
+  r = Math.min(r, w/2, h);
+  return "M"+x+","+(y+h)+" L"+x+","+(y+r)+
+         " Q"+x+","+y+" "+(x+r)+","+y+
+         " L"+(x+w-r)+","+y+
+         " Q"+(x+w)+","+y+" "+(x+w)+","+(y+r)+
+         " L"+(x+w)+","+(y+h)+" Z";
+}
+
+var chartGeom = {};
+
+function renderChart(){
+  var data = series();
+  var W = 340, H = 190, L = 30, R = 6, T = 14, B = 26;
+  var pw = W-L-R, ph = H-T-B;
+  var limit = data[0].limit;
+  var max = Math.max(limit*1.25, 1);
+  data.forEach(function(d){ if(d.g > max) max = d.g; });
+  max = Math.ceil(max/5)*5;
+
+  var out = "";
+  [0, max/2, max].forEach(function(v){
+    var y = T + ph - (v/max)*ph;
+    out += '<line x1="'+L+'" y1="'+y+'" x2="'+(W-R)+'" y2="'+y+'" stroke="'+
+           (v===0?'var(--axis)':'var(--grid)')+'" stroke-width="1"/>'+
+           '<text x="'+(L-6)+'" y="'+(y+3.5)+'" text-anchor="end" font-size="9" fill="var(--muted)">'+Math.round(v)+'</text>';
+  });
+
+  if(limit > 0 && limit <= max){
+    var ly = T + ph - (limit/max)*ph;
+    out += '<line x1="'+L+'" y1="'+ly+'" x2="'+(W-R)+'" y2="'+ly+
+           '" stroke="var(--over)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.85"/>'+
+           '<text x="'+(W-R)+'" y="'+(ly-4)+'" text-anchor="end" font-size="9" fill="var(--over)">目安 '+Math.round(limit)+'g</text>';
+  }
+
+  var slot = pw / data.length;
+  var bw = Math.max(4, slot - 2);
+  data.forEach(function(d, i){
+    var h = max>0 ? (Math.min(d.g,max)/max)*ph : 0;
+    var x = L + i*slot + (slot-bw)/2;
+    var y = T + ph - h;
+    var over = limit>0 && d.g > limit;
+    if(h > 0) out += '<path d="'+roundTopPath(x,y,bw,h,4)+'" fill="'+(over?'var(--over)':'var(--series)')+'"/>';
+    if(over) out += '<text x="'+(x+bw/2)+'" y="'+(y-3)+'" text-anchor="middle" font-size="9" fill="var(--over)">⚠</text>';
+    out += '<rect class="hit" data-i="'+i+'" x="'+(L+i*slot)+'" y="'+T+'" width="'+slot+'" height="'+ph+
+           '" fill="transparent" style="cursor:pointer"/>';
+  });
+
+  var every = data.length > 8 ? Math.ceil(data.length/7) : 1;
+  data.forEach(function(d, i){
+    if(i % every !== 0 && i !== data.length-1) return;
+    out += '<text x="'+(L + i*slot + slot/2)+'" y="'+(H-10)+
+           '" text-anchor="middle" font-size="9" fill="var(--muted)">'+d.label+'</text>';
+  });
+
+  $("chart").innerHTML = out;
+  chartGeom = {W:W, T:T, L:L, ph:ph, slot:slot, max:max, data:data};
+  bindTips();
+  renderTable(data);
+}
+
+function bindTips(){
+  var svg = $("chart"), tip = $("tip"), G = chartGeom;
+  Array.prototype.forEach.call(svg.querySelectorAll(".hit"), function(rect){
+    function show(){
+      var i = +rect.getAttribute("data-i");
+      var d = G.data[i];
+      tip.textContent = d.full + "  " + r1(d.g) + "g";
+      var box = svg.getBoundingClientRect();
+      var scale = box.width / G.W;
+      var cx = (G.L + i*G.slot + G.slot/2) * scale;
+      var h = G.max>0 ? (Math.min(d.g,G.max)/G.max)*G.ph : 0;
+      var cy = (G.T + G.ph - h) * scale;
+      tip.style.left = Math.max(64, Math.min(box.width-64, cx)) + "px";
+      tip.style.top  = Math.max(24, cy + 6) + "px";
+      tip.style.opacity = "1";
+      clearTimeout(bindTips._t);
+      bindTips._t = setTimeout(function(){ tip.style.opacity = "0"; }, 2200);
+    }
+    rect.addEventListener("click", show);
+    rect.addEventListener("mouseenter", show);
+  });
+}
+
+function renderTable(data){
+  var h = '<table class="tbl"><thead><tr><th>'+(range===14?"日付":"期間")+
+          '</th><th style="text-align:right">純アルコール</th></tr></thead><tbody>';
+  data.slice().reverse().forEach(function(d){
+    h += '<tr><td>'+d.full+'</td><td class="num">'+r1(d.g)+' g'+
+         ((d.limit>0 && d.g>d.limit) ? ' ⚠' : '')+'</td></tr>';
+  });
+  $("tableWrap").innerHTML = h + '</tbody></table>';
+}
+
+function renderTiles(){
+  var sum = 0, rest = 0;
+  for(var i=0;i<7;i++){
+    var g = totalOf(keyBack(i));
+    sum += g;
+    if(g === 0) rest++;
+  }
+  $("s7").textContent = r1(sum);
+  $("savg").textContent = r1(sum/7);
+  $("srest").textContent = rest;
+}
+
+/* ================= 設定 ================= */
+function renderSettings(){
+  $("limitInput").value = S.limit;
+  $("dayStart").value = S.dayStart;
+  var box = $("drinkEditor");
+  box.innerHTML = "";
+  S.drinks.forEach(function(d){
+    var row = document.createElement("div");
+    row.className = "mini";
+    row.innerHTML = '<span class="n"></span><button class="del" aria-label="削除" '+
+      'style="border:none;background:none;color:var(--muted);font-size:20px;cursor:pointer">×</button>';
+    var n = row.querySelector(".n");
+    n.textContent = d.name;
+    var sm = document.createElement("small");
+    sm.textContent = d.ml+"ml ・ "+d.abv+"% ・ "+r1(grams(d.ml,d.abv))+"g";
+    n.appendChild(sm);
+    row.querySelector(".del").addEventListener("click", function(){
+      S.drinks = S.drinks.filter(function(x){ return x.id !== d.id; });
+      save(); renderDrinkButtons(); renderSettings();
+    });
+    box.appendChild(row);
+  });
+}
+
+/* ================= 全体描画 ================= */
+function renderAll(){
+  renderHero();
+  renderTodayList();
+  renderTiles();
+  renderChart();
+  if(!$("pane-cal").hidden) renderCalendar();
+}
+
+/* ================= イベント ================= */
+var panes = {"tab-log":"pane-log", "tab-cal":"pane-cal", "tab-chart":"pane-chart", "tab-set":"pane-set"};
+Object.keys(panes).forEach(function(tid){
+  $(tid).addEventListener("click", function(){
+    Object.keys(panes).forEach(function(t){
+      $(t).setAttribute("aria-selected", String(t===tid));
+      $(panes[t]).hidden = (t !== tid);
+    });
+    // 並び替えは記録画面に戻ってきたときだけ。押した直後にボタンが動くと押し間違えるため
+    if(tid === "tab-log"){ refreshDrinkOrder(); renderDrinkButtons(); }
+    if(tid === "tab-cal") renderCalendar();
+    if(tid === "tab-set") renderSettings();
+    if(tid === "tab-chart") renderChart();
+  });
+});
+
+$("calPrev").addEventListener("click", function(){
+  calM--; if(calM < 0){ calM = 11; calY--; }
+  renderCalendar();
+});
+$("calNext").addEventListener("click", function(){
+  calM++; if(calM > 11){ calM = 0; calY++; }
+  renderCalendar();
+});
+
+$("rg-14").addEventListener("click", function(){
+  range = 14; $("rg-14").setAttribute("aria-selected","true"); $("rg-13w").setAttribute("aria-selected","false"); renderChart();
+});
+$("rg-13w").addEventListener("click", function(){
+  range = 91; $("rg-13w").setAttribute("aria-selected","true"); $("rg-14").setAttribute("aria-selected","false"); renderChart();
+});
+
+$("toggleTable").addEventListener("click", function(){
+  var w = $("tableWrap");
+  w.hidden = !w.hidden;
+  this.textContent = w.hidden ? "表で見る ▾" : "表を閉じる ▴";
+});
+
+var dlg = $("otherDlg");
+$("btnOther").addEventListener("click", function(){
+  $("o-name").value = ""; $("o-ml").value = ""; $("o-abv").value = ""; $("o-save").checked = false;
+  dlg.showModal();
+});
+$("o-cancel").addEventListener("click", function(){ dlg.close(); });
+$("o-ok").addEventListener("click", function(){
+  var ml = parseFloat($("o-ml").value), abv = parseFloat($("o-abv").value);
+  if(!(ml > 0) || !(abv >= 0)){ toast("量と度数を入れてください"); return; }
+  var name = $("o-name").value.trim() || (ml+"ml "+abv+"%");
+  if($("o-save").checked){
+    S.drinks.push({id:"u"+Date.now(), name:name, ml:ml, abv:abv});
+    save(); renderDrinkButtons();
+  }
+  dlg.close();
+  addLog(name, ml, abv);
+});
+
+$("limitInput").addEventListener("change", function(){
+  var v = parseFloat(this.value);
+  S.limit = isNaN(v) ? 0 : Math.max(0, v);
+  save(); renderAll();
+});
+$("dayStart").addEventListener("change", function(){
+  var v = parseInt(this.value, 10);
+  S.dayStart = (isNaN(v)||v<0||v>12) ? 5 : v;
+  this.value = S.dayStart;
+  save(); renderAll();
+});
+$("addDrink").addEventListener("click", function(){
+  var name = $("nd-name").value.trim();
+  var ml = parseFloat($("nd-ml").value), abv = parseFloat($("nd-abv").value);
+  if(!name || !(ml > 0) || !(abv >= 0)){ toast("名前・量・度数を入れてください"); return; }
+  S.drinks.push({id:"u"+Date.now(), name:name, ml:ml, abv:abv});
+  $("nd-name").value = ""; $("nd-ml").value = ""; $("nd-abv").value = "";
+  save(); renderDrinkButtons(); renderSettings();
+  toast(name+" を追加しました");
+});
+
+$("exportBtn").addEventListener("click", function(){
+  var blob = new Blob([JSON.stringify(S, null, 2)], {type:"application/json"});
+  var a = document.createElement("a");
+  var d = new Date();
+  a.href = URL.createObjectURL(blob);
+  a.download = "飲酒記録_"+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+".json";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  toast("控えを書き出しました");
+});
+$("importBtn").addEventListener("click", function(){ $("importFile").click(); });
+$("importFile").addEventListener("change", function(){
+  var f = this.files && this.files[0];
+  if(!f) return;
+  var fr = new FileReader();
+  fr.onload = function(){
+    try{
+      var o = JSON.parse(fr.result);
+      if(!o || !Array.isArray(o.logs)) throw new Error("bad");
+      if(!confirm("今のデータを、控えの内容に置きかえます。よろしいですか？")) return;
+      S = {
+        drinks: (Array.isArray(o.drinks) && o.drinks.length) ? o.drinks : DEFAULT_DRINKS.slice(),
+        logs: o.logs,
+        limit: typeof o.limit === "number" ? o.limit : 20,
+        dayStart: typeof o.dayStart === "number" ? o.dayStart : 5,
+        dv: DRINKS_VERSION
+      };
+      save(); refreshDrinkOrder(); renderDrinkButtons(); renderSettings(); renderAll();
+      toast("控えから戻しました");
+    }catch(e){ toast("読み込めませんでした"); }
+  };
+  fr.readAsText(f);
+  this.value = "";
+});
+
+window.addEventListener("resize", function(){ if(!$("pane-chart").hidden) renderChart(); });
+
+/* ================= 起動 ================= */
+refreshDrinkOrder();
+renderDrinkButtons();
+renderSettings();
+renderAll();
+})();
+</script>
+</body>
+</html>
