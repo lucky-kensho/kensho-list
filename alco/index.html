@@ -107,7 +107,7 @@ body{
 }
 .cell.blank{visibility:hidden;cursor:default}
 .cell .d{font-size:12.5px;font-weight:600}
-.cell .v{font-size:9.5px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.cell .v{font-size:10px;font-variant-numeric:tabular-nums;color:var(--muted);line-height:1.2}
 .cell.rest{background:var(--c-rest)} .cell.rest .v{color:var(--good);font-weight:700}
 .cell.ok{background:var(--c-ok)}     .cell.ok .v{color:var(--series);font-weight:700}
 .cell.over{background:var(--c-over)} .cell.over .v{color:var(--over);font-weight:700}
@@ -783,11 +783,11 @@ function renderCalendar(){
         mRest++;
       }else if(S.limit > 0 && tot > S.limit){
         cell.classList.add("over");
-        cell.querySelector(".v").textContent = r1(tot);
+        cell.querySelector(".v").textContent = r1(tot) + "g";
         mOver++;
       }else{
         cell.classList.add("ok");
-        cell.querySelector(".v").textContent = r1(tot);
+        cell.querySelector(".v").textContent = r1(tot) + "g";
       }
       if(key === today) cell.classList.add("today");
       if(key === selKey) cell.classList.add("sel");
