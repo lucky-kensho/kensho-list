@@ -295,6 +295,15 @@
     font-weight: bold;
   }
   .hist-meta { color: #999; font-size: 12px; }
+  .hist-note {
+    margin: 3px 0 0 24px;
+    font-size: 12px;
+    color: #6b7a8f;
+    background: #f4f7fb;
+    border-radius: 6px;
+    padding: 3px 8px;
+    display: inline-block;
+  }
   .hist-num {
     display: inline-block;
     min-width: 19px;
@@ -595,6 +604,10 @@
       <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:5px;letter-spacing:0.4px;">発表時期（タップで選択）</div>
       <input id="apply-announce" type="text" placeholder="例: 7中" style="width:100%;padding:7px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
       <div id="announce-chips" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;"></div>
+    </div>
+    <div style="margin-bottom:10px;">
+      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">📝 備考（何口・どの賞品など）</div>
+      <input id="apply-note" type="text" placeholder="例: M=A賞、H=B賞　2口目" style="width:100%;padding:7px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
     </div>
     <div style="margin-bottom:14px;">
       <div style="font-size:11px;color:#e74c3c;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">🎯 当選したら記入</div>
@@ -1792,7 +1805,8 @@ function addHistory(id) {
     names: defaultNames(item),
     method: methodAbbr(item.method),
     announce: item.announce || '',   // 情報に発表時期があれば裏で自動セット
-    wonWhat: ''
+    wonWhat: '',
+    note: ''
   };
   saveHist();
 }
@@ -1879,6 +1893,7 @@ function openApply(id) {
   document.getElementById('apply-name-free').value = free;
   document.getElementById('apply-method').value = rec ? rec.method : methodAbbr(item ? item.method : '');
   document.getElementById('apply-announce').value = rec ? rec.announce : '';
+  document.getElementById('apply-note').value = rec ? (rec.note || '') : '';
   document.getElementById('apply-won').value = rec ? rec.wonWhat : '';
   document.getElementById('apply-del').style.display = rec ? 'inline-block' : 'none';
   buildAnnounceChips();
@@ -1897,6 +1912,7 @@ function openManualApply() {
   document.getElementById('apply-name-free').value = '';
   document.getElementById('apply-method').value = '';
   document.getElementById('apply-announce').value = '';
+  document.getElementById('apply-note').value = '';
   document.getElementById('apply-won').value = '';
   document.getElementById('apply-del').style.display = 'none';
   buildAnnounceChips();
@@ -1917,7 +1933,7 @@ function saveApply() {
     if (!label) { alert('キャンペーン名を入力してください'); return; }
     const now = new Date();
     hist[id] = { ts: now.getTime(), date: (now.getMonth()+1)+'/'+now.getDate(),
-      label: label, names: ['M'], method: '', announce: '', wonWhat: '', manual: true };
+      label: label, names: ['M'], method: '', announce: '', wonWhat: '', note: '', manual: true };
   } else {
     if (state[id] !== 'done') { state[id] = 'done'; saveState(); }
     if (!hist[id]) addHistory(id);
@@ -1931,6 +1947,7 @@ function saveApply() {
     rec.names = names.length ? names : (applyManual ? ['M'] : defaultNames(allItems[id]));
     rec.method = document.getElementById('apply-method').value.trim();
     rec.announce = document.getElementById('apply-announce').value.trim();
+    rec.note = document.getElementById('apply-note').value.trim();
     rec.wonWhat = document.getElementById('apply-won').value.trim();
     saveHist();
   }
@@ -2002,7 +2019,7 @@ function renderHistoryTab() {
   const nowKey = nowYear * 100 + (now.getMonth() + 1);
   const kuchi = r => Math.max(1, (r.names || []).length);
   const matchSearch = r => !histSearch ||
-    [r.label, (r.names||[]).join(' '), r.method, r.announce, r.wonWhat]
+    [r.label, (r.names||[]).join(' '), r.method, r.announce, r.wonWhat, r.note]
       .join(' ').toLowerCase().includes(histSearch);
   // 月内の行HTMLを組み立てて返す（番号は応募順に付け、表示は新しい応募が上）
   const buildRows = (allRows) => {
@@ -2017,8 +2034,9 @@ function renderHistoryTab() {
       vis++;
       const names = (r.names || []).join('・');
       const won = r.wonWhat ? ` <span class="hist-won-text">🎯 ${r.wonWhat}</span>` : '';
+      const note = r.note ? `<div class="hist-note">📝 ${r.note}</div>` : '';
       rows.push(`<div class="hist-row${r.wonWhat ? ' won' : ''}" onclick="openApply('${id}')">
-        ${nums.join('')} ${r.label}　<b>${names}</b>　${r.method || ''}　${r.announce || '－'}${won}
+        ${nums.join('')} ${r.label}　<b>${names}</b>　${r.method || ''}　${r.announce || '－'}${won}${note}
       </div>`);
     });
     return { html: rows.reverse().join(''), visible: vis };
@@ -2282,7 +2300,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1786436143303;
+const BUILD_STAMP = 1786440178820;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
