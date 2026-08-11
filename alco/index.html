@@ -45,35 +45,14 @@ body{
   padding:0 0 env(safe-area-inset-bottom);
   -webkit-tap-highlight-color:transparent;
 }
-.wrap{max-width:520px;margin:0 auto;padding:10px 14px 90px}
+.wrap{max-width:520px;margin:0 auto;padding:10px 14px 34px}
 
 /* ---------- title ---------- */
 .title{display:flex;align-items:center;gap:7px;padding:6px 2px 10px}
 .title h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.02em}
 .title .sub{font-size:11px;color:var(--muted);margin-left:auto}
 
-/* ---------- hero ---------- */
-.hero{
-  background:var(--surface); border:1px solid var(--line); border-radius:22px;
-  padding:14px 16px 15px; margin-bottom:14px; box-shadow:var(--shadow);
-  position:relative; overflow:hidden;
-}
-.hero::before{
-  content:""; position:absolute; right:-34px; top:-34px; width:110px; height:110px;
-  border-radius:50%; background:var(--accent-soft); opacity:.55;
-}
-.hero-top{display:flex;align-items:center;gap:12px;position:relative}
-.cat{width:76px;height:76px;flex:none}
-.hero-num{display:flex;align-items:baseline;gap:4px}
-.hero-num b{font-size:42px;font-weight:800;line-height:1}
-.hero-num span{font-size:17px;color:var(--ink2)}
-.hero-label{font-size:12px;color:var(--ink2);letter-spacing:.03em}
-.gauge{height:13px;border-radius:7px;background:var(--grid);overflow:hidden;margin-top:11px;position:relative}
-.gauge i{display:block;height:100%;border-radius:7px;background:var(--series);transition:width .3s ease;width:0}
-.gauge.over i{background:var(--over)}
-.hero-sub{margin-top:9px;font-size:13px;color:var(--ink2);position:relative}
-.hero-sub.over{color:var(--over);font-weight:600}
-.hero-sub.rest{color:var(--good);font-weight:600}
+.cat{flex:none}
 
 /* ---------- tabs ---------- */
 .tabs{display:flex;gap:5px;margin-bottom:14px}
@@ -157,15 +136,23 @@ ul.log .del{
 
 /* ---------- stat tiles ---------- */
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-.tiles.four{grid-template-columns:1fr 1fr}
+.tiles.cal{margin-bottom:12px}
+.tile.avg{
+  grid-column:1 / -1;display:flex;align-items:center;gap:11px;padding:8px 12px;
+  border-color:var(--accent);background:var(--accent-soft);
+}
+.tile.avg .cat{width:56px;height:56px}
+.tile.avg .txt{flex:none}
+.tile.avg .v{font-size:27px}
+.tile.avg .msg{font-size:11.5px;color:var(--ink2);line-height:1.45;flex:1;min-width:0}
+.tile.avg .msg b{display:block;font-size:12.5px}
+.tile.avg .msg.over b{color:var(--over)}
+.tile.avg .msg.rest b{color:var(--good)}
 .tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 11px;box-shadow:var(--shadow)}
 .tile .k{font-size:10.5px;color:var(--muted)}
 .tile .v{font-size:21px;font-weight:800;margin-top:1px}
 .tile .v small{font-size:11px;font-weight:400;color:var(--ink2);margin-left:2px}
-.tile.hi{border-color:var(--accent);background:var(--accent-soft)}
-.tile.hi .k{color:var(--accent);font-weight:700}
-.tile.hi .v{font-size:26px}
-.tile .warn{font-size:11px;font-weight:700;color:var(--over);margin-left:4px}
+.tile.avg .k{color:var(--accent);font-weight:700}
 
 /* ---------- chart ---------- */
 .card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 10px 8px;position:relative;box-shadow:var(--shadow)}
@@ -245,18 +232,6 @@ dialog h3 svg{width:22px;height:22px}
     <span class="sub">データはこの端末の中だけ</span>
   </div>
 
-  <div class="hero">
-    <div class="hero-top">
-      <div id="catBox"></div>
-      <div>
-        <div class="hero-label">今日の純アルコール量</div>
-        <div class="hero-num"><b id="todayG">0</b><span>g</span></div>
-      </div>
-    </div>
-    <div class="gauge" id="gauge"><i></i></div>
-    <div class="hero-sub" id="todaySub"></div>
-  </div>
-
   <div class="tabs" role="tablist">
     <button role="tab" id="tab-log" aria-selected="false">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>記録
@@ -277,7 +252,7 @@ dialog h3 svg{width:22px;height:22px}
     <div class="grid" id="drinkBtns"></div>
     <button class="dbtn wide" id="btnOther" style="margin-top:9px">＋ その他（量を入力）</button>
 
-    <h2>今日の記録</h2>
+    <h2 id="todayTitle">今日の記録</h2>
     <ul class="log" id="todayList"></ul>
   </section>
 
@@ -289,8 +264,15 @@ dialog h3 svg{width:22px;height:22px}
       <button id="calNext" aria-label="次の月">›</button>
     </div>
 
-    <div class="tiles four">
-      <div class="tile hi"><div class="k">1日あたり</div><div class="v"><span id="mAvg">0</span><small>g</small></div></div>
+    <div class="tiles cal">
+      <div class="tile avg">
+        <div id="catBox"></div>
+        <div class="txt">
+          <div class="k">1日あたり</div>
+          <div class="v"><span id="mAvg">0</span><small>g</small></div>
+        </div>
+        <div class="msg" id="avgMsg"></div>
+      </div>
       <div class="tile"><div class="k">この月の合計</div><div class="v"><span id="mSum">0</span><small>g</small></div></div>
       <div class="tile"><div class="k">休肝日</div><div class="v"><span id="mRest">0</span><small>日</small></div></div>
       <div class="tile"><div class="k">目安を超えた日</div><div class="v"><span id="mOver">0</span><small>日</small></div></div>
@@ -558,34 +540,46 @@ function popHeart(x, y, ch){
   setTimeout(function(){ e.remove(); }, 950);
 }
 
-/* --- ヒーロー --- */
-function renderHero(){
-  var g = totalOf(keyBack(0));
-  $("todayG").textContent = r1(g);
-  var pct = S.limit>0 ? Math.min(100, g/S.limit*100) : 0;
-  var gz = $("gauge");
-  gz.querySelector("i").style.width = pct+"%";
-  var over = S.limit>0 && g > S.limit;
-  gz.classList.toggle("over", over);
+/* --- ねこ（1日あたりの量で表情が変わる） --- */
+function renderCat(avg, hasData){
+  var msg = $("avgMsg");
+  msg.classList.remove("over","rest");
+  var mood = "happy", head, body;
 
-  var sub = $("todaySub");
-  sub.classList.remove("over","rest");
-  var mood = "happy";
-  if(g === 0){
+  if(!hasData){
     mood = "sleep";
-    sub.classList.add("rest");
-    sub.textContent = "今日はまだ0g。休肝日にできたらえらい！";
+    msg.classList.add("rest");
+    head = "記録はまだありません";
+    body = "日にちを押すと入れられます";
   }else if(S.limit <= 0){
-    sub.textContent = "目安は設定していません";
-  }else if(over){
+    head = "目安は設定していません";
+    body = "設定タブで決められます";
+  }else if(avg > S.limit){
     mood = "worry";
-    sub.classList.add("over");
-    sub.textContent = "目安 "+S.limit+"g を "+r1(g-S.limit)+"g 超えています。お水も飲もう";
-  }else if(r1(g) >= S.limit){
-    sub.textContent = "目安 "+S.limit+"g ちょうどです";
+    msg.classList.add("over");
+    head = "⚠ 目安を " + r1(avg - S.limit) + "g 超えています";
+    body = "1日あたりの目安は " + S.limit + "g";
+  }else if(avg === 0){
+    mood = "sleep";
+    var now = new Date();
+    var isThisMonth = (calY === now.getFullYear() && calM === now.getMonth());
+    if(isThisMonth){
+      msg.classList.add("rest");
+      head = "この月はまだ0g";
+      body = "いいペースです";
+    }else{
+      head = "この月の記録はありません";
+      body = "";
+    }
   }else{
-    sub.textContent = "目安 "+S.limit+"g まで あと "+r1(S.limit-g)+"g";
+    msg.classList.add("rest");
+    head = "目安の中におさまっています";
+    body = "1日あたりの目安は " + S.limit + "g";
   }
+
+  msg.innerHTML = "<b></b><span></span>";
+  msg.querySelector("b").textContent = head;
+  msg.querySelector("span").textContent = body;
   $("catBox").innerHTML = catSVG(mood);
 }
 
@@ -709,7 +703,9 @@ function fillList(ul, key, emptyMsg){
   items.forEach(function(l){ ul.appendChild(logRow(l)); });
 }
 function renderTodayList(){
-  fillList($("todayList"), keyBack(0), "まだ記録はありません。上のボタンをポンと押すだけでOK。");
+  var key = keyBack(0);
+  $("todayTitle").textContent = "今日の記録　合計 " + r1(totalOf(key)) + "g";
+  fillList($("todayList"), key, "まだ記録はありません。上のボタンをポンと押すだけでOK。");
 }
 
 /* --- 記録をなおすダイアログ --- */
@@ -808,15 +804,7 @@ function renderCalendar(){
   // 1日あたり＝この月の合計 ÷ 経過した日数（今月なら今日まで）
   var avg = mDays > 0 ? mSum / mDays : 0;
   $("mAvg").textContent = r1(avg);
-  var avgTile = $("mAvg").parentNode;
-  var oldWarn = avgTile.querySelector(".warn");
-  if(oldWarn) oldWarn.remove();
-  if(S.limit > 0 && avg > S.limit){
-    var w = document.createElement("span");
-    w.className = "warn";
-    w.textContent = "⚠ 目安超え";
-    avgTile.appendChild(w);
-  }
+  renderCat(avg, mDays > 0);
   $("mSum").textContent  = r1(mSum);
   $("mRest").textContent = mRest;
   $("mOver").textContent = mOver;
@@ -1004,7 +992,6 @@ function renderSettings(){
 
 /* ================= 全体描画 ================= */
 function renderAll(){
-  renderHero();
   renderTodayList();
   renderTiles();
   renderChart();
@@ -1022,7 +1009,7 @@ Object.keys(panes).forEach(function(tid){
     // 並び替えは記録画面に戻ってきたときだけ。押した直後にボタンが動くと押し間違えるため
     if(tid === "tab-log"){
       refreshDrinkOrder(); renderDrinkButtons();
-      renderHero(); renderTodayList();
+      renderTodayList();
     }
     if(tid === "tab-cal") renderCalendar();
     if(tid === "tab-set") renderSettings();
