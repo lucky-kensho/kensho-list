@@ -157,10 +157,15 @@ ul.log .del{
 
 /* ---------- stat tiles ---------- */
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-.tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 9px;box-shadow:var(--shadow)}
+.tiles.four{grid-template-columns:1fr 1fr}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 11px;box-shadow:var(--shadow)}
 .tile .k{font-size:10.5px;color:var(--muted)}
 .tile .v{font-size:21px;font-weight:800;margin-top:1px}
 .tile .v small{font-size:11px;font-weight:400;color:var(--ink2);margin-left:2px}
+.tile.hi{border-color:var(--accent);background:var(--accent-soft)}
+.tile.hi .k{color:var(--accent);font-weight:700}
+.tile.hi .v{font-size:26px}
+.tile .warn{font-size:11px;font-weight:700;color:var(--over);margin-left:4px}
 
 /* ---------- chart ---------- */
 .card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 10px 8px;position:relative;box-shadow:var(--shadow)}
@@ -253,10 +258,10 @@ dialog h3 svg{width:22px;height:22px}
   </div>
 
   <div class="tabs" role="tablist">
-    <button role="tab" id="tab-log" aria-selected="true">
+    <button role="tab" id="tab-log" aria-selected="false">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>記録
     </button>
-    <button role="tab" id="tab-cal" aria-selected="false">
+    <button role="tab" id="tab-cal" aria-selected="true">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 10.5h16M9 3.5v3M15 3.5v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>暦
     </button>
     <button role="tab" id="tab-chart" aria-selected="false">
@@ -268,7 +273,7 @@ dialog h3 svg{width:22px;height:22px}
   </div>
 
   <!-- ===== 記録 ===== -->
-  <section id="pane-log">
+  <section id="pane-log" hidden>
     <div class="grid" id="drinkBtns"></div>
     <button class="dbtn wide" id="btnOther" style="margin-top:9px">＋ その他（量を入力）</button>
 
@@ -277,14 +282,15 @@ dialog h3 svg{width:22px;height:22px}
   </section>
 
   <!-- ===== カレンダー ===== -->
-  <section id="pane-cal" hidden>
+  <section id="pane-cal">
     <div class="calhead">
       <button id="calPrev" aria-label="前の月">‹</button>
       <div id="calTitle"></div>
       <button id="calNext" aria-label="次の月">›</button>
     </div>
 
-    <div class="tiles">
+    <div class="tiles four">
+      <div class="tile hi"><div class="k">1日あたり</div><div class="v"><span id="mAvg">0</span><small>g</small></div></div>
       <div class="tile"><div class="k">この月の合計</div><div class="v"><span id="mSum">0</span><small>g</small></div></div>
       <div class="tile"><div class="k">休肝日</div><div class="v"><span id="mRest">0</span><small>日</small></div></div>
       <div class="tile"><div class="k">目安を超えた日</div><div class="v"><span id="mOver">0</span><small>日</small></div></div>
@@ -761,7 +767,7 @@ function renderCalendar(){
     g.appendChild(b);
   }
 
-  var mSum = 0, mRest = 0, mOver = 0;
+  var mSum = 0, mRest = 0, mOver = 0, mDays = 0;
   for(var d=1; d<=days; d++){
     var key = keyOf(calY, calM, d);
     var future = key > today;
@@ -777,6 +783,7 @@ function renderCalendar(){
       cell.style.opacity = ".4";
     }else{
       mSum += tot;
+      mDays++;
       if(tot === 0){
         cell.classList.add("rest");
         cell.querySelector(".v").textContent = "休";
@@ -798,6 +805,18 @@ function renderCalendar(){
     g.appendChild(cell);
   }
 
+  // 1日あたり＝この月の合計 ÷ 経過した日数（今月なら今日まで）
+  var avg = mDays > 0 ? mSum / mDays : 0;
+  $("mAvg").textContent = r1(avg);
+  var avgTile = $("mAvg").parentNode;
+  var oldWarn = avgTile.querySelector(".warn");
+  if(oldWarn) oldWarn.remove();
+  if(S.limit > 0 && avg > S.limit){
+    var w = document.createElement("span");
+    w.className = "warn";
+    w.textContent = "⚠ 目安超え";
+    avgTile.appendChild(w);
+  }
   $("mSum").textContent  = r1(mSum);
   $("mRest").textContent = mRest;
   $("mOver").textContent = mOver;
