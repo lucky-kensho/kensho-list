@@ -513,6 +513,12 @@ function catSVG(mood){
            '<path d="M25 37l7 -3M51 37l-7 -3" stroke="#5a4034" stroke-width="2" stroke-linecap="round"/>'+
            '<path d="M34 51q4 -4 8 0" stroke="#b07a5c" stroke-width="2" stroke-linecap="round" fill="none"/>'+
            '<path d="M63 22q3.5 4.5 0 7 -3.5 -2.5 0 -7z" fill="#8fc4e3" stroke="#5b96bb" stroke-width="1.2"/>';
+  }else if(mood === "soso"){
+    // 「うーん」顔：まるい目・眉なし・口はなみなみ
+    eyes = '<ellipse cx="30" cy="41" rx="3" ry="3.4" fill="#5a4034"/>'+
+           '<ellipse cx="46" cy="41" rx="3" ry="3.4" fill="#5a4034"/>'+
+           '<path d="M25 34h6M45 34h6" stroke="#5a4034" stroke-width="2" stroke-linecap="round"/>'+
+           '<path d="M32 49q2.5 -3 5 0q2.5 3 5 0" stroke="#b07a5c" stroke-width="2" stroke-linecap="round" fill="none"/>';
   }else{
     eyes = '<path d="M25 42q5 -7 10 0M41 42q5 -7 10 0" stroke="#5a4034" stroke-width="2.6" stroke-linecap="round" fill="none"/>'+
            '<path d="M32 47q3 4 6 0q3 4 6 0" stroke="#b07a5c" stroke-width="2" stroke-linecap="round" fill="none"/>';
@@ -540,7 +546,10 @@ function popHeart(x, y, ch){
   setTimeout(function(){ e.remove(); }, 950);
 }
 
-/* --- ねこ（1日あたりの量で表情が変わる） --- */
+/* --- ねこ（1日あたりの量で表情が変わる） ---
+   0g・記録なし=寝顔 / 15g以下=にっこり / 15g超=うーん顔 / 目安(20g)超=困り顔 */
+var MID_LEVEL = 15;
+
 function renderCat(avg, hasData){
   var msg = $("avgMsg");
   msg.classList.remove("over","rest");
@@ -559,6 +568,10 @@ function renderCat(avg, hasData){
     msg.classList.add("over");
     head = "⚠ 目安を " + r1(avg - S.limit) + "g 超えています";
     body = "1日あたりの目安は " + S.limit + "g";
+  }else if(avg > MID_LEVEL && MID_LEVEL < S.limit){
+    mood = "soso";
+    head = "目安の中だけど、ぎりぎりです";
+    body = "1日あたり " + MID_LEVEL + "g を超えています";
   }else if(avg === 0){
     mood = "sleep";
     var now = new Date();
@@ -573,8 +586,8 @@ function renderCat(avg, hasData){
     }
   }else{
     msg.classList.add("rest");
-    head = "目安の中におさまっています";
-    body = "1日あたりの目安は " + S.limit + "g";
+    head = "いい調子です";
+    body = "1日あたり " + MID_LEVEL + "g までにおさまっています";
   }
 
   msg.innerHTML = "<b></b><span></span>";
