@@ -1863,7 +1863,8 @@ function buildAnnounceChips() {
   const cur = document.getElementById('apply-announce').value.trim();
   const now = new Date();
   let html = '';
-  for (let add = 1; add <= 2; add++) {
+  // 発表は締切の2〜3か月後が多いので、その2か月分を候補に出す（月が変われば自動でずれる）
+  for (let add = 2; add <= 3; add++) {
     let mo = now.getMonth() + 1 + add;
     if (mo > 12) mo -= 12;
     ['上', '中', '下'].forEach(jun => {
@@ -2306,7 +2307,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1786522737981;
+const BUILD_STAMP = 1786523098125;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
