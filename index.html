@@ -617,6 +617,10 @@
       <button onclick="saveApply()" style="flex:1;padding:10px;background:#e74c3c;color:white;border:none;border-radius:10px;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;">記録する</button>
       <button onclick="closeApply()" style="padding:10px 14px;background:#f0f0f0;color:#888;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit;">キャンセル</button>
     </div>
+    <div id="apply-newmonth-area" style="display:none;margin-top:10px;padding-top:10px;border-top:1px dashed #e0e0e0;">
+      <button onclick="startExtraApply()" style="width:100%;padding:9px;background:#eaf4ea;color:#2e7d32;border:1px solid #b9dcb9;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;">🔁 <span id="apply-newmonth-label"></span>の応募として別に記録する</button>
+      <div style="font-size:11px;color:#aaa;margin-top:5px;text-align:center;">前の記録はそのまま残ります</div>
+    </div>
     <div style="text-align:center;margin-top:10px;">
       <button id="apply-del" onclick="deleteApplyRecord()" style="font-size:12px;background:none;border:none;color:#c0392b;cursor:pointer;font-family:inherit;text-decoration:underline;">🗑 この応募記録を削除</button>
     </div>
@@ -1908,8 +1912,30 @@ function openApply(id) {
   document.getElementById('apply-note').value = rec ? (rec.note || '') : '';
   document.getElementById('apply-won').value = rec ? rec.wonWhat : '';
   document.getElementById('apply-del').style.display = rec ? 'inline-block' : 'none';
+  // 先月以前に応募済みの案件は「今月分として別に記録」ボタンを出す
+  const nmArea = document.getElementById('apply-newmonth-area');
+  const now2 = new Date();
+  const nowKey2 = now2.getFullYear() * 100 + (now2.getMonth() + 1);
+  let isOldMonth = false;
+  if (rec) {
+    const d = new Date(rec.ts);
+    isOldMonth = (d.getFullYear() * 100 + (d.getMonth() + 1)) !== nowKey2;
+  }
+  nmArea.style.display = isOldMonth ? 'block' : 'none';
+  document.getElementById('apply-newmonth-label').textContent = (now2.getMonth() + 1) + '月';
   buildAnnounceChips();
   document.getElementById('apply-overlay').classList.add('open');
+}
+
+// 「今月分として別に記録」：前の記録を残したまま、今月の新しい記録として開き直す
+function startExtraApply() {
+  applyId = 'x_' + applyId.replace(/^x_/, '').split('@')[0] + '@' + Date.now();
+  applyManual = true;   // 元カードの応募済みマークには触れない
+  document.getElementById('apply-note').value = '';
+  document.getElementById('apply-won').value = '';
+  document.getElementById('apply-del').style.display = 'none';
+  document.getElementById('apply-newmonth-area').style.display = 'none';
+  buildAnnounceChips();
 }
 
 // 履歴タブの「＋手動で追加」用：カードに紐づかない空の記録を開く
@@ -1927,6 +1953,7 @@ function openManualApply() {
   document.getElementById('apply-note').value = '';
   document.getElementById('apply-won').value = '';
   document.getElementById('apply-del').style.display = 'none';
+  document.getElementById('apply-newmonth-area').style.display = 'none';
   buildAnnounceChips();
   document.getElementById('apply-overlay').classList.add('open');
   setTimeout(() => document.getElementById('apply-label').focus(), 80);
@@ -2312,7 +2339,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1787050212986;
+const BUILD_STAMP = 1787059915613;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
