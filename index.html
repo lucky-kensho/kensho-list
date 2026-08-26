@@ -1939,7 +1939,7 @@ function openApply(id) {
   document.getElementById('apply-overlay').classList.add('open');
 }
 
-// 「今月分として別に記録」：前の記録を残したまま、今月の新しい記録として開き直す
+// 「別の応募として新しく記録」：前の記録を残したまま、新しい記録として開き直す
 function startExtraApply() {
   applyId = 'x_' + applyId.replace(/^x_/, '').split('@')[0] + '@' + Date.now();
   applyManual = true;   // 元カードの応募済みマークには触れない
@@ -2351,7 +2351,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1787748530250;
+const BUILD_STAMP = 1787748685711;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
