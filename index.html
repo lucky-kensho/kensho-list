@@ -520,7 +520,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年8月29日更新　応募できる<span id="active-count">378</span>件</div>
+  <div class="header-date">2026年8月29日更新　応募できる<span id="active-count">379</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -727,6 +727,7 @@ const allData = {
     {id:'s_be0cc751',since:1787184102774,announce:'',store:'ベイシア',maker:'ロッテアイス',deadline:'10/4(日)〆切',dlClass:'dl-green',buy:'対象商品1品以上含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB・ハガキ',prize:'保冷バッグ・100名\nロッテアイスセット・50名',url:'https://www.lotte.co.jp/entertainment/area_campaign/l26060007/'},
     {id:'s_f60df67f',since:1785938263302,announce:'',store:'マツモト',maker:'東洋水産',deadline:'8/1〜8/31(月)〆切',dlClass:'dl-red',buy:'対象商品1点以上含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE・ハガキ',prize:'商品券2000円・100名\nW・QUO500円・50名',url:'https://get-cp.jp/campain/pages/top/sfa153'},
     {id:'s_056c8744',since:1786090881155,announce:'',store:'マルイ・エスマート・わたなべ生鮮館',maker:'S&B',deadline:'●9/5(土)〆切',dlClass:'dl-red',buy:'対象商品1個以上含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB・ハガキ',prize:'ウォーターサーバー・2名\nレコルト自動調理ポット・4名\n商品券2000円・30名',url:'https://www.ichance.jp/sb/cp-2026SS/50/#top'},
+    {id:'s_e1dc4435',since:1787999085317,announce:'',store:'マルエツ',maker:'ひつじ年キユーピー',deadline:'11/10(火)当日消印有効',dlClass:'dl-green',buy:'バーコード1枚貼付応募',method:'ハガキ',prize:'ひつじ年キユーピー・150名',url:'https://ameblo.jp/rsj64177/entry-12977152257.html'},
     {id:'s_7abd9a5b',since:1787050213011,announce:'',store:'マルエツ・わくわくキャンペーン',maker:'',deadline:'●ﾊｶﾞｷ･9/29(火)当日消印有効',dlClass:'dl-green',buy:'対象商品500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'T-falスチームシュプレ･100名',url:'https://www.tv-asahi.co.jp/wakuwaku/'},
     {id:'s_4acbd5c0',since:1787301881204,announce:'',store:'ヤオコー',maker:'大塚製薬',deadline:'7/1〜8/31(月)当日消印有効',dlClass:'dl-red',buy:'対象商品1点以上含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'ハガキ',prize:'Tシャツ+バスタオル・20名\n商品券2000円・20名\n商品券1000円・60名',url:'https://ameblo.jp/rsj64177/entry-12976300123.html'},
     {id:'s_cea3a987',since:1787301881204,announce:'',store:'ヤオコー',maker:'丸永製菓',deadline:'7/13〜8/31(月)当日消印有効',dlClass:'dl-red',buy:'対象商品3個以上含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'ハガキ',prize:'商品券2000円・50名',url:'https://ameblo.jp/rsj64177/entry-12976300631.html'},
@@ -2367,7 +2368,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1787995704530;
+const BUILD_STAMP = 1787999085289;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
