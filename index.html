@@ -520,7 +520,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年9月5日更新　応募できる<span id="active-count">259</span>件</div>
+  <div class="header-date">2026年9月5日更新　応募できる<span id="active-count">261</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -859,6 +859,7 @@ const allData = {
     {id:'m_97c15151',since:1788516722097,announce:'',category:'食品',cat:'cat-food',maker:'カネボウ　カネボウ･suisai×クレヨンしんちゃん',deadline:'9/1〜10/31(土)23:59',dlClass:'dl-green',buy:'対象商品1点以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'ｷｰﾎﾙﾀﾞｰ＋商品',url:'https://www.kanebo-cosmetics.jp/suisai/crayonshinchan/'},
     {id:'m_7b41884d',since:1788593751603,announce:'11下',category:'食品',cat:'cat-food',maker:'日本ハム　日本ハム 国産鶏肉 桜姫® おいしさ実感！キャンペーン',deadline:'10/31消印',dlClass:'dl-green',buy:'対象商品300円(税込)ごとのレシートとブランドまたはロゴシールを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'A賞：TOFFY エアフライヤーミニ＜1.2L＞×91名\nB賞：選べる電子ギフト 1,000円分×1,000名',url:'https://full-cp.com/sakurahime_2026cp'},
     {id:'m_6b05ac8d',since:1788593751603,announce:'',category:'食品',cat:'cat-food',maker:'鎌倉ハム富岡商会　鎌倉ハム富岡商会 秋のちょっといい家飲みキャンペーン',deadline:'10/31',dlClass:'dl-green',buy:'鎌倉ハム富岡商会対象商品500円(税込)以上購入したレシートを1口として、LINEで応募',method:'LINE',prize:'選べる電子マネーギフト3,000円分×300名\nWチャンス(2回以上応募)：伝統の布巻きロースハム 6,480円相当×30名',url:'https://nipponham.campaigns.jp/lp/kamakura-t26nhgcp'},
+    {id:'m_60471ebd',since:1788617390390,announce:'',category:'食品',cat:'cat-food',maker:'プリマハム懸賞　※ちょっと重要です　プリマハム懸賞　※ちょっと重要です',deadline:'9/1〜キャンペーン中 ディズニー懸賞   プリマハム　※ディズニー●11/3(火)当日消印有効　(キャンペーン9/1〜10/31)■バーコード12・9・2…',dlClass:'dl-green',buy:'対象商品購入レシートで応募',method:'',prize:'',url:'https://www.primaham.co.jp/campaign/dhs/'},
     {id:'m_8e57b888',since:1788253693621,announce:'',category:'日用品',cat:'cat-daily',maker:'ユニバーサルペーパー　ユニバーサルペーパー･Hello',deadline:'9/1〜10/31(土)23:59',dlClass:'dl-green',buy:'対象商品2個以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'ぬいぐるみ･100名\nティッシュカバー･200名\nぬいｷｰﾁｪｰﾝ･200名',url:'https://hellotan2026cp.com'},
     {id:'m_5b01da64',since:1785565536372,announce:'',category:'食品',cat:'cat-food',maker:'新宿中村屋　新宿中村屋・中華まん',deadline:'8/1〜10/31(土)23:59',dlClass:'dl-green',buy:'対象商品購入ﾚｼｰﾄ応募',method:'WEB',prize:'中村屋セット・100名\nスマホリング・100名\nQUOPay1000円・200名\nブランケント・100名',url:'https://nakamurayacp2026aw.campar.jp'},
     {id:'m_0a79cc9d',since:1785591579106,announce:'',category:'食品',cat:'cat-food',maker:'イベたまご　イベたまご',deadline:'8/1〜10/31(土)〆切',dlClass:'dl-green',buy:'対象商品購入ﾚｼｰﾄ\nQR読込シリアルNo.応募',method:'LINE',prize:'ドライヤー・5名\nスカルプブラシ・10名\nデジタルギフト500・100名',url:'https://form.run/@tandc-evegg-entry-cp16'},
@@ -887,6 +888,7 @@ const allData = {
     {id:'m_d8eadaac',since:1785761643014,announce:'',category:'食品',cat:'cat-food',maker:'丸美屋　丸美屋',deadline:'9/1〜11/9(月)当日消印有効',dlClass:'dl-green',buy:'マーク6・2枚貼付応募',method:'ハガキ',prize:'6・ティファール7セット\n2・ティファールフライパン\nW・丸美屋セット・合計1万名',url:'https://cp.marumiya.co.jp/kitchen/mark_cp.html#content'},
     {id:'m_e6337a98',since:1787549760096,announce:'',category:'食品',cat:'cat-food',maker:'森永製菓　森永製菓・チョコモナカ・バニラモナカジャンボ',deadline:'8/20〜11/9(月)〆切',dlClass:'dl-green',buy:'対象商品12・8・2個\nLINE\n・購入ﾚｼｰﾄ応募',method:'8個コースはLINE限定',prize:'12・年末ジャンボ連番100枚・30名\n2・年末ジャンボ連番10枚・970名\n8・Amazon2万以内・50名',url:'https://www.morinaga.co.jp/jumbo/campaign/'},
     {id:'m_41f40492',since:1788221398315,announce:'',category:'食品',cat:'cat-food',maker:'ブルボン　ブルボン･プチ',deadline:'9/1〜11/10(火)23:59',dlClass:'dl-green',buy:'対象商品3本以上\n購入ﾚｼｰﾄ応募',method:'X･LINE',prize:'プチ24本セット･1000名',url:'https://bourbon.ownly.jp/story/37824?_gl=1*td3iwg*_ga*MTIyMjcyMDA1MS4xNzg4MjE5MjYw*_ga_5QJPE328H1*czE3ODgyMTkyNjAkbzEkZzEkdDE3ODgyMTkyNjAkajYwJGwwJGgw'},
+    {id:'m_92e7c27d',since:1788617390390,announce:'',category:'食品',cat:'cat-food',maker:'ひつじ年キユーピー　※ちょっと重要です　ひつじ年キユーピー　※ちょっと重要です',deadline:'11/10(水)当日消印有効',dlClass:'dl-green',buy:'バーコード1枚\n貼付応募',method:'ハガキ',prize:'ひつじ年キユーピー',url:'https://ameblo.jp/rsj64177/entry-12977774307.html'},
     {id:'m_338cbf81',since:1787549760096,announce:'',category:'食品',cat:'cat-food',maker:'原信ナルス　原信ナルス×キユーピー ※ひつじ年キユーピー',deadline:'11/10(水)当日消印有効',dlClass:'dl-green',buy:'バーコード1枚\n貼付応募',method:'ハガキ',prize:'ひつじ年キユーピー・90名',url:'https://www.harashinnarus.jp/deals/present/2608kewpie/'},
     {id:'m_c2b2a06c',since:1788221398315,announce:'',category:'食品',cat:'cat-food',maker:'ヤマザキ秋のわくわくキャンペーン2026　ヤマザキ秋のわくわくキャンペーン2026',deadline:'11/15(日)最終〆切',dlClass:'dl-green',buy:'応募点20・5点',method:'WEB･ハガキ',prize:'20･パークチケットペア\n5･お菓子セット･45000名',url:'https://yamazaki26a.jp/?openExternalBrowser=1&utm_source=site&utm_medium=lp&utm_campaign=a202609'},
     {id:'m_2f682d1c',since:1788221398315,announce:'',category:'食品',cat:'cat-food',maker:'山崎製パン　山崎製パン 2026 秋のわくわくプレゼント',deadline:'10/31（11/15）',dlClass:'dl-green',buy:'対象商品購入',method:'',prize:'Aコース(20点応募)：東京ディズニーリゾート®パークチケット(ペア)＋東京ディズニーリゾート®ギフトカード5,000円分×2,500組5,000名\nBコース(5点応募)：ヤマザキグループ お菓子のファンタジーボックス×45,000名',url:'https://www.yamazakipan.co.jp/campaign/autumn/'},
@@ -2248,7 +2250,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1788593751582;
+const BUILD_STAMP = 1788617390383;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
