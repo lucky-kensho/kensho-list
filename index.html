@@ -472,6 +472,9 @@
     width: 100%;
     max-width: 400px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    /* 項目が増えて画面より縦長になっても、箱の中でスクロールして最後まで届くようにする */
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
   }
   .edit-card-btn {
     font-size: 14px;
@@ -638,12 +641,12 @@
       <button onclick="saveApply()" style="flex:1;padding:10px;background:#e74c3c;color:white;border:none;border-radius:10px;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;">記録する</button>
       <button onclick="closeApply()" style="padding:10px 14px;background:#f0f0f0;color:#888;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit;">キャンセル</button>
     </div>
-    <div id="apply-newmonth-area" style="display:none;margin-top:10px;padding-top:10px;border-top:1px dashed #e0e0e0;">
+    <div style="text-align:center;margin-top:10px;">
+      <button id="apply-del" onclick="deleteApplyRecord()" style="font-size:12px;background:none;border:none;color:#c0392b;cursor:pointer;font-family:inherit;text-decoration:underline;padding:6px 10px;">🗑 この応募記録を削除</button>
+    </div>
+    <div id="apply-newmonth-area" style="display:none;margin-top:6px;padding-top:10px;border-top:1px dashed #e0e0e0;">
       <button onclick="startExtraApply()" style="width:100%;padding:9px;background:#eaf4ea;color:#2e7d32;border:1px solid #b9dcb9;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;">🔁 別の応募として新しく記録する</button>
       <div style="font-size:11px;color:#aaa;margin-top:5px;text-align:center;">今見ている記録はそのまま残ります</div>
-    </div>
-    <div style="text-align:center;margin-top:10px;">
-      <button id="apply-del" onclick="deleteApplyRecord()" style="font-size:12px;background:none;border:none;color:#c0392b;cursor:pointer;font-family:inherit;text-decoration:underline;">🗑 この応募記録を削除</button>
     </div>
   </div>
 </div>
@@ -2350,7 +2353,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1789200806177;
+const BUILD_STAMP = 1789208953795;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
