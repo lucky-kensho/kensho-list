@@ -540,7 +540,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年9月23日更新　応募できる<span id="active-count">342</span>件</div>
+  <div class="header-date">2026年9月23日更新　応募できる<span id="active-count">343</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -740,6 +740,7 @@ const allData = {
     {id:'s_f1681f60',since:1789629531613,announce:'',store:'スーパーアルプス',maker:'Umios',deadline:'11/30(月)当日消印有効',dlClass:'dl-green',buy:'対象商品3品以上含\n1100円(税込)以上\n購入ﾚｼｰﾄ応募',method:'ハガキ',prize:'冷凍庫･5名\nうかい食事券1万円･10名\n商品券5000円･20名\n商品券2000円･15名',url:'https://superalps.info/wp/wp-content/uploads/2026/09/2026UMIOS_CP_TOPbodo_600x300_v7-1.pdf'},
     {id:'s_aff76c76',since:1788430883185,announce:'',store:'スーパーサンシ',maker:'キッコーマン',deadline:'10/7(水)〆切',dlClass:'dl-yellow',buy:'対象商品含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE･ハガキ',prize:'商品券1000円･34名',url:'https://www.select-cp.com/2026aw/09/T-09-008/?utm_source=list&utm_medium=shop'},
     {id:'s_bf746b9e',since:1788430883185,announce:'',store:'セブンスター',maker:'キッコーマン',deadline:'10/7(水)〆切',dlClass:'dl-yellow',buy:'対象商品含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE･ハガキ',prize:'商品券1000円･50名',url:'https://www.select-cp.com/2026aw/09/S-09-006/?utm_source=list&utm_medium=shop'},
+    {id:'s_a6da0643',since:1790166676603,announce:'',store:'ダイソー',maker:'はごろもフーズ',deadline:'9/1〜10/31(土)〆切',dlClass:'dl-green',buy:'はごろもフーズ全商品\n対象商品含む100円(税込)以上\n購入ﾚｼｰﾄで1口応募',method:'WEB',prize:'米2kg･150名',url:'https://unmb.f.msgs.jp/n/form/unmb/2Y9yXJW4ZQb2n-AMTe4H-'},
     {id:'s_69d35ebf',since:1788337156591,announce:'',store:'ダイレックス',maker:'マルちゃん',deadline:'9/1〜9/30(水)〆切',dlClass:'dl-red',buy:'対象商品2点以上含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB(ハガキ)',prize:'商品券3000円･500名\nｶﾀﾛｸﾞｷﾞﾌﾄ･300名',url:'https://get-cp.jp/campain/pages/top/sfa157'},
     {id:'s_19dbc258',since:1788516722097,announce:'',store:'ダイレックス',maker:'サントリーフーズ',deadline:'11/6(金)〆切',dlClass:'dl-green',buy:'対象商品2本以上含\n1500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE･ハガキ',prize:'A･年末ｼﾞｬﾝﾎﾞ50枚･40名\nB･5000円･80名',url:'https://get-cp.jp/campain/pages/keihinpage/1?cid=yume28'},
     {id:'s_2ea54a78',since:1788430883185,announce:'',store:'ドラッグストアセキ',maker:'キッコーマン',deadline:'11/7(土)〆切',dlClass:'dl-green',buy:'対象商品含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE･ハガキ',prize:'商品券1000円･200名',url:'https://www.select-cp.com/2026aw/09/X-09-013/?utm_source=list&utm_medium=shop'},
@@ -2401,7 +2402,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1790125340926;
+const BUILD_STAMP = 1790166676587;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
