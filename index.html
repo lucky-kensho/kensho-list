@@ -544,7 +544,8 @@
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
-    <button class="tab-btn" onclick="switchTab('maker',this)">メーカー</button>
+    <button class="tab-btn" onclick="switchTab('food',this)">食品</button>
+    <button class="tab-btn" onclick="switchTab('daily',this)">日用品</button>
     <button class="tab-btn" onclick="switchTab('pin',this)">含レシ</button>
     <button class="tab-btn" onclick="switchTab('again',this)">🔁 もう一口</button>
     <button class="tab-btn active" onclick="switchTab('memo',this)">メモ</button>
@@ -561,7 +562,8 @@
 </div>
 
 <div id="tab-store"  class="tab-content"></div>
-<div id="tab-maker"  class="tab-content"></div>
+<div id="tab-food"   class="tab-content"></div>
+<div id="tab-daily"  class="tab-content"></div>
 <div id="tab-pin"    class="tab-content"></div>
 <div id="tab-again"  class="tab-content"></div>
 <div id="tab-rireki" class="tab-content">
@@ -1076,7 +1078,7 @@ function saveState() {
 let state = loadState();
 let currentTab = 'memo';
 
-const TAB_LABELS = {store:'店舗', maker:'メーカー', pin:'含レシ'};
+const TAB_LABELS = {store:'店舗', maker:'メーカー', food:'食品', daily:'日用品', pin:'含レシ'};
 
 // 店名タグの複数指定（「、」「,」または空白区切り）を配列に分解
 function splitStores(s) {
@@ -1429,7 +1431,7 @@ function renderSearch(query) {
       const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
     const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
       const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener noreferrer" class="apply-link">🔗 応募</a>` : '';
-      const tagLabel = tabId === 'store' ? (item.store || '店舗') : TAB_LABELS[tabId];
+      const tagLabel = tabId === 'store' ? (item.store || '店舗') : (item.category || TAB_LABELS[tabId]);
       const isPinned = pinned[item.id];
       if (!isDone) count++;
       html += `
@@ -1487,8 +1489,15 @@ function toggleMakerSort() {
 }
 
 function renderTab(tabId) {
+  // メーカー懸賞は「食品」「日用品」の2タブに分かれた。既存の renderTab('maker') 呼び出しを
+  // そのまま活かすため、ここで両方へ取り次ぐ
+  if (tabId === 'maker') { renderTab('food'); renderTab('daily'); return; }
   const container = document.getElementById('tab-' + tabId);
-  const items = allData[tabId];
+  if (!container) return;
+  const srcKey = (tabId === 'food' || tabId === 'daily') ? 'maker' : tabId;
+  const catName = tabId === 'food' ? '食品' : (tabId === 'daily' ? '日用品' : '');
+  let items = allData[srcKey] || [];
+  if (catName) items = items.filter(i => (i.category || '') === catName);
   const active = items.filter(i => state[i.id] !== 'deleted' && !isExpired(getEff(i).deadline));
 
   if (active.length === 0) {
@@ -1690,9 +1699,10 @@ function renderTab(tabId) {
     grouped[key].push(item);
   });
   let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="sort-toggle" onclick="toggleMakerSort()">⏰ 締切が近い順</button></div>`;
+  const multiGroup = Object.keys(grouped).length > 1;
   for (const [group, groupItems] of Object.entries(grouped)) {
     const icon = group === '食品' ? '🥗' : '🧴';
-    html += `<div class="section-label">${icon} ${group}</div>`;
+    if (multiGroup) html += `<div class="section-label">${icon} ${group}</div>`;
     const sorted = [...groupItems].sort((a,b) => (state[a.id]==='done'?1:0)-(state[b.id]==='done'?1:0));
     sorted.forEach(item => {
       const it = getEff(item);
@@ -1760,6 +1770,15 @@ function updateCount(tabId) {
       if (isNew(i.id)) return true;
       return !String(getEff(i).deadline||'').match(/\d{1,2}\/\d{1,2}/);
     }).length;
+    document.getElementById('remaining').textContent = n;
+    return;
+  }
+  if (tabId === 'food' || tabId === 'daily') {
+    const cat = tabId === 'food' ? '食品' : '日用品';
+    const n = (allData.maker || []).filter(i =>
+      (i.category || '') === cat && !getEff(i).storeTag &&
+      state[i.id] !== 'deleted' && state[i.id] !== 'done' && !isExpired(getEff(i).deadline)
+    ).length;
     document.getElementById('remaining').textContent = n;
     return;
   }
@@ -2406,7 +2425,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1790247547610;
+const BUILD_STAMP = 1790247663522;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
