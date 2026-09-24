@@ -547,7 +547,6 @@
     <button class="tab-btn" onclick="switchTab('food',this)">食品</button>
     <button class="tab-btn" onclick="switchTab('daily',this)">日用品</button>
     <button class="tab-btn" onclick="switchTab('pin',this)">含レシ</button>
-    <button class="tab-btn" onclick="switchTab('again',this)">🔁 もう一口</button>
     <button class="tab-btn active" onclick="switchTab('memo',this)">メモ</button>
     <button class="tab-btn" onclick="switchTab('rireki',this)">📔 履歴</button>
   </div>
@@ -564,8 +563,10 @@
 <div id="tab-store"  class="tab-content"></div>
 <div id="tab-food"   class="tab-content"></div>
 <div id="tab-daily"  class="tab-content"></div>
-<div id="tab-pin"    class="tab-content"></div>
-<div id="tab-again"  class="tab-content"></div>
+<div id="tab-pin"    class="tab-content">
+  <div id="pin-section"></div>
+  <div id="again-section"></div>
+</div>
 <div id="tab-rireki" class="tab-content">
   <div style="display:flex;gap:8px;margin-bottom:8px;">
     <button class="sort-toggle" onclick="openManualApply()">＋ 手動で追加</button>
@@ -1222,19 +1223,18 @@ function toggleAgain(id) {
 }
 
 function renderAgainTab() {
-  const container = document.getElementById('tab-again');
+  const container = document.getElementById('again-section');
   if (!container) return;
+  // 買い物リストモードは「何を買うか」だけ見たい画面なので、もう一口は出さない
+  if (shopListMode) { container.innerHTML = ''; return; }
   const againItems = Object.values(allData).flat()
     .filter(i => again[i.id] && state[i.id] !== 'deleted' && !isExpired(getEff(i).deadline))
     .sort((a,b) => {
       const da = dlDate(getEff(a).deadline), db = dlDate(getEff(b).deadline);
       return (da ? da.getTime() : 9e15) - (db ? db.getTime() : 9e15);
     });
-  if (againItems.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="emoji">🔁</div>「もう一口」がありません<br><small style="font-size:12px">もう一度応募したいカードの 🔁 をタップ</small></div>';
-    return;
-  }
-  let html = '<div style="font-size:12px;color:#999;margin-bottom:8px;">🔁 もう一口応募したいキャンペーン（締切が近い順）</div>';
+  if (againItems.length === 0) { container.innerHTML = ''; return; }
+  let html = '<div style="font-size:12px;color:#999;margin:16px 0 8px;">🔁 もう一口応募したいキャンペーン（締切が近い順）</div>';
   againItems.forEach(item => {
     const it = getEff(item);
     const isDone = state[item.id] === 'done';
@@ -1274,13 +1274,18 @@ function toggleShopList() {
 }
 
 function renderPinnedTab() {
-  const container = document.getElementById('tab-pin');
+  // 含レシタブは「⭐含レシ」と「🔁もう一口」の2区切り。ここは上半分だけを描く
+  const container = document.getElementById('pin-section');
   if (!container) return;
   const pinnedItems = Object.values(allData).flat()
     .filter(i => pinned[i.id] && state[i.id] !== 'deleted' && !isExpired(getEff(i).deadline))
     .sort((a,b) => (state[a.id]==='done'?1:0)-(state[b.id]==='done'?1:0));
+  const againCount = Object.values(allData).flat()
+    .filter(i => again[i.id] && state[i.id] !== 'deleted' && !isExpired(getEff(i).deadline)).length;
   if (pinnedItems.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="emoji">⭐</div>含レシがありません<br><small style="font-size:12px">各カードの ☆ をタップして追加</small></div>';
+    // 下半分に「もう一口」があるなら、ここで大きな空案内を出すと邪魔になるので黙る
+    container.innerHTML = againCount ? '' :
+      '<div class="empty-state"><div class="emoji">⭐</div>含レシ・もう一口がありません<br><small style="font-size:12px">各カードの ☆ か 🔁 をタップして追加</small></div>';
     return;
   }
   // 買い物リストモード：未処理ピンの「何を買う？」だけをシンプルに一覧表示
@@ -1311,6 +1316,8 @@ function renderPinnedTab() {
     return;
   }
   let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="sort-toggle" onclick="toggleShopList()">🛒 買い物リスト表示</button></div>`;
+  // 2区切りだと分かるよう、下に「もう一口」がある時だけ見出しを付ける
+  if (againCount) html += '<div style="font-size:12px;color:#999;margin-bottom:8px;">⭐ 含レシ（レシートを取っておくキャンペーン）</div>';
   pinnedItems.forEach(item => {
     const it = getEff(item);
     const isDone = state[item.id] === 'done';
@@ -1767,8 +1774,14 @@ function updateCount(tabId) {
     return;
   }
   if (tabId === 'pin') {
-    const n = Object.values(allData).flat().filter(i => pinned[i.id] && state[i.id] !== 'deleted' && state[i.id] !== 'done' && !isExpired(getEff(i).deadline)).length;
-    document.getElementById('remaining').textContent = n;
+    // このタブには⭐と🔁の両方が並ぶので、合計で数える（両方付いたカードは1件）
+    const ids = new Set();
+    Object.values(allData).flat().forEach(i => {
+      if (state[i.id] === 'deleted' || isExpired(getEff(i).deadline)) return;
+      if (pinned[i.id] && state[i.id] !== 'done') ids.add(i.id);
+      if (again[i.id]) ids.add(i.id);
+    });
+    document.getElementById('remaining').textContent = ids.size;
     return;
   }
   if (tabId === 'again') {
@@ -2439,7 +2452,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1790247736755;
+const BUILD_STAMP = 1790248110756;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
