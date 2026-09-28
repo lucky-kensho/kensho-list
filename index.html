@@ -560,7 +560,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年9月28日更新　応募できる<span id="active-count">378</span>件</div>
+  <div class="header-date">2026年9月28日更新　応募できる<span id="active-count">381</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -710,6 +710,7 @@ const STATE_KEY = 'kenshow_state_v3';
 
 const allData = {
   store: [
+    {id:'s_b887211f',since:1790604727558,announce:'',store:'CGC九州',maker:'CGCお客様感謝キャンペーン2026',deadline:'11/5',dlClass:'dl-green',buy:'CGC商品（CGCグループ各店）\nCGC商品を含む2,000円(税込)以上のレシートでWEB応募（複数枚合算可）。レシート有効期間10/1〜10/31。購入金額が多いほど応募口数アップ',method:'WEB',prize:'全国共通：CGC商品券1,000円×40,000名／Wチャンス1,000円×10,000名。九州・沖縄限定：10,000円×50名、2,000円×1,500名',url:'https://www.ichance.jp/cgc/kyushu/'},
     {id:'s_36eee66a',since:1788950814801,announce:'',store:'CGC北海道',maker:'',deadline:'9/1〜9/30(水)〆切',dlClass:'dl-red',buy:'対象商品含\n2500円(\n税抜',method:'道内在住限定',prize:'商品券2万円･100名\n商品券5000円･300名\n商品券2000円･3700名',url:'https://www.ralse.co.jp/campaign/detail/2026090140.html'},
     {id:'s_74936d53',since:1789103514691,announce:'10下',store:'Can☆Do(キャンドゥ)',maker:'三幸製菓',deadline:'9/30',dlClass:'dl-red',buy:'キャンドゥにて、三幸製菓商品を含む200円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'令和八年度新潟産コシヒカリ 2kg×30名',url:'https://zzob.f.msgs.jp/n/form/zzob/T3mtz-uLEtty67ZwpceGW'},
     {id:'s_5e6016e9',since:1789465383746,announce:'',store:'PLANT',maker:'サントリー･スターバックス',deadline:'9/14〜10/23(金)23:59',dlClass:'dl-yellow',buy:'対象商品2本\n購入ﾚｼｰﾄ応募',method:'LINE',prize:'A･ｽﾀﾊﾞegift1000円･15名\nB･ｵﾘｼﾞﾅﾙｸﾞﾗｽ･10名',url:'https://ssl1.suntory.co.jp/cpn/CSUNV2609141RECE/top.html?cdn1=06'},
@@ -1073,6 +1074,7 @@ const allData = {
     {id:'m_e8f9a223',since:1789741784035,announce:'',category:'食品',cat:'cat-food',maker:'マルちゃん　マルちゃん･QTTA',deadline:'10/1〜12/31(木)23:59',dlClass:'dl-green',buy:'対象商品7･4･2\n･1個以上購入ﾚｼｰﾄ応募',method:'LINE',prize:'7･直筆入りﾎﾟｽﾀｰ･3名\n4･ﾎﾟｽﾀｰ+QTTA7個･7名\n2･蓋止め･390名\n1･QUO1000円･600名',url:'https://www.maruchan.co.jp/news_topics/entry/2026/09/1000_1.html'},
     {id:'m_7ee17399',since:1789899284786,announce:'',category:'食品',cat:'cat-food',maker:'JA宮城　JA宮城･宮城米',deadline:'12/31(木)〆切',dlClass:'dl-green',buy:'対象商品購入\nWEB･\n応募ｼｰﾙ+ﾚｼｰﾄ撮影応募',method:'',prize:'A･仙台牛1万円相当･50名\nB･選べる宮城ｷﾞﾌﾄ･150名\n応募券5口以上応募',url:'https://miyagimai-cp.jp'},
     {id:'m_be5f365a',since:1790573038027,announce:'',category:'食品',cat:'cat-food',maker:'コーセー　コーセー･ソフティモクレンジング',deadline:'10/1〜12/31(木)23:59',dlClass:'dl-green',buy:'ソフティモクレンジング商品各種\n対象商品500円(税込9以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'A･ｸｯｼｮﾝ･20名\nB･ﾍｱﾊﾞﾝﾄﾞ&ｱｰﾑﾊﾞﾝﾄﾞｾｯﾄ･100名\nC･ﾎﾟｰﾁ･400名',url:'https://softymo-cp2026.jp/?utm_source=web&utm_medium=pr&utm_campaign=softymo-cp2026&utm_id=15212115337'},
+    {id:'m_24932ddd',since:1790604727558,announce:'',category:'食品',cat:'cat-food',maker:'ダイショー　ダイショー×ウェザーニュース 鍋するほどおトク！マイレージキャンペーン',deadline:'12/31',dlClass:'dl-green',buy:'ダイショーのマーク入り 鍋スープ各種\nダイショーのマーク入り鍋スープ1品＝1ポイント。LINEでレシートを登録してポイントを貯め、コースに応募',method:'LINE',prize:'1pt→500円ギフト500名／2pt→ウェザーニュースカレンダー10名／3pt→3,000円50名／5pt→10,000円20名／10pt→30,000円10名',url:'https://daisho-lp.com/26-nabe/'},
     {id:'m_eb54ee78',since:1790247736780,announce:'',category:'食品',cat:'cat-food',maker:'キッコーマン豆乳　キッコーマン豆乳･まめレージ',deadline:'第1弾10/1〜1/4(月)',dlClass:'dl-green',buy:'対象商品購入ﾚｼｰﾄ応募\nﾎﾟｲﾝﾄ貯め応募',method:'まめレージ',prize:'賞品',url:'https://www.k-tounyu.jp/cp/tounyumatsuri_cp/'},
     {id:'m_8cdf2e6e',since:1790247736780,announce:'',category:'食品',cat:'cat-food',maker:'千葉県　千葉県･ちばまるしぇ',deadline:'1/7(木)〆切',dlClass:'dl-green',buy:'対象2施設以上\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'賞品',url:'https://maruchiba.jp/theme/chiba-maruche/index_1_2____0___6__.html#search'},
     {id:'m_0afca695',since:1790573038027,announce:'',category:'食品',cat:'cat-food',maker:'マルちゃん　マルちゃん･ラーメン',deadline:'10/1〜1/8(金)23:59',dlClass:'dl-green',buy:'対象商品1･2･3個以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'1･QUO500円･650名\n2･ｷｯﾁﾝﾀｲﾏｰ･300名\n3･ﾎﾟｰﾁ付きｴｺﾊﾞｯｸﾞ･50名',url:'https://www.maruchan.co.jp/news_topics/entry/2026/09/post_20211194.html'},
@@ -1089,7 +1091,8 @@ const allData = {
     {id:'m_736525c2',since:1790247736780,announce:'',category:'食品',cat:'cat-food',maker:'福島県産米　福島県産米',deadline:'2/28(日)23:59',dlClass:'dl-green',buy:'応募ｼｰﾙQR読込み応募',method:'LINE',prize:'米4kg･500名',url:'https://www.fukushimamai2026.com'},
     {id:'m_254ab6f5',since:1790247736780,announce:'',category:'日用品',cat:'cat-daily',maker:'ライオン菓子　ライオン菓子･きえちゃうキャンディー',deadline:'2/28(日)当日消印有効',dlClass:'dl-green',buy:'応募券3枚貼付応募',method:'ハガキ',prize:'ｸﾞﾙﾒｶﾀﾛｸﾞ･100名',url:'https://www.lion-k.co.jp/s1/campaign/kiechau35th_cp.html'},
     {id:'m_40808755',since:1790247736780,announce:'',category:'食品',cat:'cat-food',maker:'トロナジャパーン　トロナジャパーン・すき家・なか卯冷凍どんぶり',deadline:'第3回2/28(日)23:59',dlClass:'dl-green',buy:'対象商品1品以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'米5kg・200名\nすき家1000円券・50名\nなか卯1000円券・50名',url:'https://zensho.ownly.jp/story/37784'},
-    {id:'m_b279c11a',since:1790247736780,announce:'',category:'食品',cat:'cat-food',maker:'鳥取県　鳥取県・宿泊キャンペーン',deadline:'3/3(水)〆切',dlClass:'dl-green',buy:'対象宿泊施設\nHpで確認できます\n対象宿泊施設に宿泊し\nレシート(領収書)応募',method:'WEB・ハガキ',prize:'鳥取かに・毎月100名',url:'https://kanitoriken.jp/stay-campaign/'}
+    {id:'m_b279c11a',since:1790247736780,announce:'',category:'食品',cat:'cat-food',maker:'鳥取県　鳥取県・宿泊キャンペーン',deadline:'3/3(水)〆切',dlClass:'dl-green',buy:'対象宿泊施設\nHpで確認できます\n対象宿泊施設に宿泊し\nレシート(領収書)応募',method:'WEB・ハガキ',prize:'鳥取かに・毎月100名',url:'https://kanitoriken.jp/stay-campaign/'},
+    {id:'m_32ce91f1',since:1790604727558,announce:'',category:'食品',cat:'cat-food',maker:'イトメン　イトメン エッグベジチャンキャンペーン',deadline:'3/30(2027年)',dlClass:'dl-green',buy:'チャンポンめん 5食パック\nチャンポンめん5食パック裏面の応募マーク1枚をハガキに貼って郵送（当日消印有効）。対象は2026年10月上旬〜11月下旬の本社工場出荷分。抽選は2027/1/31と2027/4/3の2回',method:'ハガキ',prize:'イトメン製品詰合せ＋卵・野菜のオリジナルレシピブック 計1,000名（各回500名）',url:'https://www.itomen.com/campaign/eggvegechan/'}
   ],
 };
 
@@ -2552,7 +2555,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1790578847326;
+const BUILD_STAMP = 1790604727537;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
