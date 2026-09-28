@@ -350,6 +350,26 @@
     padding: 2px 8px;
     white-space: nowrap;
   }
+  .acct-chip {
+    font-size: 11px;
+    font-weight: bold;
+    background: #fff;
+    color: #bbb;
+    border: 1.5px dashed #d5d5d5;
+    border-radius: 20px;
+    padding: 1px 8px;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .acct-chip.done {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1.5px solid #66bb6a;
+  }
+  .acct-chip.line { color: #bbb; }
+  .acct-chip.line.done { background: #e8f8e8; color: #0a6a2a; border-color: #2eb84d; }
   .prize-text {
     font-size: 11.5px;
     color: #888;
@@ -1272,7 +1292,7 @@ function renderAgainTab() {
           </div>
           <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
           <div class="card-footer">
-            <span class="method-chip">${item.method}</span>
+            <span class="method-chip">${item.method}</span>${acctChips(item)}
             <button class="again-btn active" onclick="toggleAgain('${item.id}')" title="もう一口を外す">🔁</button>
             <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
             ${linkBtn}
@@ -1357,7 +1377,7 @@ function renderPinnedTab() {
           </div>
           <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
           <div class="card-footer">
-            <span class="method-chip">${item.method}</span>
+            <span class="method-chip">${item.method}</span>${acctChips(item)}
             <button class="pin-btn active" onclick="togglePin('${item.id}')" title="ピン解除">⭐</button>
             <button class="again-btn${again[item.id] ? ' active' : ''}" onclick="toggleAgain('${item.id}')" title="もう一口">🔁</button>
             <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
@@ -1398,7 +1418,7 @@ function renderNewTab() {
           </div>
           <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
           <div class="card-footer">
-            <span class="method-chip">${item.method}</span>
+            <span class="method-chip">${item.method}</span>${acctChips(item)}
             <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
             <button class="again-btn${again[item.id] ? ' active' : ''}" onclick="toggleAgain('${item.id}')" title="もう一口">🔁</button>
             <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
@@ -1489,7 +1509,7 @@ function renderSearch(query) {
               </div>
               ${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
               <div class="card-footer">
-                <span class="method-chip">${item.method}</span>
+                <span class="method-chip">${item.method}</span>${acctChips(item)}
                 <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
             <button class="again-btn${again[item.id] ? ' active' : ''}" onclick="toggleAgain('${item.id}')" title="もう一口">🔁</button>
                 <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
@@ -1613,7 +1633,7 @@ function renderTab(tabId) {
               </div>
               <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
               <div class="card-footer">
-                <span class="method-chip">${item.method}</span>
+                <span class="method-chip">${item.method}</span>${acctChips(item)}
                 <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
             <button class="again-btn${again[item.id] ? ' active' : ''}" onclick="toggleAgain('${item.id}')" title="もう一口">🔁</button>
                 <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
@@ -1667,7 +1687,7 @@ function renderTab(tabId) {
               </div>
               <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
               <div class="card-footer">
-                <span class="method-chip">${item.method}</span>
+                <span class="method-chip">${item.method}</span>${acctChips(item)}
                     <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
             <button class="again-btn${again[item.id] ? ' active' : ''}" onclick="toggleAgain('${item.id}')" title="もう一口">🔁</button>
                 <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
@@ -1716,7 +1736,7 @@ function renderTab(tabId) {
             </div>
             <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
             <div class="card-footer">
-              <span class="method-chip">${item.method}</span>
+              <span class="method-chip">${item.method}</span>${acctChips(item)}
               <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
             <button class="again-btn${again[item.id] ? ' active' : ''}" onclick="toggleAgain('${item.id}')" title="もう一口">🔁</button>
               <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
@@ -1763,7 +1783,7 @@ function renderTab(tabId) {
             </div>
             <div class="buy-box">${buyLines}</div>${it.prize ? `<div class="prize-row">🎁 賞品：${it.prize}</div>` : ''}
             <div class="card-footer">
-              <span class="method-chip">${item.method}</span>
+              <span class="method-chip">${item.method}</span>${acctChips(item)}
                 <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
             <button class="again-btn${again[item.id] ? ' active' : ''}" onclick="toggleAgain('${item.id}')" title="もう一口">🔁</button>
               <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
@@ -1898,6 +1918,68 @@ function defaultNames(item) {
   const m = String(item && item.method || '');
   if (m.includes('アプリ') && !m.includes('WEB') && !m.includes('LINE')) return [];
   return (m.includes('LINE') && !m.includes('WEB')) ? ['Mラ'] : ['M'];
+}
+
+// ===== 名義ごとの応募状況（アカウント2つを使い分けている分の進み具合）=====
+// その懸賞で使う名義の組。LINE専用ならLINE用の2つ、それ以外はハガキ・WEB用の2つ。
+// 店のアプリ応募は会員に紐づくので名義なし。
+function expectedNames(item) {
+  const m = String(item && item.method || '');
+  if (m.includes('アプリ') && !m.includes('WEB') && !m.includes('LINE')) return [];
+  return (m.includes('LINE') && !m.includes('WEB')) ? ['Mラ', 'たラ'] : ['M', 'H'];
+}
+// 応募記録（別口として足した分も含む）から、応募済みの名義を集める
+function appliedNames(id) {
+  const set = new Set();
+  Object.keys(hist).forEach(k => {
+    if (k === id || k.startsWith('x_' + id + '@')) {
+      (hist[k].names || []).forEach(nm => set.add(nm));
+    }
+  });
+  return set;
+}
+// カードに出す名義ボタン。押すとその名義だけ応募済みにできる
+function acctChips(item) {
+  const exp = expectedNames(item);
+  if (!exp.length) return '';
+  const done = appliedNames(item.id);
+  const isLine = exp[0] === 'Mラ';
+  return exp.map(nm =>
+    `<button class="acct-chip${isLine ? ' line' : ''}${done.has(nm) ? ' done' : ''}" `
+    + `onclick="event.stopPropagation();toggleAcct('${item.id}','${nm}')" `
+    + `title="${nm}で応募したら押す">${nm}</button>`
+  ).join('');
+}
+function toggleAcct(id, nm) {
+  const item = allItems[id];
+  if (!item) return;
+  const has = appliedNames(id).has(nm);
+  if (has) {
+    // その名義を全記録から外す。名義が空になった記録は消す
+    Object.keys(hist).forEach(k => {
+      if (k !== id && !k.startsWith('x_' + id + '@')) return;
+      hist[k].names = (hist[k].names || []).filter(x => x !== nm);
+      if (hist[k].names.length === 0) delete hist[k];
+    });
+  } else {
+    if (!hist[id]) {
+      const wasDone = state[id] === 'done';
+      state[id] = 'done';          // addHistory は記録がある前提なので一旦立てる
+      addHistory(id);
+      hist[id].names = [nm];
+      if (!wasDone) state[id] = undefined;
+    } else {
+      hist[id].names = [...new Set([...(hist[id].names || []), nm])];
+    }
+  }
+  saveHist();
+  // 使う名義が全部そろったらカードを完了扱いにする（片方だけなら未完了のまま）
+  const exp = expectedNames(item);
+  const now = appliedNames(id);
+  state[id] = (exp.length && exp.every(x => now.has(x))) ? 'done' : undefined;
+  saveState();
+  renderAll();
+  renderHistoryTab();
 }
 
 function addHistory(id) {
@@ -2470,7 +2552,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1790573366679;
+const BUILD_STAMP = 1790573470721;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
