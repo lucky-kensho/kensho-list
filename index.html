@@ -560,7 +560,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年10月1日更新　応募できる<span id="active-count">304</span>件</div>
+  <div class="header-date">2026年10月1日更新　応募できる<span id="active-count">305</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -929,6 +929,7 @@ const allData = {
     {id:'m_98d285a2',since:1789465383746,announce:'',category:'食品',cat:'cat-food',maker:'マルちゃん　マルちゃん･ワンタン',deadline:'/1〜11/30(月)23:59',dlClass:'dl-green',buy:'対象商品1点以上\n購入ﾚｼｰﾄ応募',method:'LINE',prize:'ﾏﾙﾁｬﾝﾜﾝﾀﾝｾｯﾄ･500名\nQUOPay500円･2000名',url:'https://wantan.maruchan-cp.jp'},
     {id:'m_f6bccb0b',since:1790838041265,announce:'',category:'食品',cat:'cat-food',maker:'帝国ホテル ホテルマーガリン　帝国ホテル ホテルマーガリン',deadline:'10/1〜11/30(月)当日消印有効',dlClass:'dl-green',buy:'告知付きパッケージ\n対象商品購入\nﾊﾟｯｹｰｼﾞ裏面応募ﾊｶﾞｷ応募',method:'専用ﾊｶﾞｷ',prize:'帝国ﾎﾃﾙｽｰﾌﾟｶﾚｰｾｯﾄ5000円相当･100名\n帝国ﾎﾃﾙｽｰﾌﾟ缶3000円相当･400名',url:'https://www.imperialkitchen.co.jp/margarine-50th-anniversary/'},
     {id:'m_ece3535c',since:1790856380258,announce:'',category:'食品',cat:'cat-food',maker:'ニッポンハム　ニッポンハム･冷凍食品',deadline:'10/1〜11/30(月)',dlClass:'dl-green',buy:'対象商品\n対象商品500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE',prize:'ｺﾞｼﾞﾗｸﾞｯｽﾞ･103名\nえらべるPay500円･1000名',url:'https://nipponham-frozenfoods-cp.jp/godzilla-campaign2026/#wrap'},
+    {id:'m_0418d2c4',since:1790856927001,announce:'',category:'食品',cat:'cat-food',maker:'赤城乳業　赤城乳業･フロリダサンデー',deadline:'第1回11/30(月)',dlClass:'dl-green',buy:'対象商品2個\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'えらべるﾃﾞｼﾞﾀﾙ1000円･800名\nW･2回以上応募した方',url:'https://www.akagi.com/brand/florida-sundae/#anch-cpn'},
     {id:'m_e226bb22',since:1790856380258,announce:'',category:'日用品',cat:'cat-daily',maker:'◆王子製紙　◆王子製紙･ネピア×目黒蓮',deadline:'10/1〜11/30(月)23:59',dlClass:'dl-green',buy:'対象商品2点以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'IDｹｰｽ･1000名',url:'https://e-nepia.com/campaign/receipt.php?cm_id=277'},
     {id:'m_acfce158',since:1788221398315,announce:'',category:'食品',cat:'cat-food',maker:'ブルボン　ブルボン･アルフォート',deadline:'9/1〜11/30(月)23:59',dlClass:'dl-green',buy:'対象商品A300円･B1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'X･LINE',prize:'A･QUO500円･250名\nB･スタジャン･50名',url:'https://bourbon.ownly.jp/story/38658?_gl=1*v6hrpz*_ga*MTIyMjcyMDA1MS4xNzg4MjE5MjYw*_ga_5QJPE328H1*czE3ODgyMTkyNjAkbzEkZzEkdDE3ODgyMTkyNjAkajYwJGwwJGgw'},
     {id:'m_9e1fe0e7',since:1788221398315,announce:'1上',category:'食品',cat:'cat-food',maker:'ダノンジャパン　ダノンジャパン ダノン ビオ® 8日間チャレンジ',deadline:'11/30消印',dlClass:'dl-green',buy:'対象商品購入',method:'',prize:'2個購入：JCBギフトカード5,000円分×888名\n4個購入：JCBギフトカード10,000円分×88名',url:'https://www.danone.co.jp/bio/2026cp/'},
@@ -2478,7 +2479,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1790856380258;
+const BUILD_STAMP = 1790856927000;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
