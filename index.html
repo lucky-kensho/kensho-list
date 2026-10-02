@@ -560,7 +560,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年10月2日更新　応募できる<span id="active-count">328</span>件</div>
+  <div class="header-date">2026年10月2日更新　応募できる<span id="active-count">329</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -735,6 +735,7 @@ const allData = {
     {id:'s_c3a9f0fc',since:1790947559439,announce:'',store:'マルエツ',maker:'キリンビール',deadline:'10/31（11/4）',dlClass:'dl-green',buy:'マルエツにて、キリンビール対象商品500円(税込)以上を含む2,500円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'A賞：キリンビール横浜工場見学＆キリン横浜ビアホールでのランチ×10組20名\nB賞：マルエツ商品券2,000円分×150名',url:'https://bit-link.net/maruetsu-kirinkengaku-cp'},
     {id:'s_39184fc5',since:1790947559439,announce:'12中',store:'マルエツ',maker:'オタフクソース・キリンビバレッジ',deadline:'10/31',dlClass:'dl-yellow',buy:'マルエツにて、対象商品1点以上を含む600円(税込)以上購入したレシートを1口として、LINEで応募',method:'LINE',prize:'Aコース：BRUNOコンパクトホットプレート＆ホットプレート用ヘラ×10名\nBコース：キリン 午後の紅茶 おいしい無糖500ml 1ケース（24本入）×30名\nCコース：マルエツ商品券1,000円分×30名',url:'https://otafuku.ownly.jp/story/38533'},
     {id:'s_333be9f5',since:1790947559439,announce:'',store:'対象企業11社',maker:'明治　※宝塚貸切',deadline:'12/3(木)〆切',dlClass:'dl-green',buy:'対象商品2500･110円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE･ハガキ',prize:'2500･SS席･20組40名\n1100･S+･S･A･B席･200組400名',url:'https://get-cp.jp/campain/pages/top/mjtk26g'},
+    {id:'s_5c795f69',since:1790947957188,announce:'',store:'西友',maker:'JR東日本 Suicaのペンギングッズプレゼント',deadline:'10/12',dlClass:'dl-yellow',buy:'店内の買い物（交通系電子マネー払い）\n西友でSuica等の交通系電子マネーで1会計2,000円(税込)以上の買い物をすると先着でもらえる。\n※抽選ではなく先着・応募不要。第二弾は10/2〜10/12、なくなり次第終了。お1人様1回限り',method:'店頭（先着・応募不要）',prize:'Suicaのペンギングッズ 先着23,000名',url:'https://www.seiyu.co.jp/campaign/suica_cp/'},
     {id:'s_b887211f',since:1790604727558,announce:'',store:'CGC九州',maker:'CGCお客様感謝キャンペーン2026',deadline:'11/5',dlClass:'dl-green',buy:'CGC商品（CGCグループ各店）\nCGC商品を含む2,000円(税込)以上のレシートでWEB応募（複数枚合算可）。レシート有効期間10/1〜10/31。購入金額が多いほど応募口数アップ',method:'WEB',prize:'全国共通：CGC商品券1,000円×40,000名／Wチャンス1,000円×10,000名。九州・沖縄限定：10,000円×50名、2,000円×1,500名',url:'https://www.ichance.jp/cgc/kyushu/'},
     {id:'s_5e6016e9',since:1789465383746,announce:'',store:'PLANT',maker:'サントリー･スターバックス',deadline:'9/14〜10/23(金)23:59',dlClass:'dl-yellow',buy:'対象商品2本\n購入ﾚｼｰﾄ応募',method:'LINE',prize:'A･ｽﾀﾊﾞegift1000円･15名\nB･ｵﾘｼﾞﾅﾙｸﾞﾗｽ･10名',url:'https://ssl1.suntory.co.jp/cpn/CSUNV2609141RECE/top.html?cdn1=06'},
     {id:'s_df7d1e3c',since:1788756790806,announce:'',store:'いなげや',maker:'ヤマザキビスケット',deadline:'9/30（10/15）',dlClass:'dl-yellow',buy:'いなげやにて、ヤマザキビスケット商品150円(税込)ごとのレシートを1口として、郵送で応募',method:'ハガキ',prize:'商品券2,000円分×60名',url:'https://www.inageya.co.jp/campaign/20260901_1016.html'},
@@ -865,7 +866,6 @@ const allData = {
     {id:'m_0aa192a7',since:1790947559439,announce:'',category:'食品',cat:'cat-food',maker:'シュガーカット&九州乳業みどり牛乳ヨーグルト　シュガーカット&九州乳業みどり牛乳ヨーグルト',deadline:'10/1〜10/31(土)',dlClass:'dl-yellow',buy:'ﾆｰﾀﾝｺｰｽ\n対象商品各社各1個購入\nﾘｯｼﾞ-ｺｰｽ',method:'WEB･ハガキ',prize:'',url:'https://www.asadaame.co.jp/campaign/trinita202609.html'},
     {id:'m_88b74d96',since:1788221398315,announce:'',category:'食品',cat:'cat-food',maker:'安曇野食品　安曇野食品･SWEET CAFE',deadline:'9/1〜10/31(土)23:59',dlClass:'dl-yellow',buy:'対象商品3･2･1本\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'3･クッション･10名\n2･サコッシュ･30名\n1･QUOPay500円･40名',url:'https://www.azuminofood.jp/sweetcafe/cafe-cp/26au/'},
     {id:'m_0d96eadc',since:1788221398315,announce:'',category:'食品',cat:'cat-food',maker:'北海道ぎょれん　北海道ぎょれん･北海道産秋鮭',deadline:'9/1〜10/31(土)〆切',dlClass:'dl-yellow',buy:'対象商品300円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE',prize:'北海道海の幸ｾｯﾄ･250名',url:'https://www.gyoren.or.jp/ikura/linecp/'},
-    {id:'m_2e0159ba',since:1788221398315,announce:'',category:'食品',cat:'cat-food',maker:'トロナジャパン　トロナジャパン どんぶり祭り 総量1トン国産米など抽選で総計300名様に当たる！キャンペーン',deadline:'2/28（10/31）',dlClass:'dl-yellow',buy:'トロナジャパン対象商品を1品以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'A賞：秋田県産あきたこまち 5kg×200名\nB賞：えらべるお食事券1,000円分100名',url:'https://kenshomin.hatenablog.jp/entry/2026/09/01/090200'},
     {id:'m_7c05f7e6',since:1788253693621,announce:'',category:'食品',cat:'cat-food',maker:'大阪王将冷凍食品　大阪王将冷凍食品×明治アイス ※関東限定',deadline:'9/1〜10/31(土)23:59',dlClass:'dl-yellow',buy:'大阪王将 冷凍食品各種から1個＋明治 アイス各種から1個（両方を1枚のレシートに）\n大阪王将の冷凍食品と明治のアイスを両方含むレシート1枚で1口（2枚にまたがってもOK）\n★羽根つき餃子・明治ブルガリア フローズンヨーグルトデザートを含むと当選確率2倍\n関東エリアのチェーン店のみ（コンビニ・ECは対象外）',method:'LINE',prize:'保冷温レジかごﾊﾞｯｸﾞ･300名\nえらべるPay1000円･500名',url:'https://cp-page.com/lp/ohshomeiji/#top'},
     {id:'m_c20d1927',since:1788253693621,announce:'',category:'食品',cat:'cat-food',maker:'ヤマザキビスケット　ヤマザキビスケット･ピコラ',deadline:'･10/31(土)〆切',dlClass:'dl-yellow',buy:'対象商品6･3･1個\n購入ﾚｼｰﾄ応募',method:'WEB・ハガキ',prize:'6･ｸｯｼｮﾝ･各回25名\n3･ﾌﾞﾗﾝｹｯﾄ･各回500名\n1･ｼｰﾙ･各回4475名',url:'https://picolacp.jp'},
     {id:'m_df0a9a03',since:1788253693621,announce:'',category:'食品',cat:'cat-food',maker:'石井食品　石井食品･ミートボール等',deadline:'9/1〜10/31(土曜)〆切',dlClass:'dl-yellow',buy:'対象商品2･3袋以上\n購入ﾚｼｰﾄ応募',method:'LINE・ハガキ',prize:'2･QUOPay1000円･500名\n3･豆皿ｾｯﾄ･30名',url:'https://cp-page.com/lp/hiroshi-otsumami-cp2026/index.html?utm_source=ishii&utm_medium=banner&utm_campaign=hiroshi-otsumami-cp2026'},
@@ -1035,6 +1035,7 @@ const allData = {
     {id:'m_6594766e',since:1790831773673,announce:'',category:'食品',cat:'cat-food',maker:'フジッコ　フジッコ･おまめさん･ふじっ子煮･ふじっ子塩こんぶ',deadline:'10/1〜2/26(金)',dlClass:'dl-green',buy:'対象商品3･1個以上\n購入ﾚｼｰﾄ応募',method:'WEB･ﾊｶﾞｷ',prize:'3･ｱｿﾋﾞｭｰｶﾀﾛｸﾞ1万円相当･400名\n1･ﾌｼﾞｯｺｾｯﾄ･1万名\nW･ﾃﾞｼﾞﾀﾙｷﾞﾌﾄ500円･89600名',url:'https://www.fujicco.co.jp/daikanshasai-cp/'},
     {id:'m_238e5ef7',since:1790247736780,announce:'',category:'食品',cat:'cat-food',maker:'森永製菓　森永製菓 inバーを買ってその場で当たる！キャンペーン',deadline:'2/26',dlClass:'dl-green',buy:'森永製菓対象商品を購入したレシートを1口として、WEBから応募',method:'WEB',prize:'えらべるPay 200円分×10,000名',url:'https://lsp-campaign.com/inbarcp-2609/lp.go'},
     {id:'m_6fabdb19',since:1790947559439,announce:'',category:'食品',cat:'cat-food',maker:'丸京製菓　丸京製菓 どらきっちゃんグッズプレゼント！キャンペーン',deadline:'2/28消印',dlClass:'dl-green',buy:'丸京製菓対象商品のバーコードを1枚1口として郵送で応募',method:'LINE・ハガキ',prize:'A：どらきっちゃん フェイスタオル×300名\nB：どらきっちゃん ストラップ×300名',url:'https://www.marukyo-seika.co.jp/information/5042/'},
+    {id:'m_e755ce4d',since:1790947957188,announce:'',category:'食品',cat:'cat-food',maker:'トロナジャパン　トロナジャパン どんぶり祭り 総量1トン国産米など抽選で総計300名様に当たる！キャンペーン',deadline:'10/31・12/31・2/28',dlClass:'dl-green',buy:'すき家・なか卯の冷凍どんぶり等 トロナジャパン対象商品\nトロナジャパン対象商品を1品以上購入したレシートを1口としてWEB応募。\n締切は3回：第1回10/31・第2回12/31・第3回2/28（各回ごとに抽選）',method:'WEB',prize:'A賞：秋田県産あきたこまち5kg×200名\nB賞：すき家お食事券1,000円分×50名／なか卯お食事券1,000円分×50名',url:'https://zensho.ownly.jp/story/37784'},
     {id:'m_cd798248',since:1790247736780,announce:'',category:'食品',cat:'cat-food',maker:'カタギ食品　カタギ食品･ごま',deadline:'9/1〜2/28(日)23:59',dlClass:'dl-green',buy:'対象商品100円(税込)以上\n購入1ﾎﾟｲﾝﾄ\nﾎﾟｲﾝﾄ貯め応募',method:'LINE',prize:'5･QUOPay1000円･50名\n3･QUOPay500円･200名\n1･QUOPay100円･500名\nW･ｴｺﾊﾞｯｸﾞ&ぬいぐるみ･50名',url:'https://katagisyokuhin.onebct.com/campaign/mustbuy_2609/lp'},
     {id:'m_72272461',since:1790247736780,announce:'',category:'食品',cat:'cat-food',maker:'ハインツ　ハインツ･具材を入れてレンジでチン　※先着',deadline:'9/1〜2/28(日)',dlClass:'dl-green',buy:'対象商品購入ﾚｼｰﾄ応募',method:'LINE',prize:'QUOPay200円',url:'https://www.heinz.com/ja-JP/2026aw-campaign'},
     {id:'m_736525c2',since:1790247736780,announce:'',category:'食品',cat:'cat-food',maker:'福島県産米　福島県産米',deadline:'2/28(日)23:59',dlClass:'dl-green',buy:'応募ｼｰﾙQR読込み応募',method:'LINE',prize:'米4kg･500名',url:'https://www.fukushimamai2026.com'},
@@ -2502,7 +2503,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1790947559424;
+const BUILD_STAMP = 1790947957188;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
