@@ -1920,12 +1920,24 @@ function acctChips(item) {
 // 記録した直後に光らせる行と、元いたタブ（戻るボタン用）
 let _flashHistId = null;
 let _backTab = null;
+let _viaGoto = false;    // 名義ボタン経由で履歴タブに来たかどうか
+
+function updateBackBar() {
+  const backBtn = document.getElementById('hist-back');
+  if (!backBtn) return;
+  const LABEL = {store:'店舗', food:'食品', daily:'日用品', pin:'含レシ', new:'NEW', memo:'メモ'};
+  backBtn.style.display = _backTab ? 'block' : 'none';
+  if (_backTab) backBtn.textContent = '◀ ' + (LABEL[_backTab] || '前') + 'タブに戻る';
+}
 
 function backToPrevTab() {
   if (!_backTab) return;
   const btn = [...document.querySelectorAll('.tab-btn')]
     .find(b => (b.getAttribute('onclick') || '').includes("'" + _backTab + "'"));
-  if (btn) { const t = _backTab; _backTab = null; switchTab(t, btn); }
+  const t = _backTab;
+  _backTab = null;
+  updateBackBar();
+  if (btn) switchTab(t, btn);
 }
 
 // 記録できたことを確かめられるよう、履歴タブへ移動してその行を光らせる
@@ -1935,6 +1947,7 @@ function gotoHistory(id) {
   if (!histBtn) return;
   if (currentTab !== 'rireki') _backTab = currentTab;
   _flashHistId = id;
+  _viaGoto = true;
   switchTab('rireki', histBtn);
   renderHistoryTab();
   const row = document.getElementById('hist-' + id);
@@ -2246,12 +2259,7 @@ function clearHistSearch() {
 function renderHistoryTab() {
   const container = document.getElementById('rireki-list');
   if (!container) return;
-  const backBtn = document.getElementById('hist-back');
-  if (backBtn) {
-    const LABEL = {store:'店舗', food:'食品', daily:'日用品', pin:'含レシ', new:'NEW', memo:'メモ'};
-    backBtn.style.display = _backTab ? 'block' : 'none';
-    backBtn.textContent = '◀ ' + (LABEL[_backTab] || '前') + 'タブに戻る';
-  }
+  updateBackBar();
   const entries = Object.entries(hist);
   const totalWon = entries.filter(([, r]) => r.wonWhat).length;
   const wonBtn = document.getElementById('hist-won-btn');
@@ -2359,6 +2367,10 @@ function switchTab(tabId, btn) {
   document.getElementById('tab-' + tabId).classList.add('active');
   btn.classList.add('active');
   currentTab = tabId;
+  // 自分で履歴タブを開いたときは、古い「戻る」を残さない
+  if (!_viaGoto) _backTab = null;
+  _viaGoto = false;
+  updateBackBar();
   updateCount(tabId);
 }
 
@@ -2555,7 +2567,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1790994024580;
+const BUILD_STAMP = 1790994077776;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
