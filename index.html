@@ -292,6 +292,26 @@
     color: #888;
     padding: 14px 6px 6px;
   }
+  @keyframes histFlash {
+    0%   { background: #fff8d8; box-shadow: 0 0 0 3px #ffd54f; }
+    70%  { background: #fff8d8; box-shadow: 0 0 0 3px #ffd54f; }
+    100% { background: #fff;    box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  }
+  .hist-row.flash { animation: histFlash 2.4s ease-out; }
+  .back-bar {
+    display: none;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #eaf4ea;
+    color: #2e7d32;
+    border: 1px solid #b9dcb9;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+  }
   .hist-row {
     background: #fff;
     border-radius: 10px;
@@ -560,7 +580,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年10月2日更新　応募できる<span id="active-count">329</span>件</div>
+  <div class="header-date">2026年10月3日更新　応募できる<span id="active-count">324</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
@@ -596,6 +616,7 @@
     <input type="text" id="hist-search" oninput="onHistSearch(this.value)" placeholder="🔍 履歴内を検索" autocomplete="off" style="width:100%;padding:9px 36px 9px 12px;border:1px solid #e0e0e0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
     <button id="hist-search-clear" onclick="clearHistSearch()" style="display:none;position:absolute;right:6px;top:50%;transform:translateY(-50%);width:24px;height:24px;border:none;border-radius:50%;background:#e0e0e0;color:#666;font-size:13px;cursor:pointer;font-family:inherit;line-height:1;">✕</button>
   </div>
+  <button id="hist-back" class="back-bar" onclick="backToPrevTab()"></button>
   <div id="rireki-list"></div>
 </div>
 <div id="tab-new"    class="tab-content"></div>
@@ -718,7 +739,7 @@ const allData = {
     {id:'s_aea151ac',since:1790947559439,announce:'',store:'イオン',maker:'キリンビバレッジ',deadline:'12/4(金)23:59',dlClass:'dl-green',buy:'A\n対象商品1点以上含\n2500円(税込)以上',method:'WEB',prize:'A･東北宿泊･6組12名\nB･商品券2000円･100名',url:'https://iicoto.info/campaign/2610thkkirinkoiwai/'},
     {id:'s_0e4e9b23',since:1790947559439,announce:'',store:'イオン',maker:'',deadline:'11/4(水)23:59',dlClass:'dl-green',buy:'3000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･iAEON',prize:'全国10カ所体験ツアー',url:'https://www.aeon.info/erabou-fair/campaign/'},
     {id:'s_698709c5',since:1790947559439,announce:'11下',store:'エコスグループ',maker:'アサヒビール',deadline:'10/31',dlClass:'dl-yellow',buy:'キャンペーンサイトからエントリーのうえ、エコスグループ対象店舗にて、ハッピーカードをご提示してアサヒビール対象商品を含む500円(税込)以上購入ごとを1口として応募',method:'キャンペーンサイトからエントリーのうえ、エコスグループ対象店',prize:'ハッピーカード電子マネーコース！：ハッピーカード電子マネー10,000円分×10名\n新スーパードライコース！：アサヒ スーパードライ 350ml×2ケース×15名',url:'https://mdh.fm/BeUI/form/entry?redirect=1&ReqID=member&CustID=A803PT&MemberID=154352'},
-    {id:'s_dc4402b6',since:1790947559439,announce:'11下',store:'エコスグループ',maker:'UHA味覚糖',deadline:'10/31（11/2）',dlClass:'dl-green',buy:'エコスグループ対象店舗にて、UHA味覚糖商品400円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'エコスグループ商品券1,000円分×50名\nWチャンス：味覚糖商品詰合せ1,000円分×30名',url:'https://kenshomin.hatenablog.jp/entry/2026/10/02/140400'},
+    {id:'s_dc4402b6',since:1790947559439,announce:'11下',store:'エコスグループ',maker:'UHA味覚糖',deadline:'10/31（11/2）',dlClass:'dl-yellow',buy:'エコスグループ対象店舗にて、UHA味覚糖商品400円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'エコスグループ商品券1,000円分×50名\nWチャンス：味覚糖商品詰合せ1,000円分×30名',url:'https://kenshomin.hatenablog.jp/entry/2026/10/02/140400'},
     {id:'s_ebbbad0b',since:1790947559439,announce:'12下',store:'エコスグループ',maker:'プリマハム',deadline:'11/30（12/5）',dlClass:'dl-green',buy:'対象商品購入',method:'',prize:'東京宝塚劇場 花組貸切公演 S席･A席･B席チケット(ペア)×20組40名',url:'https://www.primaham.co.jp/campaign/cp2026takarazuka_tieup/'},
     {id:'s_ddbdb97f',since:1790831773673,announce:'',store:'オーケー',maker:'農心ジャパン',deadline:'10/25（10/31）',dlClass:'dl-yellow',buy:'オーケーにて、農心商品を含む500円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'PayPayポイント 1,000円分×400名',url:'https://nongshimjp.ms-cp.jp/shinramyun40th-ok26/lp'},
     {id:'s_55cb5867',since:1790831773673,announce:'',store:'オーケー',maker:'ホクト',deadline:'10/31（11/4）',dlClass:'dl-green',buy:'オーケーにて、オーケーカードを利用し、ホクトの対象商品を1,000円(税込)以上購入し、オーケークラブ会員カードアプリから応募',method:'オーケーにて、オーケーカードを利用し、ホクトの対象商品を1,',prize:'せいろ付きホーロー鍋×50名',url:'https://ok-corporation.jp/news/entry-3313.html'},
@@ -727,7 +748,7 @@ const allData = {
     {id:'s_7eb2b1bb',since:1790831773673,announce:'',store:'オーケー',maker:'JA中野市',deadline:'',dlClass:'dl-gray',buy:'対象商品購入',method:'',prize:'Amazonギフトカード 1,000円分×250名',url:'https://foodays.jp/lp/isc-iscgdcp_m_2609_001/'},
     {id:'s_7cd10894',since:1790947559439,announce:'',store:'キリン堂',maker:'明治　※宝塚貸切',deadline:'12/3(木)〆切',dlClass:'dl-green',buy:'対象商品2500･110円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE･ハガキ',prize:'2500･SS席･6組12名\n1100･S+･S･A･B席･100組200名',url:'https://get-cp.jp/campain/pages/top/mjtk26krnd'},
     {id:'s_83dc09fa',since:1790947559439,announce:'',store:'サミット',maker:'カゴメ　GREENEXPO',deadline:'10/1〜10/31(土)',dlClass:'dl-yellow',buy:'対象商品含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'GREENEXPOﾁｹｯﾄ･5組10名\nQUOPay3000円･15名\nえらべるPay500円･50名',url:'https://cpmaster.jp/56w7U9nb9P/'},
-    {id:'s_83ec279e',since:1790831773673,announce:'',store:'サミット',maker:'キリングループ',deadline:'10/31（11/2）',dlClass:'dl-green',buy:'サミットにて、対象商品1,500円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'元プロ野球選手から教わる！野球教室ご招待！×30組60名',url:'https://cp.kirin.jp/story/38495'},
+    {id:'s_83ec279e',since:1790831773673,announce:'',store:'サミット',maker:'キリングループ',deadline:'10/31（11/2）',dlClass:'dl-yellow',buy:'サミットにて、対象商品1,500円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'元プロ野球選手から教わる！野球教室ご招待！×30組60名',url:'https://cp.kirin.jp/story/38495'},
     {id:'s_801d0fdf',since:1790831773673,announce:'',store:'サミット',maker:'JA全農たまご',deadline:'11/30（12/1）',dlClass:'dl-green',buy:'サミットにて、対象商品1品以上を含む1,000円(税込)以上購入したレシートを1口として、LINEで応募',method:'LINE',prize:'サミット商品券2,000円分×200名',url:'https://get-cp.jp/campain/pages/top/jztamago04'},
     {id:'s_dffe5bbc',since:1790947559439,announce:'1中',store:'サミット',maker:'プリマハム',deadline:'11/30（12/4）',dlClass:'dl-green',buy:'サミットにて、プリマハム対象商品を、Aコースは3,080円(税込)、Bコースは1,290円(税込)ごとのレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'Aコース：東京ディズニーシー®1デーパスポート(4枚)＋ユカタン・ベースキャンプ・グリルお食事券10,000円分(2,500円分×4枚)×10組40名\nご招待日：2027年2月13日(土)\nBコース：東京ディズニーリゾート®パークチケット(ペア)×20組40名',url:'https://mrktsec.jp/primaham/2026YUCATAN_summit1001'},
     {id:'s_9e3f790a',since:1790823772960,announce:'',store:'ファミリーマート',maker:'ロッテ',deadline:'10/19',dlClass:'dl-yellow',buy:'ファミリーマートにて、ロッテ対象商品を購入したレシートをアップロードしてポイントを貯め、2ポイント1口として応募',method:'ファミリーマートにて、ロッテ対象商品を購入したレシートをアッ',prize:'ダウン風クーリッシュカバー×全7色各50名(合計350名)',url:'https://webcp.onebct.com/campaign/lotte_coolish2609/lp'},
@@ -763,14 +784,11 @@ const allData = {
     {id:'s_8a026037',since:1790772629898,announce:'',store:'エコスグループ',maker:'プリマハム･宝塚貸切',deadline:'12/5(土)〆切',dlClass:'dl-green',buy:'対象商品1100円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'S･A･B席ﾍﾟｱ･20組40名',url:'https://mrktsec.jp/primaham/2026takarazuka_eco-s1001'},
     {id:'s_d1732d2e',since:1788430883185,announce:'',store:'エースワン',maker:'キッコーマン',deadline:'11/7(土)〆切',dlClass:'dl-green',buy:'対象商品含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE･ハガキ',prize:'商品券1000円･40名',url:'https://www.select-cp.com/2026aw/09/S-09-015/?utm_source=list&utm_medium=shop'},
     {id:'s_bb6a16f9',since:1789200806201,announce:'',store:'オギノ',maker:'サッポロビール',deadline:'10/7(水)17:00',dlClass:'dl-red',buy:'対象商品500円(税込)※以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'ｱｿﾋﾞｭｰ！ｷﾞﾌﾄ･10名\nﾈﾋﾟｱｶﾀﾛｸﾞｷﾞﾌﾄ･20名\n商品券1000円･40名',url:'https://www.sapporobeer.jp/campaign/chubu/20260908/'},
-    {id:'s_7e40721e',since:1788430883185,announce:'',store:'オーケー',maker:'サントリーフーズ',deadline:'9/30（10/2）',dlClass:'dl-red',buy:'オーケーにて、サントリー対象商品300円(税込)以上を含む1,200円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'A賞：サントリー天然水 550ml 1ケース(24本入り)×15名\nB賞：LOGOS 氷点下パック 抗菌・ベーシッククーラー XL×35名\nWチャンス：QUOカード 1,000円分×50名',url:'https://kenshomin.hatenablog.jp/entry/2026/09/03/140500'},
     {id:'s_040813e4',since:1789465383746,announce:'',store:'オーケー',maker:'サントリーフーズ',deadline:'9/30（10/7）',dlClass:'dl-red',buy:'オーケーにて、サントリー対象商品500円(税込)以上を含む1,000円(税込)以上購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'A賞：東京・人形町「日山」国産牛肩すき焼き×50名\nB賞：福岡「博多八助」監修 博多うまかひとくち餃子×50名\nWチャンス：えらべるPay 1,000円分×50名',url:'https://iyemoncampaign.com/26044/'},
     {id:'s_a77a0dcf',since:1788430883185,announce:'',store:'オーケー',maker:'シマダヤ',deadline:'10/31（11/6）',dlClass:'dl-green',buy:'オーケーにて、シマダヤ商品300円(税抜)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'JCBギフトカード3,000円分×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/09/03/140400'},
     {id:'s_51bb1461',since:1790573038027,announce:'',store:'オーケー',maker:'農心',deadline:'10/31(土)23:59',dlClass:'dl-yellow',buy:'対象商品含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE',prize:'PayPay1000円･400名',url:'https://nongshimjp.ms-cp.jp/shinramyun40th-ok26/lp?utm_source=qrcode&utm_medium=mainpop&utm_campaign=shinramyun40th-ok26'},
     {id:'s_7e97df91',since:1788756790806,announce:'11中',store:'カバヤ食品 タフグミ',maker:'川尻蓮(JO1)スペシャルコラボキャンペーン',deadline:'10/7',dlClass:'dl-red',buy:'カバヤ食品対象商品を、A賞は900円(税込)以上、B賞は600円(税込)以上、C賞・D賞は300円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'A賞：タフグミ×川尻蓮コラボ音楽が聴けるキーホルダー×10名\nB賞：タフグミ×川尻蓮コラボ 缶バッジ 2個セット×30名\nC賞：タフグミ×川尻蓮コラボステッカー×50名\nD賞：タフグミ×川尻蓮コラボQUOカード500円分×50名',url:'https://www.kabaya.co.jp/products/catalog/tough/kawashiri/'},
     {id:'s_ec974be4',since:1790247300967,announce:'',store:'キリン堂',maker:'',deadline:'9/8〜11/9(月)23:59',dlClass:'dl-green',buy:'対象商品含\nA･5000円以上\nB･C･1000円以上',method:'WEB',prize:'A･JTB10万円･3名\nB･韓国化粧品1万円相当･10名\nC･韓国ｾｯﾄ3000円相当･20名\nW･会員限定ﾎﾟｲﾝﾄ500･50名',url:'https://www.webcpn.com/cp/kirindo/koreacp_2609/?r=a6'},
-    {id:'s_63f3a9b6',since:1789741784035,announce:'10上',store:'クイーンズ伊勢丹',maker:'伊藤園',deadline:'9/30（10/2）',dlClass:'dl-red',buy:'対象商品購入',method:'',prize:'A賞：よしもと IMM THEATER 10月お笑い公演 ペアチケット×5組10名\nB賞：JCBギフトカード2,000円分×10名',url:'https://kenshomin.hatenablog.jp/entry/2026/09/18/140100'},
-    {id:'s_c3d059a3',since:1788337156591,announce:'',store:'サミット',maker:'伊藤園',deadline:'10/2(金)当日消印有効',dlClass:'dl-red',buy:'伊藤園全商品\n対象商品300円(税込)以上含\n700円(税込)以上\n購入ﾚｼｰﾄ応募',method:'ハガキ',prize:'Aお笑い公演･50組100名\nB商品券2000円･120名',url:'https://www.summitstore.co.jp/wp-content/uploads/2026/08/31125201/よしもと.jpg'},
     {id:'s_0f9b85d4',since:1788430883185,announce:'',store:'サンエー',maker:'キッコーマン',deadline:'11/7(土)〆切',dlClass:'dl-green',buy:'対象商品含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE･ハガキ',prize:'商品券2000円･50名',url:'https://www.select-cp.com/2026aw/09/S-09-012/?utm_source=list&utm_medium=shop'},
     {id:'s_f96d51bd',since:1789465383746,announce:'',store:'サントリー･スターバックス',maker:'対象店',deadline:'',dlClass:'dl-gray',buy:'対象商品2本\n購入ﾚｼｰﾄ応募',method:'LINE',prize:'A･ｽﾀﾊﾞegift1000円\nB･ｵﾘｼﾞﾅﾙｸﾞﾗｽ',url:'https://mobile.suntory.co.jp/cpn/softdrink/starbucks/202609141/#top'},
     {id:'s_55c64724',since:1789371049001,announce:'',store:'サンリブ',maker:'明治',deadline:'10/7(水)〆切',dlClass:'dl-red',buy:'A\n･\n対象商品4品以上含',method:'WEB･ハガキ',prize:'A･NintendoSwitch2･5名\nB･商品券5000円･50名\nC･商品券1000円･120名',url:'https://get-cp.jp/campain/pages/top/mjsl'},
@@ -801,18 +819,16 @@ const allData = {
     {id:'s_e17d334f',since:1789741784035,announce:'',store:'ライフ',maker:'イートアンドフーズ',deadline:'9/30（10/15）',dlClass:'dl-yellow',buy:'ライフにて、大阪王将ブランド商品2点以上を含む500円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'ライフ商品券5,000円分×40名',url:'https://kenshomin.hatenablog.jp/entry/2026/09/18/140200'},
     {id:'s_7ae0ad19',since:1790772629898,announce:'',store:'ライフ',maker:'プリマハム･宝塚貸切',deadline:'12/4(金)〆切',dlClass:'dl-green',buy:'対象商品A1400\n･B1050円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'',url:'https://mrktsec.jp/primaham/2026takarazuka_lifekinki1001'},
     {id:'s_12724e3c',since:1788337156591,announce:'',store:'ライフ',maker:'プリマハム',deadline:'9/30（10/5）',dlClass:'dl-red',buy:'対象商品購入',method:'',prize:'Aコース：東京宝塚劇場 花組貸切公演 SS席チケット(ペア)×5組10名\nBコース：東京宝塚劇場 花組貸切公演 S席･A席･B席チケット(ペア)×20組40名',url:'https://www.primaham.co.jp/campaign/cp2026takarazuka_tieup/'},
-    {id:'s_a1914aa3',since:1789023676349,announce:'',store:'ライフ',maker:'伊藤園・チチヤス',deadline:'9/30（10/2）',dlClass:'dl-red',buy:'ライフ首都圏にて、対象商品を含む700円(税込)以上を購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'A賞：ANA羽田格納庫見学ツアー×30組60名\nB賞：ライフ商品券2,000円分×50名',url:'https://kenshomin.hatenablog.jp/entry/2026/09/10/140400'},
-    {id:'s_456fcd38',since:1789023676349,announce:'',store:'ライフ',maker:'キリンビバレッジ',deadline:'9/30（10/2）',dlClass:'dl-red',buy:'ライフ首都圏にて、キリンビバレッジ対象商品を含む900円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'A賞：ル・クルーゼ EOS キャセロール 20cm チェリーレッド×5名\nB賞：ル・クルーゼ ミニ・ラウンド・プレート 5枚入り レインボー×10名\nC賞：ライフ商品券1,000円分×30名',url:'https://kenshomin.hatenablog.jp/entry/2026/09/10/140200'},
     {id:'s_60051b37',since:1790772629898,announce:'',store:'ライフ',maker:'UCC貸切',deadline:'10/1〜11/30(月)当日消印有効',dlClass:'dl-green',buy:'対象商品A1400\nB650円(税込)以上\n購入ﾚｼｰﾄ応募',method:'ハガキ',prize:'A貸切ﾍﾟｱ･50組100名\nB･ﾀﾞｯﾌｨｰ･ｼｪﾘｰ',url:'https://ameblo.jp/rsj64177/entry-12980234609.html'},
     {id:'s_1bec13df',since:1788430883185,announce:'',store:'リウボウストア',maker:'キッコーマン',deadline:'11/7(土)〆切',dlClass:'dl-green',buy:'対象商品含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE･ハガキ',prize:'商品券1000円･50名',url:'https://www.select-cp.com/2026aw/09/S-09-014/?utm_source=list&utm_medium=shop'},
     {id:'s_3ed553c1',since:1790247300967,announce:'',store:'丸久グループ',maker:'スターゼン･宮崎産牛',deadline:'10/20(火)当日消印有効',dlClass:'dl-yellow',buy:'宮崎県産ｼｰﾙ3枚貼付応募',method:'ハガキ',prize:'宮崎ﾍﾟｱ旅行･5組10名\n日向夏ﾄﾞﾘﾝｸ24本･30名',url:'https://www.mrk09.co.jp/wp-content/uploads/9c9e4a0990ab7ee3d8e6ce9877cad047.pdf'},
     {id:'s_97fe6418',since:1788430883185,announce:'',store:'丸久等',maker:'キッコーマン',deadline:'11/7(土)〆切',dlClass:'dl-green',buy:'対象商品含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE･ハガキ',prize:'商品券2000円･70名',url:'https://www.select-cp.com/2026aw/09/X-09-010/?utm_source=list&utm_medium=shop'},
-    {id:'s_544735fe',since:1789465383746,announce:'',store:'丸合',maker:'サントリー･スターバックス',deadline:'9/14〜11/2(月)23:59',dlClass:'dl-green',buy:'対象商品2本\n購入ﾚｼｰﾄ応募',method:'LINE',prize:'A･ｽﾀﾊﾞegift1000円･20名\nB･ｵﾘｼﾞﾅﾙｸﾞﾗｽ･20名',url:'https://ssl1.suntory.co.jp/cpn/CSUNV2609141RECE/top.html?cdn1=14'},
+    {id:'s_544735fe',since:1789465383746,announce:'',store:'丸合',maker:'サントリー･スターバックス',deadline:'9/14〜11/2(月)23:59',dlClass:'dl-yellow',buy:'対象商品2本\n購入ﾚｼｰﾄ応募',method:'LINE',prize:'A･ｽﾀﾊﾞegift1000円･20名\nB･ｵﾘｼﾞﾅﾙｸﾞﾗｽ･20名',url:'https://ssl1.suntory.co.jp/cpn/CSUNV2609141RECE/top.html?cdn1=14'},
     {id:'s_9404913c',since:1788430883185,announce:'',store:'京王ストア',maker:'キッコーマン',deadline:'11/7(土)〆切',dlClass:'dl-green',buy:'対象商品含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE･ハガキ',prize:'商品券1000円･30名',url:'https://www.select-cp.com/2026aw/09/T-09-001/?utm_source=list&utm_medium=shop'},
-    {id:'s_7b4946cd',since:1788756790806,announce:'',store:'伊藤ハム',maker:'対象企業　※ユニバ　※エリア限定',deadline:'11/2(月)',dlClass:'dl-green',buy:'ｱﾙﾄﾊﾞｲｴﾙﾝ含\n伊藤ﾊﾑ商品1200円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'ﾕﾆﾊﾞﾍﾟｱ･240組480名',url:'https://itoham-chubu-cp.com'},
+    {id:'s_7b4946cd',since:1788756790806,announce:'',store:'伊藤ハム',maker:'対象企業　※ユニバ　※エリア限定',deadline:'11/2(月)',dlClass:'dl-yellow',buy:'ｱﾙﾄﾊﾞｲｴﾙﾝ含\n伊藤ﾊﾑ商品1200円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'ﾕﾆﾊﾞﾍﾟｱ･240組480名',url:'https://itoham-chubu-cp.com'},
     {id:'s_ff11f121',since:1790772629898,announce:'',store:'文化堂',maker:'プリマハム･宝塚貸切',deadline:'12/3(木)〆切',dlClass:'dl-green',buy:'対象商品A1400\n･B1100円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'',url:'https://mrktsec.jp/primaham/2026takarazuka_bunkado1001'},
     {id:'s_95a42d9f',since:1788950814801,announce:'',store:'新日本スーパーマーケット同盟',maker:'ブルボン',deadline:'9/1〜11/30(月)〆切',dlClass:'dl-green',buy:'ブルボン商品すべて\n対象商品250円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'ﾌﾟﾁ24本ｾｯﾄ･550名\nW･ｴｺﾊﾞｯｸﾞ･100名',url:'https://www.bourbon-cp.jp/26405024/'},
-    {id:'s_847775bd',since:1788950814801,announce:'',store:'新日本スーパーマーケット同盟',maker:'伊藤園',deadline:'11/2(月)当日消印有効',dlClass:'dl-green',buy:'対象商品300円(税込)以上含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'ハガキ',prize:'お取り寄ｸﾞﾙﾒ･250名\nW･JCB1000円･750名',url:'https://www.ralse.co.jp/campaign/detail-hq/index.html?p=2026090122'},
+    {id:'s_847775bd',since:1788950814801,announce:'',store:'新日本スーパーマーケット同盟',maker:'伊藤園',deadline:'11/2(月)当日消印有効',dlClass:'dl-yellow',buy:'対象商品300円(税込)以上含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'ハガキ',prize:'お取り寄ｸﾞﾙﾒ･250名\nW･JCB1000円･750名',url:'https://www.ralse.co.jp/campaign/detail-hq/index.html?p=2026090122'},
     {id:'s_8a9a377f',since:1788593751603,announce:'11中',store:'日本ハム',maker:'日清食品',deadline:'',dlClass:'dl-gray',buy:'日本ハムと日清食品の対象商品をそれぞれ1品購入したレシートを1口として、WEBから応募',method:'WEB',prize:'A賞：使い切りカメラ本体＆オリジナルカバーセット×700名\nB賞：日本ハム＆日清食品「商品詰め合わせセット5,000円相当」×300名',url:'https://chikibone-collab-cp.com/'},
     {id:'s_4cacb9e1',since:1789801450707,announce:'11中',store:'森永製菓 おっとっと',maker:'しなこ限定コラボグッズキャンペーン',deadline:'10/30',dlClass:'dl-yellow',buy:'森永製菓対象商品を1個購入したレシートを1口として、WEBから応募',method:'WEB',prize:'うすしおコース：オリジナルしゃかしゃかチャーム×50名\n堅焼きコース：オリジナルメタルチャーム×50名',url:'https://www.morinaga.co.jp/ototo/shinakocp2026/'},
     {id:'s_ba5eb3cc',since:1788851145517,announce:'',store:'関西CGC',maker:'伊藤ハム　※ユニバ',deadline:'10/7(水)〆切',dlClass:'dl-red',buy:'対象商品1112円(\n本体\n)以上',method:'WEB･ハガキ',prize:'ユニバペア･100組200名\n商品券2000円･300名',url:'https://itoham-kansai-cgccp.net'}
@@ -889,10 +905,10 @@ const allData = {
     {id:'m_dbc2adcd',since:1788337156591,announce:'11下',category:'食品',cat:'cat-food',maker:'アヲハタ　アヲハタ ホテルオークラ特製オリジナルスイーツプレゼント',deadline:'11/1消印',dlClass:'dl-yellow',buy:'アオハタ対象商品のバーコードを1枚1口として郵送応募',method:'WEB・ハガキ',prize:'ホテルオークラ特製 いちごとチーズケーキ×2,500名\nホテルオークラ特製 洋梨と紅茶ムース×2,500名',url:'https://www.aohata.co.jp/campaign/okuracp202609/'},
     {id:'m_695a35a6',since:1788593751603,announce:'',category:'食品',cat:'cat-food',maker:'アヲハタ ※ちょっと重要です　アヲハタ ※ちょっと重要です',deadline:'11/1(日)〆切',dlClass:'dl-yellow',buy:'WEB\n・購入レシート応募\nハガキ',method:'ハガキ',prize:'いちごとチーズケーキ\n洋梨と紅茶のムース',url:'https://ameblo.jp/rsj64177/entry-12977773310.html'},
     {id:'m_a3321793',since:1790326992194,announce:'',category:'食品',cat:'cat-food',maker:'かっぱ寿司　かっぱ寿司 辛ラーメンが当たる！ワクワクレシート応募キャンペーン',deadline:'10/31（11/1）',dlClass:'dl-yellow',buy:'かっぱ寿司にて、1会計3,000円(税込)ごとのレシートを1口として、WEBから応募',method:'WEB',prize:'辛ラーメン4種(13食)セット×100名',url:'https://www.kappasushi.jp/cp/202610/wakuwaku'},
-    {id:'m_b69b9f2a',since:1790856380258,announce:'',category:'食品',cat:'cat-food',maker:'森永製菓　森永製菓･甘酒',deadline:'10/1〜11/2(月)23:59',dlClass:'dl-green',buy:'対象商品500･200円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'500･ﾘﾗｯｸｽ体験ｷﾞﾌﾄ･10名\n500･ｱｲﾏｽｸ･10名\n500･ｴｸｻｶﾞﾝﾎﾟｹｯﾄ･10名\n200･QUOPay200･470名',url:'https://www.morinaga.co.jp/amazake/present-2026autumn/?_ga=2.203781520.1676605788.1790838024-389740002.1790838023'},
-    {id:'m_33ec7c9f',since:1789023676349,announce:'',category:'食品',cat:'cat-food',maker:'オーカワパン　オーカワパン',deadline:'11/2(月)当日消印有効',dlClass:'dl-green',buy:'バーコード5〜\n貼付応募',method:'ハガキ',prize:'ﾊﾟﾝ全商品･100名',url:'https://okawapan.co.jp/news/000335.html'},
-    {id:'m_267bc9f7',since:1789371049001,announce:'',category:'食品',cat:'cat-food',maker:'UHA味覚糖　UHA味覚糖･忍者めし',deadline:'11/2(月)当日消印有効',dlClass:'dl-green',buy:'対象商品3･2個\n購入ﾚｼｰﾄ応募',method:'ハガキ',prize:'3･ｸｯｼｮﾝ+お菓子ｾｯﾄ･10名\n2･お菓子ｾｯﾄ1000円相当･100名',url:'https://www.uha-mikakuto.co.jp/ninjameshi/'},
-    {id:'m_a6f2c674',since:1789741784035,announce:'',category:'食品',cat:'cat-food',maker:'オーケー　オーケー 『映画名探偵プリキュア！不思議な庭と2人の秘密』映画公開記念プレゼントキャンペーン',deadline:'10/31（11/2）',dlClass:'dl-green',buy:'オーケーにて、3,000円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'映画オリジナルTシャツ2枚セット(非売品)×10名\n映画ポスター(B1サイズ・非売品)×20名',url:'https://ok-corporation.jp/news/entry-3317.html'},
+    {id:'m_b69b9f2a',since:1790856380258,announce:'',category:'食品',cat:'cat-food',maker:'森永製菓　森永製菓･甘酒',deadline:'10/1〜11/2(月)23:59',dlClass:'dl-yellow',buy:'対象商品500･200円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'500･ﾘﾗｯｸｽ体験ｷﾞﾌﾄ･10名\n500･ｱｲﾏｽｸ･10名\n500･ｴｸｻｶﾞﾝﾎﾟｹｯﾄ･10名\n200･QUOPay200･470名',url:'https://www.morinaga.co.jp/amazake/present-2026autumn/?_ga=2.203781520.1676605788.1790838024-389740002.1790838023'},
+    {id:'m_33ec7c9f',since:1789023676349,announce:'',category:'食品',cat:'cat-food',maker:'オーカワパン　オーカワパン',deadline:'11/2(月)当日消印有効',dlClass:'dl-yellow',buy:'バーコード5〜\n貼付応募',method:'ハガキ',prize:'ﾊﾟﾝ全商品･100名',url:'https://okawapan.co.jp/news/000335.html'},
+    {id:'m_267bc9f7',since:1789371049001,announce:'',category:'食品',cat:'cat-food',maker:'UHA味覚糖　UHA味覚糖･忍者めし',deadline:'11/2(月)当日消印有効',dlClass:'dl-yellow',buy:'対象商品3･2個\n購入ﾚｼｰﾄ応募',method:'ハガキ',prize:'3･ｸｯｼｮﾝ+お菓子ｾｯﾄ･10名\n2･お菓子ｾｯﾄ1000円相当･100名',url:'https://www.uha-mikakuto.co.jp/ninjameshi/'},
+    {id:'m_a6f2c674',since:1789741784035,announce:'',category:'食品',cat:'cat-food',maker:'オーケー　オーケー 『映画名探偵プリキュア！不思議な庭と2人の秘密』映画公開記念プレゼントキャンペーン',deadline:'10/31（11/2）',dlClass:'dl-yellow',buy:'オーケーにて、3,000円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'映画オリジナルTシャツ2枚セット(非売品)×10名\n映画ポスター(B1サイズ・非売品)×20名',url:'https://ok-corporation.jp/news/entry-3317.html'},
     {id:'m_e66bfb8a',since:1788337156591,announce:'12下',category:'食品',cat:'cat-food',maker:'プリマハム　プリマハム ハッピーハロウィーンキャンペーン',deadline:'10/31（11/3）',dlClass:'dl-green',buy:'プリマハム対象商品のバーコードを各コースに必要な枚数を1口として、郵送で応募',method:'ハガキ',prize:'Aコース(バーコード12枚)：東京ディズニーリゾート®パークチケット(ペア)＋東京ディズニーリゾート®ギフトカード10,000円分×50組100名\nBコース(バーコード9枚)：東京ディズニーリゾート®パークチケット(ペア)×80組160名\nCコース(バーコード2枚)：プリマハム商品詰め合わせ×300名',url:'https://www.primaham.co.jp/campaign/nationalcphalloween/'},
     {id:'m_76953b41',since:1790831773673,announce:'11下',category:'食品',cat:'cat-food',maker:'マルエツ　マルエツ とっておきのごほうび！キャンペーン',deadline:'10/31（11/4）',dlClass:'dl-green',buy:'マルエツにて、3,000円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'画像出典：\nとっておきのごほうび！キャンペーン｜マルエツ',url:'https://www.iwebms.com/cp/maruetsu81th/'},
     {id:'m_145fa6b0',since:1790947559439,announce:'11',category:'食品',cat:'cat-food',maker:'マルエツ　マルエツ 大人の食体験ツアー',deadline:'10/31（11/4）',dlClass:'dl-green',buy:'ご希望コースのメーカー商品300円(税込)以上を含む1,000円(税込)ごとのレシートを1口として、WEBから応募',method:'WEB',prize:'画像出典：\n大人の食体験ツアー｜マルエツ',url:'https://www.iwebms.com/cp/maruetsu-foods2026aut/'},
@@ -1901,6 +1917,34 @@ function acctChips(item) {
     + `title="${nm}で応募したら押す">${nm}</button>`
   ).join('');
 }
+// 記録した直後に光らせる行と、元いたタブ（戻るボタン用）
+let _flashHistId = null;
+let _backTab = null;
+
+function backToPrevTab() {
+  if (!_backTab) return;
+  const btn = [...document.querySelectorAll('.tab-btn')]
+    .find(b => (b.getAttribute('onclick') || '').includes("'" + _backTab + "'"));
+  if (btn) { const t = _backTab; _backTab = null; switchTab(t, btn); }
+}
+
+// 記録できたことを確かめられるよう、履歴タブへ移動してその行を光らせる
+function gotoHistory(id) {
+  const histBtn = [...document.querySelectorAll('.tab-btn')]
+    .find(b => (b.getAttribute('onclick') || '').includes("'rireki'"));
+  if (!histBtn) return;
+  if (currentTab !== 'rireki') _backTab = currentTab;
+  _flashHistId = id;
+  switchTab('rireki', histBtn);
+  renderHistoryTab();
+  const row = document.getElementById('hist-' + id);
+  if (row) {
+    row.scrollIntoView({behavior: 'smooth', block: 'center'});
+    row.classList.add('flash');
+    setTimeout(() => row.classList.remove('flash'), 2500);
+  }
+}
+
 function toggleAcct(id, nm) {
   const item = allItems[id];
   if (!item) return;
@@ -1931,6 +1975,8 @@ function toggleAcct(id, nm) {
   saveState();
   renderAll();
   renderHistoryTab();
+  // 記録したときだけ履歴へ移動して確認できるようにする（取り消したときは動かない）
+  if (!has) gotoHistory(id);
 }
 
 function addHistory(id) {
@@ -2200,6 +2246,12 @@ function clearHistSearch() {
 function renderHistoryTab() {
   const container = document.getElementById('rireki-list');
   if (!container) return;
+  const backBtn = document.getElementById('hist-back');
+  if (backBtn) {
+    const LABEL = {store:'店舗', food:'食品', daily:'日用品', pin:'含レシ', new:'NEW', memo:'メモ'};
+    backBtn.style.display = _backTab ? 'block' : 'none';
+    backBtn.textContent = '◀ ' + (LABEL[_backTab] || '前') + 'タブに戻る';
+  }
   const entries = Object.entries(hist);
   const totalWon = entries.filter(([, r]) => r.wonWhat).length;
   const wonBtn = document.getElementById('hist-won-btn');
@@ -2238,7 +2290,7 @@ function renderHistoryTab() {
       const wn = (r.wonNames || []).length ? (r.wonNames || []).join('・') + '：' : '';
       const won = r.wonWhat ? ` <span class="hist-won-text">🎯 ${wn}${r.wonWhat}</span>` : '';
       const note = r.note ? `<div class="hist-note">📝 ${r.note}</div>` : '';
-      rows.push(`<div class="hist-row${r.wonWhat ? ' won' : ''}" onclick="openApply('${id}')">
+      rows.push(`<div class="hist-row${r.wonWhat ? ' won' : ''}" id="hist-${id}" onclick="openApply('${id}')">
         ${nums.join('')} ${r.label}　<b>${names}</b>　${r.method || ''}　${r.announce || '－'}${won}${note}
       </div>`);
     });
@@ -2503,7 +2555,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1790947957188;
+const BUILD_STAMP = 1790994024580;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
