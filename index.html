@@ -580,7 +580,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年10月3日更新　応募できる<span id="active-count">340</span>件</div>
+  <div class="header-date">2026年10月3日更新　応募できる<span id="active-count">339</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn active" onclick="switchTab('store',this)">店舗</button>
@@ -733,7 +733,7 @@ const STATE_KEY = 'kenshow_state_v3';
 
 const allData = {
   store: [
-    {id:'s_bf51ea71',since:1790947559439,announce:'',store:'CGC',maker:'',deadline:'11/5(木)',dlClass:'dl-green',buy:'【CGC東北】\nCGCお客様感謝キャンペーン2026 | 東北\nwww.ichance.jp\n対象商品含\n2000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･店頭',prize:'',url:'https://www.ichance.jp/cgc/tohoku/'},
+    {id:'s_04854c71',since:1791032180560,announce:'',store:'CGC関東',maker:'CGCお客様感謝キャンペーン2026（関東）',deadline:'11/5',dlClass:'dl-green',buy:'CGC商品（CGCグループ各店）\nCGC商品を含む2,000円(税込)以上のレシートでWEBまたは店頭応募。\nレシート有効期間10/1〜10/31。複数枚合算可（同じ店舗のレシートに限る）。\nWEB応募は購入金額に応じて口数アップ（1回の応募で最大10口）。期間中何度でも応募可',method:'WEB・店頭',prize:'CGCグループ共通商品券 5,000円分×2,100名／1,000円分×40,000名\nWチャンス：はずれた方から再抽選で1,000円分×10,000名',url:'https://www.ichance.jp/cgc/base/'},
     {id:'s_3ea82158',since:1790823772960,announce:'',store:'J-オイルミルズ 紙らくパック',maker:'SPY×FAMILY',deadline:'',dlClass:'dl-gray',buy:'J-オイルミルズ対象商品を1点以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'描き下ろしQUOカード 5,000円分×各弾50名(合計150名)\nコラボパッケージセット×各弾100名(合計300名)',url:'https://www.j-oil.com/sp/kami_sf/'},
     {id:'s_89e3320e',since:1791014253125,announce:'',store:'いなげや',maker:'キリンビバレッジ・小岩井乳業',deadline:'10/31（11/2）',dlClass:'dl-yellow',buy:'いなげやにて、キャンペーン対象商品を含む500円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'満喫！多摩都市モノレール いなげやトレインにご招待×50組100名',url:'https://kenshomin.hatenablog.jp/entry/2026/10/03/140300'},
     {id:'s_689777f4',since:1791014253125,announce:'',store:'いなげや',maker:'サントリーフーズ',deadline:'11/2（11/6）',dlClass:'dl-green',buy:'いなげやにて、サントリーフーズ対象商品を24本購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'いなげや商品券2,000円分×50名',url:'https://iyemoncampaign.com/26049/'},
@@ -764,7 +764,6 @@ const allData = {
     {id:'s_3f80509b',since:1791014253125,announce:'12中',store:'大塚製薬 ボディメンテ',maker:'B.LEAGUE',deadline:'',dlClass:'dl-gray',buy:'大塚製薬対象商品を購入したレシートをアップロードしてポイントを貯め、各コースに必要なポイントを1口として応募',method:'大塚製薬対象商品を購入したレシートをアップロードしてポイント',prize:'24ポイントコース：りそなグループ Bリーグ オールスター 2027 Day3 観戦ペアチケット 1泊2日宿泊券付×30組60名\n12ポイントコース：BAKUNE Mesh 上下セット ネイビー Lサイズ（一般医療機器）×200名\n6ポイントコース：B.PREMIER/B.ONE/B.NEXT 55クラブ 直筆サイン入りエコバッグ×165名\n1ポイントコース：PayPayポイント500円分×2,500名',url:'https://www.otsuka.co.jp/bdm/theday/'},
     {id:'s_333be9f5',since:1790947559439,announce:'',store:'対象企業11社',maker:'明治　※宝塚貸切',deadline:'12/3(木)〆切',dlClass:'dl-green',buy:'対象商品2500･110円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE･ハガキ',prize:'2500･SS席･20組40名\n1100･S+･S･A･B席･200組400名',url:'https://get-cp.jp/campain/pages/top/mjtk26g'},
     {id:'s_5c795f69',since:1790947957188,announce:'',store:'西友',maker:'JR東日本 Suicaのペンギングッズプレゼント',deadline:'10/12',dlClass:'dl-yellow',buy:'店内の買い物（交通系電子マネー払い）\n西友でSuica等の交通系電子マネーで1会計2,000円(税込)以上の買い物をすると先着でもらえる。\n※抽選ではなく先着・応募不要。第二弾は10/2〜10/12、なくなり次第終了。お1人様1回限り',method:'店頭（先着・応募不要）',prize:'Suicaのペンギングッズ 先着23,000名',url:'https://www.seiyu.co.jp/campaign/suica_cp/'},
-    {id:'s_b887211f',since:1790604727558,announce:'',store:'CGC九州',maker:'CGCお客様感謝キャンペーン2026',deadline:'11/5',dlClass:'dl-green',buy:'CGC商品（CGCグループ各店）\nCGC商品を含む2,000円(税込)以上のレシートでWEB応募（複数枚合算可）。レシート有効期間10/1〜10/31。購入金額が多いほど応募口数アップ',method:'WEB',prize:'全国共通：CGC商品券1,000円×40,000名／Wチャンス1,000円×10,000名。九州・沖縄限定：10,000円×50名、2,000円×1,500名',url:'https://www.ichance.jp/cgc/kyushu/'},
     {id:'s_5e6016e9',since:1789465383746,announce:'',store:'PLANT',maker:'サントリー･スターバックス',deadline:'9/14〜10/23(金)23:59',dlClass:'dl-yellow',buy:'対象商品2本\n購入ﾚｼｰﾄ応募',method:'LINE',prize:'A･ｽﾀﾊﾞegift1000円･15名\nB･ｵﾘｼﾞﾅﾙｸﾞﾗｽ･10名',url:'https://ssl1.suntory.co.jp/cpn/CSUNV2609141RECE/top.html?cdn1=06'},
     {id:'s_df7d1e3c',since:1788756790806,announce:'',store:'いなげや',maker:'ヤマザキビスケット',deadline:'9/30（10/15）',dlClass:'dl-yellow',buy:'いなげやにて、ヤマザキビスケット商品150円(税込)ごとのレシートを1口として、郵送で応募',method:'ハガキ',prize:'商品券2,000円分×60名',url:'https://www.inageya.co.jp/campaign/20260901_1016.html'},
     {id:'s_14a6224c',since:1788430883185,announce:'',store:'いなげや',maker:'キッコーマン',deadline:'10/7(水)〆切',dlClass:'dl-red',buy:'対象商品含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE･ハガキ',prize:'商品券1000円･250名',url:'https://www.select-cp.com/2026aw/09/X-09-018/?utm_source=list&utm_medium=shop'},
@@ -2585,7 +2584,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1791015579947;
+const BUILD_STAMP = 1791032180542;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
