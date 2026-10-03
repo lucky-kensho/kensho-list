@@ -583,11 +583,13 @@
   <div class="header-date">2026年10月3日更新　応募できる<span id="active-count">340</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
-    <button class="tab-btn" onclick="switchTab('store',this)">店舗</button>
+    <button class="tab-btn active" onclick="switchTab('store',this)">店舗</button>
     <button class="tab-btn" onclick="switchTab('food',this)">食品</button>
     <button class="tab-btn" onclick="switchTab('daily',this)">日用品</button>
     <button class="tab-btn" onclick="switchTab('pin',this)">含レシ</button>
-    <button class="tab-btn active" onclick="switchTab('memo',this)">メモ</button>
+    <!-- メモタブは一時的に非表示（2026-10-03）。戻すときは下のコメント内を有効にするだけ
+    <button class="tab-btn" onclick="switchTab('memo',this)">メモ</button>
+    -->
     <button class="tab-btn" onclick="switchTab('rireki',this)">📔 履歴</button>
   </div>
   <div class="search-bar">
@@ -600,7 +602,7 @@
   <span style="color:#ccc;font-size:11px;">✅ チェック ／ ✕ 削除</span>
 </div>
 
-<div id="tab-store"  class="tab-content"></div>
+<div id="tab-store"  class="tab-content active"></div>
 <div id="tab-food"   class="tab-content"></div>
 <div id="tab-daily"  class="tab-content"></div>
 <div id="tab-pin"    class="tab-content">
@@ -620,7 +622,7 @@
   <div id="rireki-list"></div>
 </div>
 <div id="tab-new"    class="tab-content"></div>
-<div id="tab-memo"   class="tab-content active">
+<div id="tab-memo"   class="tab-content">
   <div style="padding:8px 0 12px;">
     <button onclick="toggleMemoForm()" style="width:100%;padding:12px;border:2px dashed #ddd;border-radius:12px;background:white;color:#999;font-size:14px;cursor:pointer;font-family:inherit;">＋ 追加</button>
   </div>
@@ -1111,7 +1113,7 @@ function saveState() {
 }
 
 let state = loadState();
-let currentTab = 'memo';
+let currentTab = 'store';
 
 const TAB_LABELS = {store:'店舗', maker:'メーカー', food:'食品', daily:'日用品', pin:'含レシ'};
 
@@ -2583,7 +2585,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1791014253112;
+const BUILD_STAMP = 1791015579947;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
