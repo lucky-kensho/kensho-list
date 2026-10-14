@@ -580,7 +580,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年10月14日更新　応募できる<span id="active-count">422</span>件</div>
+  <div class="header-date">2026年10月14日更新　応募できる<span id="active-count">425</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn active" onclick="switchTab('store',this)">店舗</button>
@@ -737,6 +737,7 @@ const allData = {
     {id:'s_3ea82158',since:1790823772960,announce:'',store:'J-オイルミルズ 紙らくパック',maker:'SPY×FAMILY',deadline:'',dlClass:'dl-gray',buy:'J-オイルミルズ対象商品を1点以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'描き下ろしQUOカード 5,000円分×各弾50名(合計150名)\nコラボパッケージセット×各弾100名(合計300名)',url:'https://www.j-oil.com/sp/kami_sf/'},
     {id:'s_89e3320e',since:1791014253125,announce:'',store:'いなげや',maker:'キリンビバレッジ・小岩井乳業',deadline:'10/31（11/2）',dlClass:'dl-yellow',buy:'いなげやにて、キャンペーン対象商品を含む500円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'満喫！多摩都市モノレール いなげやトレインにご招待×50組100名',url:'https://kenshomin.hatenablog.jp/entry/2026/10/03/140300'},
     {id:'s_689777f4',since:1791014253125,announce:'',store:'いなげや',maker:'サントリーフーズ',deadline:'11/2（11/6）',dlClass:'dl-yellow',buy:'いなげやにて、サントリーフーズ対象商品を24本購入したレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'いなげや商品券2,000円分×50名',url:'https://iyemoncampaign.com/26049/'},
+    {id:'s_334cd95b',since:1791966280736,announce:'1下',store:'いなげや',maker:'キリンビール',deadline:'11/8（11/11）',dlClass:'dl-yellow',buy:'いなげやにて、キリンビール対象商品1本以上を含む1,500円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'A賞：一番搾りおいしさ実感ツアー＋特別なクラフトビールセミナーペアご招待［お土産あり］×10組20名\nB賞：いなげや商品券2,000円分×20名',url:'https://cp.kirin.jp/story/38582'},
     {id:'s_309a877b',since:1790831773673,announce:'',store:'いなげや',maker:'JA全農たまご',deadline:'11/30（12/1）',dlClass:'dl-green',buy:'いなげやにて、対象商品1品以上を含む1,500円(税込)以上購入したレシートを1口として、LINEで応募',method:'LINE',prize:'いなげやオリジナル 京彩味のむら監修 和風三段重「咲華」交換券×50名',url:'https://get-cp.jp/campain/pages/keihinpage/1?cid=jztamago04'},
     {id:'s_e4c27596',since:1791369428636,announce:'',store:'しまむらストアー',maker:'S&B',deadline:'10/1〜10/31(土)〆切',dlClass:'dl-yellow',buy:'李錦記シリーズ全品と\nエスビー町中華シリーズ\n菜館シリーズ全品です。\n対象商品1個以上含\n400円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'A･JCB2000円\nW･商品券1000円･10名',url:'https://www.ichance.jp/sb/lkk-2026AW/cp13/#top'},
     {id:'s_53f73199',since:1791189546805,announce:'',store:'アカチャンホンポ',maker:'永谷園',deadline:'10/22消印',dlClass:'dl-yellow',buy:'アカチャンホンポにて、永谷園商品1品以上を含む600円(税込)以上購入したレシートに記載のレシート番号を1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'A賞：カタログギフト えらべるブランド和牛 桂コース(5,000円(税抜)相当)×10名\nB賞：カタログギフト やさしいごちそう 緑のえだまめコース(5,000円(税抜)相当)×10名\nC賞：アカチャンホンポ商品券1,000円分×20名',url:'https://get-cp.jp/campain/pages/top/ngtcp347'},
@@ -927,6 +928,7 @@ const allData = {
     {id:'m_3b33b405',since:1791369428636,announce:'',category:'食品',cat:'cat-food',maker:'明治･生のとき　明治･生のとき',deadline:'10/6〜10/31(土)23:59',dlClass:'dl-yellow',buy:'対象商品300円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'生のとき16個･50名\n明治200p･5000名',url:'https://campaign.meiji.co.jp/campaignDetail/66544998107506/c3666a9b-58d4-432b-bca9-d5de7be60f38'},
     {id:'m_84f9cc8a',since:1791369428636,announce:'',category:'食品',cat:'cat-food',maker:'コモディイイダ　コモディイイダ 旅行キャンペーン',deadline:'10/30（10/31）',dlClass:'dl-yellow',buy:'コモディイイダにて、A賞は5,000円(税込)以上、B賞は1,000円(税込)以上購入したレシートを1口として、応募用紙を店内備え付けの応募箱に投函またはWEBから応募',method:'WEB',prize:'A賞：北海道2泊3日×20名\nB賞：日帰りバスツアー×100名\nラッキー賞：CGC商品券2,000円分×50名',url:'https://site-comodi-iida.com/campaign_20261003/'},
     {id:'m_15ea8dc4',since:1791369428636,announce:'11',category:'食品',cat:'cat-food',maker:'カネテツデリカフーズ　カネテツデリカフーズ マグリッチで元気に朝ごはん！レシート応募キャンペーン',deadline:'10/31',dlClass:'dl-yellow',buy:'カネテツ公式Xアカウントをフォローのうえ、「カニかまRich」を含む500円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'カネテツオリジナルマグカップ×5名',url:'https://kanetetsu.ownly.jp/story/39014'},
+    {id:'m_b77821b9',since:1791966280736,announce:'',category:'食品',cat:'cat-food',maker:'対象企業　対象企業×GREENEXPO2027招待',deadline:'10/1本日〜キャンペーン イオン懸賞  イオン×明治　※GREENEXPO●10/1〜10/31(土)当日消印有効■対象商品600円(税込)以上　購入ﾚｼ…',dlClass:'dl-yellow',buy:'対象商品購入レシートで応募',method:'',prize:'',url:'https://expo2027yokohama.or.jp'},
     {id:'m_88b74d96',since:1788221398315,announce:'',category:'食品',cat:'cat-food',maker:'安曇野食品　安曇野食品･SWEET CAFE',deadline:'9/1〜10/31(土)23:59',dlClass:'dl-yellow',buy:'対象商品3･2･1本\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'3･クッション･10名\n2･サコッシュ･30名\n1･QUOPay500円･40名',url:'https://www.azuminofood.jp/sweetcafe/cafe-cp/26au/'},
     {id:'m_0d96eadc',since:1788221398315,announce:'',category:'食品',cat:'cat-food',maker:'北海道ぎょれん　北海道ぎょれん･北海道産秋鮭',deadline:'9/1〜10/31(土)〆切',dlClass:'dl-yellow',buy:'対象商品300円(税込)以上\n購入ﾚｼｰﾄ応募',method:'LINE',prize:'北海道海の幸ｾｯﾄ･250名',url:'https://www.gyoren.or.jp/ikura/linecp/'},
     {id:'m_7c05f7e6',since:1788253693621,announce:'',category:'食品',cat:'cat-food',maker:'大阪王将冷凍食品　大阪王将冷凍食品×明治アイス ※関東限定',deadline:'9/1〜10/31(土)23:59',dlClass:'dl-yellow',buy:'大阪王将 冷凍食品各種から1個＋明治 アイス各種から1個（両方を1枚のレシートに）\n大阪王将の冷凍食品と明治のアイスを両方含むレシート1枚で1口（2枚にまたがってもOK）\n★羽根つき餃子・明治ブルガリア フローズンヨーグルトデザートを含むと当選確率2倍\n関東エリアのチェーン店のみ（コンビニ・ECは対象外）',method:'LINE',prize:'保冷温レジかごﾊﾞｯｸﾞ･300名\nえらべるPay1000円･500名',url:'https://cp-page.com/lp/ohshomeiji/#top'},
@@ -1144,6 +1146,7 @@ const allData = {
     {id:'m_59dd19c0',since:1790823772960,announce:'',category:'食品',cat:'cat-food',maker:'ニップン　ニップン･オーマイマカロニ',deadline:'第1弾10/1〜1/31(日)23:59',dlClass:'dl-green',buy:'対象商品2･5･8点\n購入ﾚｼｰﾄ+ﾊﾟｯｹｰｼﾞ撮影応募',method:'WEB',prize:'2･ｽｰﾌﾟｶｯﾌﾟ･300名\n5･ﾎﾞｳﾙ2個ｾｯﾄ･100名\n8･ﾐﾄﾝ･鍋敷き',url:'https://cp-page.com/lp/ohmy-macaroni-cp/index.html?utm_source=nippn&utm_medium=newsrelease&utm_campaign=ohmy-macaroni-cp'},
     {id:'m_ac5e3272',since:1790947559439,announce:'',category:'食品',cat:'cat-food',maker:'S&B本生わさび　S&B本生わさび',deadline:'10/1〜1/31(日)17:00',dlClass:'dl-green',buy:'対象商品+精肉\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'えらべるPay1000円･500名',url:'https://clcpn.jp/r/sb_wasabi_cp/'},
     {id:'m_8dda3d42',since:1790947559439,announce:'',category:'食品',cat:'cat-food',maker:'S&B　S&B･予約でいっぱいの店のパスタソース',deadline:'10/1〜1/31(日)23:59',dlClass:'dl-green',buy:'対象商品3･2･1個以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'3･\n3･JCB1万円･25名\n2･ﾊﾟｽﾀｿｰｽ8種･100名\n1･えらべるPay300･2350名',url:'https://www.sbfoods.co.jp/yoyaku/meiten-campaign/'},
+    {id:'m_a03ef587',since:1791966280736,announce:'',category:'食品',cat:'cat-food',maker:'ヤマダイ凄麺　ヤマダイ凄麺･八幡浜ちゃんぽん',deadline:'11/2〜1/31(日)',dlClass:'dl-green',buy:'A\n対象商品1個購入\n+参加店で八幡浜ちゃんぽん食べる',method:'WEB',prize:'A･凄麺×八幡浜満喫ｾｯﾄ1万円相当･30名\nB･凄麺×八幡浜満喫ｾｯﾄ3000円相当･170名',url:'https://www.newtouch.co.jp/newsrelease/202611ehime.pdf'},
     {id:'m_9b09ebd5',since:1790247736780,announce:'',category:'食品',cat:'cat-food',maker:'アマノフーズ　アマノフーズ 限定品があたる、フリーズドライキャンペーン（第2弾）',deadline:'1/31',dlClass:'dl-green',buy:'アマノフーズブランド全商品\nアマノフーズブランド全商品から500円(税込)以上購入のレシートでLINE応募（レシート期間2026/11/16〜2027/1/31、レシート合算可・何口でも応募可だが当選は1人1回）',method:'LINE',prize:'フリーズドライの匠 チキンカツの玉子とじと調味食品7品 400名',url:'https://www.cp-lp.jp/asahi-gf-campaign_amanofoods_freezedry_260907-270131/'},
     {id:'m_4fe6df2b',since:1790823772960,announce:'',category:'食品',cat:'cat-food',maker:'グリコ　グリコ･くらし応援',deadline:'第1回10/1〜2/15(月)',dlClass:'dl-green',buy:'対象商品1個以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'PayPay2000円･計2000名',url:'https://cp.glico.com/foods-2026aw/'},
     {id:'m_6594766e',since:1790831773673,announce:'',category:'食品',cat:'cat-food',maker:'フジッコ　フジッコ･おまめさん･ふじっ子煮･ふじっ子塩こんぶ',deadline:'10/1〜2/26(金)',dlClass:'dl-green',buy:'対象商品3･1個以上\n購入ﾚｼｰﾄ応募',method:'WEB･ﾊｶﾞｷ',prize:'3･ｱｿﾋﾞｭｰｶﾀﾛｸﾞ1万円相当･400名\n1･ﾌｼﾞｯｺｾｯﾄ･1万名\nW･ﾃﾞｼﾞﾀﾙｷﾞﾌﾄ500円･89600名',url:'https://www.fujicco.co.jp/daikanshasai-cp/'},
@@ -2667,7 +2670,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1791931976053;
+const BUILD_STAMP = 1791966280714;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
