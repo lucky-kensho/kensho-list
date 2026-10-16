@@ -580,7 +580,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年10月16日更新　応募できる<span id="active-count">437</span>件</div>
+  <div class="header-date">2026年10月16日更新　応募できる<span id="active-count">438</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn active" onclick="switchTab('store',this)">店舗</button>
@@ -816,6 +816,7 @@ const allData = {
     {id:'s_ed8d0ff5',since:1791014253125,announce:'',store:'ライフ',maker:'日本ハム',deadline:'11/10（11/13）',dlClass:'dl-yellow',buy:'ライフ首都圏にて、シャウエッセンシリーズ500円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'A賞：キッザニア東京入場券×25組50名\nB賞：シャウエッセンシリーズ食べ比べセット×20名',url:'https://kenshomin.hatenablog.jp/entry/2026/10/03/141200'},
     {id:'s_fa5e18f7',since:1791552646849,announce:'',store:'ライフ',maker:'ニッポンハム',deadline:'11/13(金)当日消印有効',dlClass:'dl-yellow',buy:'対象商品500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'ハガキ',prize:'Aｷｯｻﾞﾆｱ東京入場･25組50名\nBｼｬｳｴｯｾﾝｾｯﾄ･20名',url:'https://ameblo.jp/rsj64177/entry-12981013493.html'},
     {id:'s_ad26e4ee',since:1791369428636,announce:'',store:'ランドローム',maker:'S&B',deadline:'10/1〜10/31(土)〆切',dlClass:'dl-yellow',buy:'李錦記シリーズ全品と\nエスビー町中華シリーズ\n菜館シリーズ全品です。\n対象商品1個以上含\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'商品券5000円･20名',url:'https://www.ichance.jp/sb/lkk-2026AW/cp14/#top'},
+    {id:'s_3c2895e0',since:1792141090087,announce:'',store:'ロピア',maker:'プリマハム 東京ディズニーランド ザ・ダイヤモンドホースシュー貸切ご招待',deadline:'11/23',dlClass:'dl-green',buy:'プリマハム商品（ギフト商品・ジョンソンヴィル・ディズニー以外のキャラクター商品は除く）\nロピアでプリマハム商品のみで合計3,880円(税込)以上買ったレシートでWEB応募。\nレシート有効期間9/1〜11/20。複数レシートの合算可（1画像に2枚まで・画像5枚＝レシート10枚まで）。\nプリマハム商品の金額だけが対象（他の商品は計算に入らない）',method:'WEB',prize:'東京ディズニーランド ザ・ダイヤモンドホースシュー貸切ご招待（4名1組・1デーパスポート＋ランチ付き） 30組120名／招待日2027年2月23日(火・祝)',url:'https://mrktsec.jp/primaham/2026dhs_lopia0901'},
     {id:'s_45773d4a',since:1792136823125,announce:'',store:'万代',maker:'',deadline:'11/2(月)〆切',dlClass:'dl-yellow',buy:'対象商品500円(\n税抜\n)以上含',method:'ｱﾌﾟﾘ･WEB･ﾊｶﾞｷ',prize:'1000円ｺｰｽ\n3000円ｺｰｽ\nW･ｱﾌﾟﾘ応募',url:'https://1000manen.mandaicp.jp'},
     {id:'s_55398069',since:1792136823125,announce:'',store:'万代･料理教室',maker:'',deadline:'●ﾊｶﾞｷ･11/24(火)当日消印有効',dlClass:'dl-green',buy:'対象商品含\n1000円(税抜)以上\n購入ﾚｼｰﾄ応募',method:'ｱﾌﾟﾘ･ハガキ',prize:'料理教室･20組40名',url:'https://www.mandai-net.co.jp/news/-1213.html'},
     {id:'s_c09ef26e',since:1791369428636,announce:'',store:'不二屋',maker:'S&B',deadline:'10/5〜11/3(火)〆切',dlClass:'dl-yellow',buy:'李錦記シリーズ全品と\nエスビー町中華シリーズ\n菜館シリーズ全品です。\n対象商品1個以上含\n2000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'A･中華4種ｾｯﾄ･5名\nB･点心4種ｾｯﾄ･5名',url:'https://www.ichance.jp/sb/lkk-2026AW/cp9/#top'},
@@ -2682,7 +2683,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1792136823073;
+const BUILD_STAMP = 1792141090087;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
