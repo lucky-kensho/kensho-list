@@ -580,7 +580,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年10月21日更新　応募できる<span id="active-count">453</span>件</div>
+  <div class="header-date">2026年10月21日更新　応募できる<span id="active-count">451</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn active" onclick="switchTab('store',this)">店舗</button>
@@ -797,8 +797,6 @@ const allData = {
     {id:'s_1b2582f6',since:1791369428636,announce:'',store:'タイヨー',maker:'S&B',deadline:'10/1〜10/31(土)〆切',dlClass:'dl-yellow',buy:'対象商品1個以上含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'商品券3000円･50名',url:'https://www.ichance.jp/sb/lkk-2026AW/cp3/#top'},
     {id:'s_d30b9d3a',since:1791189546805,announce:'',store:'タカラエムシー',maker:'グリコ･Bifix',deadline:'10/1〜11/30(月)23:59',dlClass:'dl-green',buy:'対象商品1個以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'商品券1000円･50名',url:'https://prm-cp.glico.com/0x3s6avele'},
     {id:'s_d97c0674',since:1791369428636,announce:'',store:'ダイイチ',maker:'S&B',deadline:'10/1〜10/31(土)〆切',dlClass:'dl-yellow',buy:'李錦記シリーズ全品と\nエスビー町中華シリーズ\n菜館シリーズ全品です。\n対象商品1個以上含\n2000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'A･\nB･商品券1000円･20名',url:'https://www.ichance.jp/sb/lkk-2026AW/cp7/#top'},
-    {id:'s_c4f8d56a',since:1792543843284,announce:'',store:'ツルハグループ',maker:'UCC上島珈琲',deadline:'11/30（12/6）',dlClass:'dl-green',buy:'ツルハグループ対象店舗にて、UCC上島珈琲対象商品を、Aコースは1,400円(税込)、Bコースは350円(税込)購入ごとのレシートを1口として、郵送で応募',method:'ハガキ',prize:'Aコース：東京ディズニーシー®プライベート・イブニング・パーティーご招待×100組200名\nBコース：東京ディズニーシー®25周年 スパークリング・ジュビリー オリジナルぬいぐるみバッチ(ミッキー)×200名',url:'https://kenshomin.hatenablog.jp/entry/2026/10/20/140100'},
-    {id:'s_26e26c77',since:1791105738033,announce:'',store:'ツルハグループ',maker:'UCC貸切',deadline:'12/6(日)当日消印有効',dlClass:'dl-green',buy:'A\n対象商品1400円(税込)\nB',method:'WEB･ハガキ',prize:'A･UCC貸切･100組200名\nB･TDSぬいバ･200名',url:'https://entry-systems.jp/ucc-cofee-dream/tsuruha/image/registrations/input'},
     {id:'s_0827e085',since:1792543843284,announce:'',store:'ファミリーマート',maker:'',deadline:'11/3(火)',dlClass:'dl-yellow',buy:'対象商品ﾌﾟﾘﾍﾟｲﾄﾞｶｰﾄﾞ\n3000円購入で1口応募\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'1万円･100名\n1000円･6000名\n100円･3万名',url:'https://vdpro.jp/fm.posacards13/'},
     {id:'s_4f636c5e',since:1791189546805,announce:'',store:'フレッセイ',maker:'グリコ･Bifix',deadline:'10/1〜11/30(月)23:59',dlClass:'dl-green',buy:'対象商品200円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'商品券1000円･50名',url:'https://prm-cp.glico.com/bq7by75nug'},
     {id:'s_d500c4c4',since:1792136823125,announce:'',store:'マクドナルド･ハッピーセット　※ユニバ',maker:'',deadline:'10/16〜11/15(日)23:59',dlClass:'dl-yellow',buy:'ハッピーセット USJオールスターズを\n１個以上含む1,500円以上\nﾊｯﾋﾟｰｾｯﾄ｢USJｵｰﾙｽﾀｰｽﾞ｣含\n1500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'ﾕﾆﾊﾞﾊﾟｽﾍﾟｱ･25組50名',url:'https://www.mcdonalds.co.jp/family/happyset/usj-tickets/'},
@@ -2698,7 +2696,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1792543843258;
+const BUILD_STAMP = 1792545049323;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
