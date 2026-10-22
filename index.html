@@ -1230,6 +1230,21 @@ function saveState() {
 }
 
 let state = loadState();
+
+// ===== 誤って消した情報の復活（端末ごとに一度だけ実行） =====
+(function() {
+  const RESTORE_IDS = ['s_38cb0ae0'];
+  const RESTORE_KEY = 'kensho_restore_20261022';
+  if (!RESTORE_IDS.length) return;
+  try { if (localStorage.getItem(RESTORE_KEY)) return; } catch(e) { return; }
+  let changed = false;
+  RESTORE_IDS.forEach(id => {
+    if (state[id] === 'deleted') { delete state[id]; changed = true; }
+  });
+  if (changed) saveState();
+  try { localStorage.setItem(RESTORE_KEY, '1'); } catch(e) {}
+})();
+
 let currentTab = 'store';
 
 const TAB_LABELS = {store:'店舗', maker:'メーカー', food:'食品', daily:'日用品', pin:'含レシ'};
@@ -2702,7 +2717,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1792650900943;
+const BUILD_STAMP = 1792650957492;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
