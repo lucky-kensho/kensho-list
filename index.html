@@ -580,7 +580,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年10月29日更新　応募できる<span id="active-count">480</span>件</div>
+  <div class="header-date">2026年10月29日更新　応募できる<span id="active-count">481</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn active" onclick="switchTab('store',this)">店舗</button>
@@ -1170,6 +1170,7 @@ const allData = {
     {id:'m_c6685779',since:1793096355938,announce:'',category:'食品',cat:'cat-food',maker:'キリンビール　キリンビール･SPRING VALLEY BREWERY',deadline:'応募1/4(月)23:59',dlClass:'dl-green',buy:'対象商品6･3･1\n購入ﾚｼｰﾄ応募\nﾎﾟｲﾝﾄ貯め応募',method:'LINE',prize:'6･ｸﾗﾌﾄﾋﾞｰﾙ12種･50名\n3･ｸﾗﾌﾄﾋﾞｰﾙ6種･100名\n1･選べるﾃﾞｼﾞﾀﾙ1000･1000名',url:'https://svb2.spexperts.jp/?openInAppBrowser=0&utm_source=owned&utm_medium=cplist&utm_campaign=svb2'},
     {id:'m_eb54ee78',since:1790247736780,announce:'',category:'食品',cat:'cat-food',maker:'キッコーマン豆乳　キッコーマン豆乳･まめレージ',deadline:'第1弾10/1〜1/4(月)',dlClass:'dl-green',buy:'対象商品購入ﾚｼｰﾄ応募\nﾎﾟｲﾝﾄ貯め応募',method:'まめレージ',prize:'賞品',url:'https://www.k-tounyu.jp/cp/tounyumatsuri_cp/'},
     {id:'m_023cc724',since:1793194629290,announce:'',category:'食品',cat:'cat-food',maker:'ヤマサ醤油　ヤマサ醤油 サカナにヤマサキャンペーン',deadline:'1/5消印',dlClass:'dl-green',buy:'各コースに必要な応募条件を満たすレシートを1口として、WEBまたは郵送で応募',method:'WEB・ハガキ',prize:'〈サカナにヤマサコース〉\nA賞：ヤマサオリジナル保冷バッグ×300名\n〈ヤマサコース〉\nB賞：瀬戸焼 刺し盛皿×50名\nC賞：瀬戸焼 煮つけ用皿×50名',url:'https://sakana-2-yamasa.com/'},
+    {id:'m_2bb79d0b',since:1793257240122,announce:'',category:'食品',cat:'cat-food',maker:'白鶴酒造　白鶴酒造･まる',deadline:'1/5(火)23:59',dlClass:'dl-green',buy:'対象商品1000円(税込)以上含\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'購入ﾚｼｰﾄ5000円まで',url:'https://get-cp.com/campain/pages/top/2611marucp'},
     {id:'m_feb94184',since:1790772629898,announce:'',category:'食品',cat:'cat-food',maker:'メグリア(トヨタ生活協同組合)　メグリア(トヨタ生活協同組合)×プリマハム',deadline:'1/5(火)〆切',dlClass:'dl-green',buy:'対象商品A1290円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'ﾊﾟｰｸﾁｹｯﾄﾍﾟｱ･15組30名',url:'https://mrktsec.jp/primaham/2026yume_meglia1001'},
     {id:'m_8cdf2e6e',since:1790247736780,announce:'',category:'食品',cat:'cat-food',maker:'千葉県　千葉県･ちばまるしぇ',deadline:'1/7(木)〆切',dlClass:'dl-green',buy:'対象2施設以上\n500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'賞品',url:'https://maruchiba.jp/theme/chiba-maruche/index_1_2____0___6__.html#search'},
     {id:'m_dbdca1fb',since:1790831773673,announce:'',category:'食品',cat:'cat-food',maker:'フジッコ　フジッコ･おかず畑',deadline:'10/1〜1/8(金)',dlClass:'dl-green',buy:'対象商品3･1個以上\n購入ﾚｼｰﾄ応募\nWEB･即当落',method:'',prize:'3･選べeｷﾞﾌﾄ5000円･100名\n1･選べeｷﾞﾌﾄ1000円･750名\n1･ﾌｼﾞｯｺｾｯﾄ3000円相当･150名',url:'https://www.fujicco.co.jp/campaign/jobisai-stock/'},
@@ -2740,7 +2741,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1793256403263;
+const BUILD_STAMP = 1793257240102;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
