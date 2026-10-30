@@ -1432,7 +1432,8 @@ function saveLater() {
   try { localStorage.setItem(LATER_KEY, JSON.stringify(later)); } catch(e) {}
 }
 
-// 並び順のランク（0:ふつう → 1:応募済み → 2:あとまわし）
+// 区分ごとモードの並び順ランク（0:ふつう → 1:応募済み → 2:あとまわし）
+// ※締切が近い順モードでは「同じ締切の中だけで下に送る」ので、こちらは使わない
 function laterRank(id) {
   if (later[id]) return 2;
   return state[id] === 'done' ? 1 : 0;
@@ -1901,11 +1902,14 @@ function renderTab(tabId) {
   // ===== 締切が近い順モード：食品/日用品の区分を解除して全カードを締切順に並べる =====
   if (makerSortMode === 'deadline') {
     const flat = [...makerActive].sort((a,b) => {
-      const da = laterRank(a.id);
-      const db = laterRank(b.id);
+      const da = state[a.id]==='done' ? 1 : 0;
+      const db = state[b.id]==='done' ? 1 : 0;
       if (da !== db) return da - db;
       const ta = dlDate(getEff(a).deadline), tb = dlDate(getEff(b).deadline);
-      return (ta ? ta.getTime() : 9e15) - (tb ? tb.getTime() : 9e15);
+      const va = ta ? ta.getTime() : 9e15, vb = tb ? tb.getTime() : 9e15;
+      if (va !== vb) return va - vb;
+      // 締切は同じ日どうし。そのグループの中で「あとまわし」を下に送る
+      return (later[a.id] ? 1 : 0) - (later[b.id] ? 1 : 0);
     });
     let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="sort-toggle" onclick="toggleMakerSort()">🥗 区分ごとに戻す</button></div>`;
     flat.forEach(item => {
@@ -2793,7 +2797,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1793319012642;
+const BUILD_STAMP = 1793319597067;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
