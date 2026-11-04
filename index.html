@@ -603,7 +603,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年11月4日更新　応募できる<span id="active-count">433</span>件</div>
+  <div class="header-date">2026年11月4日更新　応募できる<span id="active-count">432</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn active" onclick="switchTab('store',this)">店舗</button>
@@ -794,7 +794,6 @@ const allData = {
     {id:'s_5d67e5ac',since:1793606110045,announce:'',store:'ザグザグ',maker:'サンスター　※ユニバ',deadline:'11/1〜12/31(木)',dlClass:'dl-green',buy:'対象商品含\n1100円(税込)以上\n購応募',method:'WEB',prize:'Aユニバﾊﾟｽﾍﾟｱ･30組60名\nB商品券2000円･30名\nW･商品券500円･60名',url:'https://www.zagzag.co.jp/campaign/20261101_sunstar/'},
     {id:'s_ba7a4775',since:1793606110045,announce:'',store:'ジェイアール生鮮市場',maker:'キッコーマン豆乳',deadline:'1/7(木)〆切',dlClass:'dl-green',buy:'A\n対象商品500円(税込)以上\nB',method:'WEB･ハガキ',prize:'A･ｶﾀﾛｸﾞ･10名\nB･商品券1000円･20名',url:'https://get-cp.com/campain/pages/top/ttnabe05'},
     {id:'s_71f45d0a',since:1793771997549,announce:'',store:'トップ',maker:'',deadline:'11/3〜11/17(火)23:59',dlClass:'dl-yellow',buy:'会員限定ｴﾝﾄﾘｰ\n対象商品含\n1500円(',method:'LINE',prize:'ｸﾘｽﾏｽｹｰｷ･240名',url:'https://ameblo.jp/rsj64177/entry-12983556351.html'},
-    {id:'s_4c57e029',since:1793771997549,announce:'',store:'マミーマート',maker:'',deadline:'11/30(日)当日消印有効',dlClass:'dl-yellow',buy:'対象商品購入レシートで応募',method:'',prize:'',url:'https://ameblo.jp/rsj64177/entry-12983559042.html'},
     {id:'s_5b5cc25f',since:1793771997549,announce:'',store:'マルエツ',maker:'',deadline:'11/28（11/30）',dlClass:'dl-yellow',buy:'マルエツにて、1,000円(税込)以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'映画鑑賞券(ムビチケ)×50組100名\nWチャンス：マルエツ商品券1,000円分×50名',url:'https://www.iwebms.com/cp/maruetsu_jinsei_conte/'},
     {id:'s_b4964991',since:1793606110045,announce:'',store:'ヤオコー',maker:'サントリーフーズ',deadline:'11/30消印',dlClass:'dl-yellow',buy:'ヤオコーにて、キャンペーン対象商品2本以上を購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'A賞：スターバックス eGift 1,000円分×50名\nB賞：スターバックス オリジナルグラス×50名',url:'https://kenshomin.hatenablog.jp/entry/2026/11/02/140200'},
     {id:'s_19b02a32',since:1793606110045,announce:'',store:'ヤオコー',maker:'キリンビバレッジ',deadline:'12/2（12/4）',dlClass:'dl-yellow',buy:'ヤオコーにて、キリンビバレッジ対象商品を含む800円(税込)以上購入したレシートを1口として、郵送で応募',method:'ハガキ',prize:'A賞：キリン イミューズ ヨーグルトテイスト 500ml ペットボトル 24本入 1箱×100名\nB賞：ヤオコー商品券2,000円分×100名',url:'https://kenshomin.hatenablog.jp/entry/2026/11/02/140100'},
@@ -2767,7 +2766,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1793772320017;
+const BUILD_STAMP = 1793772421062;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
