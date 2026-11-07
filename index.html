@@ -218,24 +218,6 @@
     line-height: 1.5;
     color: #333;
   }
-  .shoplist-group {
-    font-size: 13px;
-    font-weight: bold;
-    color: #fff;
-    background: #e74c3c;
-    border-radius: 8px;
-    padding: 5px 11px;
-    margin: 14px 0 7px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .shoplist-group:first-child { margin-top: 0; }
-  .shoplist-group .cnt {
-    font-size: 11px;
-    font-weight: normal;
-    opacity: 0.9;
-  }
   .memo-drag {
     font-size: 18px;
     color: #bbb;
@@ -1522,21 +1504,12 @@ function renderPinnedTab() {
         const da = dlDate(getEff(a).deadline), db = dlDate(getEff(b).deadline);
         return (da ? da.getTime() : 9e15) - (db ? db.getTime() : 9e15);
       });
-      // 店舗ごとにまとめて見出しを出す（お店を回る順に買い物できるように）
-      const groupOf = (x) => (x.store || getEff(x).storeTag || x.category || 'その他');
-      const counts = {};
-      sorted.forEach(x => { const g = groupOf(x); counts[g] = (counts[g] || 0) + 1; });
-      let curGroup = null;
       sorted.forEach(item => {
         const it = getEff(item);
-        const g = groupOf(item);
-        if (g !== curGroup) {
-          curGroup = g;
-          html += `<div class="shoplist-group">📍 ${g}<span class="cnt">${counts[g]}件</span></div>`;
-        }
+        const ctx = item.store || it.storeTag || item.category || '';
         const buyLines = it.buy.replace(/\n/g, '<br>');
         html += `<div class="shoplist-item">
-          <div class="shoplist-store">${item.maker}　🗓 ${it.deadline}</div>
+          <div class="shoplist-store">📍 ${ctx}・${item.maker}　🗓 ${it.deadline}</div>
           <div class="shoplist-buy">${buyLines}</div>
         </div>`;
       });
@@ -2819,7 +2792,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1794031263368;
+const BUILD_STAMP = 1794031446565;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
