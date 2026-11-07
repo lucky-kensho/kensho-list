@@ -2112,13 +2112,15 @@ function isAppOnly(m) {
 // 商品券・ポイントなど「お金に近い」賞品には ¥ マークを付ける
 const MONEY_WORDS = [
   '商品券', 'ギフト券', 'ギフトカード', '図書カード', 'QUO', 'クオカード',
-  'えらべるPay', 'PayPay', 'ポイント', 'pt', '現金', '電子マネー', 'マネー',
+  'えらべるPay', 'PayPay', 'ポイント', '現金', '電子マネー', 'マネー',
   'プリペイド', '全額還元', 'キャッシュ', 'Amazonギフト', 'giftee',
   'デジタルギフト', 'JCBギフト', 'おこめ券', 'ペイ',
 ];
+// 「○○券」はお金に近いものだけ拾う（入場券・招待券・引換券は対象外）
+const MONEY_TICKET_RE = /(?:商品|ギフト|食事|お食事|旅行|買物|買い物|金|図書|ビール|たまご|玉子|おこめ|お米)券/;
 function isMoneyPrize(p) {
   const s = normMethod(p);
-  return MONEY_WORDS.some(w => s.includes(w));
+  return MONEY_WORDS.some(w => s.includes(w)) || MONEY_TICKET_RE.test(s);
 }
 function prizeRow(prize) {
   if (!prize) return '';
@@ -2824,7 +2826,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1794040896875;
+const BUILD_STAMP = 1794040962155;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
