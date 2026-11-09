@@ -1404,6 +1404,13 @@ function saveLater() {
   try { localStorage.setItem(LATER_KEY, JSON.stringify(later)); } catch(e) {}
 }
 
+// ピン留め（⭐）は食品・日用品タブの一番上に出す。
+// 「あとで買いたいものをピンしておいて、タブを開いたらすぐ見える」ための並び（ユーザーの希望）。
+// 応募済みのものは上げない（買い物の予定ではなくなっているため）。
+function pinRank(id) {
+  return (pinned[id] && state[id] !== 'done') ? 0 : 1;
+}
+
 // 区分ごとモードの並び順ランク（0:ふつう → 1:応募済み → 2:あとまわし）
 // ※締切が近い順モードでは「同じ締切の中だけで下に送る」ので、こちらは使わない
 function laterRank(id) {
@@ -1874,6 +1881,8 @@ function renderTab(tabId) {
   // ===== 締切が近い順モード：食品/日用品の区分を解除して全カードを締切順に並べる =====
   if (makerSortMode === 'deadline') {
     const flat = [...makerActive].sort((a,b) => {
+      const pa = pinRank(a.id), pb = pinRank(b.id);
+      if (pa !== pb) return pa - pb;
       const da = state[a.id]==='done' ? 1 : 0;
       const db = state[b.id]==='done' ? 1 : 0;
       if (da !== db) return da - db;
@@ -1930,7 +1939,11 @@ function renderTab(tabId) {
   for (const [group, groupItems] of Object.entries(grouped)) {
     const icon = group === '食品' ? '🥗' : '🧴';
     if (multiGroup) html += `<div class="section-label">${icon} ${group}</div>`;
-    const sorted = [...groupItems].sort((a,b) => laterRank(a.id) - laterRank(b.id));
+    const sorted = [...groupItems].sort((a,b) => {
+      const pa = pinRank(a.id), pb = pinRank(b.id);
+      if (pa !== pb) return pa - pb;
+      return laterRank(a.id) - laterRank(b.id);
+    });
     sorted.forEach(item => {
       const it = getEff(item);
       const isDone = state[item.id] === 'done';
@@ -2811,7 +2824,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1794181893250;
+const BUILD_STAMP = 1794199104256;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
