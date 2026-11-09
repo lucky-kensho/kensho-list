@@ -564,29 +564,6 @@
     filter: grayscale(1);
   }
   .again-btn.active { opacity: 1; filter: none; }
-  .later-btn {
-    font-size: 15px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 1px 3px;
-    flex-shrink: 0;
-    -webkit-tap-highlight-color: transparent;
-    line-height: 1;
-    opacity: 0.25;
-    filter: grayscale(1);
-  }
-  .later-btn.active { opacity: 1; filter: none; }
-  .card.later { opacity: 0.62; background: #fafafa; }
-  .later-chip {
-    font-size: 10px;
-    background: #eceff1;
-    color: #546e7a;
-    border-radius: 4px;
-    padding: 1px 5px;
-    margin-right: 4px;
-    white-space: nowrap;
-  }
   .pin-context {
     font-size: 10px;
     background: #fff3cd;
@@ -1395,39 +1372,11 @@ function toggleAgain(id) {
   updateCount(currentTab);
 }
 
-// ===== あとまわし（在庫過多などで今は見送りたいもの／並びの一番後ろへ） =====
-const LATER_KEY = 'kenshow_later_v1';
-let later = {};
-try { later = JSON.parse(localStorage.getItem(LATER_KEY)) || {}; } catch(e) {}
-
-function saveLater() {
-  try { localStorage.setItem(LATER_KEY, JSON.stringify(later)); } catch(e) {}
-}
-
 // ピン留め（⭐）は食品・日用品タブの一番上に出す。
 // 「あとで買いたいものをピンしておいて、タブを開いたらすぐ見える」ための並び（ユーザーの希望）。
 // 応募済みのものは上げない（買い物の予定ではなくなっているため）。
 function pinRank(id) {
   return (pinned[id] && state[id] !== 'done') ? 0 : 1;
-}
-
-// 区分ごとモードの並び順ランク（0:ふつう → 1:応募済み → 2:あとまわし）
-// ※締切が近い順モードでは「同じ締切の中だけで下に送る」ので、こちらは使わない
-function laterRank(id) {
-  if (later[id]) return 2;
-  return state[id] === 'done' ? 1 : 0;
-}
-
-function toggleLater(id) {
-  if (later[id]) { delete later[id]; } else { later[id] = true; }
-  saveLater();
-  const item = allItems[id];
-  if (item) renderTab(item.store ? 'store' : 'maker');
-  renderPinnedTab();
-  renderNewTab();
-  const sq = document.getElementById('search-input').value.trim();
-  if (sq) renderSearch(sq);
-  updateCount(currentTab);
 }
 
 function renderAgainTab() {
@@ -1888,9 +1837,7 @@ function renderTab(tabId) {
       if (da !== db) return da - db;
       const ta = dlDate(getEff(a).deadline), tb = dlDate(getEff(b).deadline);
       const va = ta ? ta.getTime() : 9e15, vb = tb ? tb.getTime() : 9e15;
-      if (va !== vb) return va - vb;
-      // 締切は同じ日どうし。そのグループの中で「あとまわし」を下に送る
-      return (later[a.id] ? 1 : 0) - (later[b.id] ? 1 : 0);
+      return va - vb;
     });
     let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="sort-toggle" onclick="toggleMakerSort()">🥗 区分ごとに戻す</button></div>`;
     flat.forEach(item => {
@@ -1900,14 +1847,14 @@ function renderTab(tabId) {
       const catChip = item.cat ? `<span class="category-chip ${item.cat}">${item.category}</span>` : '';
       const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener noreferrer" class="apply-link">🔗 応募</a>` : '';
       const isPinned = pinned[item.id];
-      html += `<div class="card${isDone ? ' done' : ''}${later[item.id] ? ' later' : ''}" id="card-${item.id}">
+      html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
         <div class="card-inner">
           <div class="check-area" ontouchstart="checkDown('${item.id}','maker')" ontouchmove="checkCancel()" ontouchend="checkUp(event,'${item.id}','maker')" onmousedown="checkDown('${item.id}','maker')" onmouseup="checkUp(event,'${item.id}','maker')" onmouseleave="checkCancel()">
             <div class="check-circle">${isDone ? '✓' : ''}</div>
           </div>
           <div class="card-body">
             <div class="card-top">
-              <div class="maker-name">${nb(item.id)}${catChip}${later[item.id] ? '<span class="later-chip">あとまわし</span>' : ''}${item.maker}</div>
+              <div class="maker-name">${nb(item.id)}${catChip}${item.maker}</div>
               <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
             </div>
             <div class="buy-box">${buyLines}</div>${prizeRow(it.prize)}
@@ -1915,7 +1862,6 @@ function renderTab(tabId) {
               <span class="method-chip">${item.method}</span>${acctChips(item)}
               <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
             <button class="again-btn${again[item.id] ? ' active' : ''}" onclick="toggleAgain('${item.id}')" title="もう一口">🔁</button>
-              <button class="later-btn${later[item.id] ? ' active' : ''}" onclick="toggleLater('${item.id}')" title="${later[item.id] ? 'あとまわしを解除' : 'あとまわし（一番後ろへ）'}">${later[item.id] ? '⏫' : '⏬'}</button>
               <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
               ${linkBtn}
             </div>
@@ -1942,7 +1888,7 @@ function renderTab(tabId) {
     const sorted = [...groupItems].sort((a,b) => {
       const pa = pinRank(a.id), pb = pinRank(b.id);
       if (pa !== pb) return pa - pb;
-      return laterRank(a.id) - laterRank(b.id);
+      return (state[a.id]==='done'?1:0) - (state[b.id]==='done'?1:0);
     });
     sorted.forEach(item => {
       const it = getEff(item);
@@ -1952,14 +1898,14 @@ function renderTab(tabId) {
       const storeChip = it.storeTag ? `<span class="category-chip cat-store">🏪 ${it.storeTag}</span>` : '';
       const linkBtn = it.url ? `<a href="${it.url}" target="_blank" rel="noopener noreferrer" class="apply-link">🔗 応募</a>` : '';
       const isPinned = pinned[item.id];
-      html += `<div class="card${isDone ? ' done' : ''}${later[item.id] ? ' later' : ''}" id="card-${item.id}">
+      html += `<div class="card${isDone ? ' done' : ''}" id="card-${item.id}">
         <div class="card-inner">
           <div class="check-area" ontouchstart="checkDown('${item.id}','maker')" ontouchmove="checkCancel()" ontouchend="checkUp(event,'${item.id}','maker')" onmousedown="checkDown('${item.id}','maker')" onmouseup="checkUp(event,'${item.id}','maker')" onmouseleave="checkCancel()">
             <div class="check-circle">${isDone ? '✓' : ''}</div>
           </div>
           <div class="card-body">
             <div class="card-top">
-              <div class="maker-name">${nb(item.id)}${catChip}${storeChip}${later[item.id] ? '<span class="later-chip">あとまわし</span>' : ''}${item.maker}</div>
+              <div class="maker-name">${nb(item.id)}${catChip}${storeChip}${item.maker}</div>
               <div class="deadline-badge ${it.dlClass}">🗓 ${it.deadline}</div>
             </div>
             <div class="buy-box">${buyLines}</div>${prizeRow(it.prize)}
@@ -1967,7 +1913,6 @@ function renderTab(tabId) {
               <span class="method-chip">${item.method}</span>${acctChips(item)}
                 <button class="pin-btn${isPinned ? ' active' : ''}" onclick="togglePin('${item.id}')" title="ピン">${isPinned ? '⭐' : '☆'}</button>
             <button class="again-btn${again[item.id] ? ' active' : ''}" onclick="toggleAgain('${item.id}')" title="もう一口">🔁</button>
-              <button class="later-btn${later[item.id] ? ' active' : ''}" onclick="toggleLater('${item.id}')" title="${later[item.id] ? 'あとまわしを解除' : 'あとまわし（一番後ろへ）'}">${later[item.id] ? '⏫' : '⏬'}</button>
               <button class="edit-card-btn" onclick="openCardEdit('${item.id}')" title="編集">✎</button>
               ${linkBtn}
             </div>
@@ -2824,7 +2769,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1794199104256;
+const BUILD_STAMP = 1794199497642;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
