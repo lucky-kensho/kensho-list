@@ -592,7 +592,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年11月14日更新　応募できる<span id="active-count">476</span>件</div>
+  <div class="header-date">2026年11月14日更新　応募できる<span id="active-count">477</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn active" onclick="switchTab('store',this)">店舗</button>
@@ -1217,6 +1217,7 @@ const allData = {
     {id:'m_22d9d0f1',since:1792984452990,announce:'',category:'食品',cat:'cat-food',maker:'栗山米菓　栗山米菓･星たべよ',deadline:'11/1〜2/28(日)23:59',dlClass:'dl-green',buy:'対象商品A･B300\n･特別1500円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'A･ｸﾞｯｽﾞｾｯﾄ･100名\nB･栗山米菓ｾｯﾄ･100名\n特別･ﾎﾃﾙ日航新潟宿泊ﾍﾟｱ',url:'https://www.befco.jp/campaign/cp_hoshi_huru/'},
     {id:'m_692b6a74',since:1793356897226,announce:'',category:'食品',cat:'cat-food',maker:'ドール　ドール･フルーツ',deadline:'11/1〜2/28(日)',dlClass:'dl-green',buy:'エクスペディアコース\n対象商品A1500･B500\nC150円(税込)以上',method:'WEB',prize:'エクスペディア宿泊ｸｰﾎﾟﾝ\nﾊﾞﾅﾅｺｰｽ',url:'https://www.dole.co.jp/lp/jp/autumn-campaign-2026/'},
     {id:'m_c6a45ade',since:1793628284432,announce:'',category:'食品',cat:'cat-food',maker:'コカコーラ　プレミアリーグ観戦チケットなどが当たる！',deadline:'3/7',dlClass:'dl-green',buy:'パッケージデザインに二次元コードが明記されているコカコーラ製品\nコカ･コーラ：プレミアリーグデザイン500ml缶\nコカ･コーラ ゼロ シュガー：プレミアリーグデ\n対象商品購入',method:'WEB',prize:'【1ポイントコース】\nコカ･コーラ オリジナル アスレチッククルーソックス　 全3色（ブラック、ネイビー、ホワイト）…各色200名 合計600名\nCoke ONドリンクチケット…1,000名\n【6ポイントコース】\nコカ･コーラ オリジナル 名入れユニフォーム…50名\n【20ポイントコース】\nイングランド・プレミアリーグ 観戦チケット1組2名チケット…10組20名',url:'https://www.coca-cola.com/jp/ja/brands/coca-cola/campaign/2026epl'},
+    {id:'m_2824a93f',since:1794660007509,announce:'',category:'食品',cat:'cat-food',maker:'文化通信社　文化通信社･本を買って当てようキャンペーン',deadline:'11/11〜3/15(月)',dlClass:'dl-green',buy:'書店にて1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'賞品',url:'https://giftbooks.jp/presents/'},
     {id:'m_76dbc797',since:1793709342852,announce:'',category:'食品',cat:'cat-food',maker:'オリオンビール　オリオンビール･桜ビール',deadline:'11/1〜3/26(金)〆切',dlClass:'dl-green',buy:'A\n対象商品1本以上含\nｵﾘｵﾝﾋﾞｰﾙの缶商品1000円(税込)以上',method:'WEB･ハガキ',prize:'A肉･20名\nB桜ﾋﾞｰﾙ12缶･100名',url:'https://www.orionbeer.co.jp/event/orionsakuracp2627/'},
     {id:'m_1b92e093',since:1793628284432,announce:'',category:'食品',cat:'cat-food',maker:'アルペンザルツ・メグレスプレーホイップクリーム　ごちそう体験Wプレゼントキャンペーン',deadline:'3/31',dlClass:'dl-green',buy:'アルペンザルツ 125g/ 250g/ 500g\nハーブ入りアルペンザルツ 125g\nメグレスプレーホイップクリーム 250g\n対象商品購入レシート',method:'WEB',prize:'【２ポイント】\nQUOカードPay5,000円分…50名\n【１ポイント】\nQUOカードPay1,000円分…300名',url:'https://www.apz2026cp.com/'},
     {id:'m_db066cd5',since:1793628284432,announce:'',category:'食品',cat:'cat-food',maker:'ユースキンポンプ　ずっとずっと、ユースキン。レシートキャンペーン 第3弾',deadline:'3/31',dlClass:'dl-green',buy:'ユースキン 180g ポンプ本体またはつけかえパウチ\n対象商品購入レシート',method:'WEB',prize:'ユースキン オリジナルエコバッグ…毎月30名',url:'https://www.yuskin.co.jp/pump-cp/'},
@@ -2804,7 +2805,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1794637212622;
+const BUILD_STAMP = 1794660007498;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
