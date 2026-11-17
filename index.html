@@ -433,6 +433,18 @@
   }
   .cat-food  { background: #e8f8f5; color: #1a7a6a; }
   .cat-daily { background: #f4ecf7; color: #6c3483; }
+  .edit-cat-btn {
+    flex: 1;
+    padding: 8px 0;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fff;
+    color: #888;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .edit-cat-btn.sel { border-color: #e74c3c; background: #fdecea; color: #c0392b; font-weight: bold; }
   .cat-store { background: #fff3e0; color: #e65100; }
   .delete-btn {
     position: absolute;
@@ -712,6 +724,13 @@
 <div id="card-edit-overlay" class="card-edit-overlay" onclick="if(event.target===this)closeCardEdit()">
   <div class="card-edit-box">
     <div style="font-weight:bold;font-size:16px;margin-bottom:14px;">📝 カード情報を編集</div>
+    <div id="edit-cat-row" style="margin-bottom:10px;">
+      <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">🗂 区分（タブを移す）</div>
+      <div style="display:flex;gap:8px;">
+        <button type="button" class="edit-cat-btn" data-cat="食品" onclick="pickEditCat('食品')">🥗 食品</button>
+        <button type="button" class="edit-cat-btn" data-cat="日用品" onclick="pickEditCat('日用品')">🧴 日用品</button>
+      </div>
+    </div>
     <div style="margin-bottom:10px;">
       <div style="font-size:11px;color:#bbb;font-weight:bold;margin-bottom:4px;letter-spacing:0.4px;">🏪 店名</div>
       <input id="edit-store" type="text" placeholder="複数の店は空白か「、」で区切る（例:イオン マルエツ）" style="width:100%;padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;">
@@ -1194,9 +1213,9 @@ const allData = {
     {id:'m_9ba90d61',since:1794637212622,announce:'',category:'食品',cat:'cat-food',maker:'ヤマダイ　ヤマダイ 八幡浜ちゃんぽんを満喫！～2杯で応募キャンペーン～',deadline:'1/31',dlClass:'dl-green',buy:'対象商品購入',method:'',prize:'Aコース 本場の魅力を堪能コース：凄麺×八幡浜 満喫セット（1万円相当）×30名\nBコース 凄麺で気軽に堪能コース：凄麺×八幡浜 満喫セット（3千円相当）×170名',url:'https://www.newtouch.co.jp/recipe/campaign/2026yawatahama_campaign/'},
     {id:'m_90e601a0',since:1794637212622,announce:'2下',category:'食品',cat:'cat-food',maker:'エスフーズ　エスフーズ こてっちゃん＆こてっちゃん牛もつ鍋★宇宙なんちゃら こてつくん コラボキャンペーン',deadline:'1/31',dlClass:'dl-green',buy:'エスフーズ対象商品を各コースに必要な個数以上購入したレシートを1口として、WEBから応募',method:'WEB',prize:'グルメコース（対象商品を3点以上購入）：アメリカンビーフ10,000円相当×10名\nデジタルギフトコース（対象商品を1点以上購入）：QUOカードPay 1,000円分×300名\nキャラクターグッズコース（対象商品を1点以上購入）：こてつくんの宇宙探査&月面探査ボードゲーム×100名',url:'https://kotetchan2026aw.campar.jp/'},
     {id:'m_0a657dc1',since:1794637212622,announce:'2上',category:'食品',cat:'cat-food',maker:'雪印メグミルク　雪印メグミルク 選べる最大10万円分プレゼントキャンペーン',deadline:'1/31消印',dlClass:'dl-green',buy:'雪印メグミルク対象商品を各コースに必要な個数購入したレシートを1口として、LINEまたは郵送で応募',method:'LINE・ハガキ',prize:'60ptコース：お好きな賞品10万円分×5名\n40ptコース：お好きな賞品6万円分×15名\n20ptコース：お好きな賞品3万円分×30名\n6ptコース：お好きな賞品1万円分×50名\n3ptコース：お好きな賞品5,000円分×400名\nWチャンス賞(LINE応募限定)：二宮和也さんオリジナルQUOカード500円分×500名',url:'https://www.megumi-yg.com/cp/26fw/'},
-    {id:'m_d5179a4d',since:1794823574613,announce:'',category:'食品',cat:'cat-food',maker:'旭化成ホームプロダクツ　サランラップ',deadline:'1/31',dlClass:'dl-green',buy:'旭化成ホームプロダクツ全商品(フロッシュ製品を除く)\nサランラップ、ジップロック、クックパー、リード など\n対象商品購入レシート',method:'WEB・ハガキ',prize:'葉加瀬太郎さんオリジナルQUOカード2,000円分…1,000名(WEB500名・ハガキ500名)',url:'https://ahp-web.jp/saran/cpn2026/'},
     {id:'m_5d81e36a',since:1794915989768,announce:'',category:'食品',cat:'cat-food',maker:'農協シリーズ　農協シリーズ',deadline:'11/16〜1/31(日)',dlClass:'dl-green',buy:'対象商品300円(税抜)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'A･JAタウン5000円･100名\nB･ｼｰﾙ･1000名',url:'https://www.zennoh.or.jp/nokyo-series/campaign2026aw/'},
     {id:'m_1ec9700b',since:1793866964205,announce:'',category:'日用品',cat:'cat-daily',maker:'呉工業　呉工業･KURE5-56',deadline:'11/1〜1/31(日)23:59',dlClass:'dl-green',buy:'対象商品A400\n･B1000円(税込)\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'A･QUO3000円･500名\nB･G-SHOCK･56名\nW･めじるしﾁｬｰﾑ･556名',url:'https://www.kure.com/5-56_hokutonoken/'},
+    {id:'m_d5179a4d',since:1794823574613,announce:'',category:'日用品',cat:'cat-daily',maker:'旭化成ホームプロダクツ　サランラップ',deadline:'1/31',dlClass:'dl-green',buy:'旭化成ホームプロダクツ全商品(フロッシュ製品を除く)\nサランラップ、ジップロック、クックパー、リード など\n対象商品購入レシート',method:'WEB・ハガキ',prize:'葉加瀬太郎さんオリジナルQUOカード2,000円分…1,000名(WEB500名・ハガキ500名)',url:'https://ahp-web.jp/saran/cpn2026/'},
     {id:'m_59dd19c0',since:1790823772960,announce:'',category:'食品',cat:'cat-food',maker:'ニップン　ニップン･オーマイマカロニ',deadline:'第1弾10/1〜1/31(日)23:59',dlClass:'dl-green',buy:'対象商品2･5･8点\n購入ﾚｼｰﾄ+ﾊﾟｯｹｰｼﾞ撮影応募',method:'WEB',prize:'2･ｽｰﾌﾟｶｯﾌﾟ･300名\n5･ﾎﾞｳﾙ2個ｾｯﾄ･100名\n8･ﾐﾄﾝ･鍋敷き',url:'https://cp-page.com/lp/ohmy-macaroni-cp/index.html?utm_source=nippn&utm_medium=newsrelease&utm_campaign=ohmy-macaroni-cp'},
     {id:'m_cff70d25',since:1793953435883,announce:'',category:'食品',cat:'cat-food',maker:'オタフク　オタフク･みんなでアツい瞬間、楽しもう',deadline:'11/30（2期は1/31）',dlClass:'dl-green',buy:'オタフク全商品\n対象商品1品含\n1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'ｶﾀﾛｸﾞ1万円相当･40名\nえらべるPay8000円･60名\nｵﾀﾌｸｾｯﾄ･300名',url:'https://www.otafuku.co.jp/event-campaign/20261002-20261001_20270131.html'},
     {id:'m_ac5e3272',since:1790947559439,announce:'',category:'食品',cat:'cat-food',maker:'S&B本生わさび　S&B本生わさび',deadline:'10/1〜1/31(日)17:00',dlClass:'dl-green',buy:'対象商品+精肉\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'えらべるPay1000円･500名',url:'https://clcpn.jp/r/sb_wasabi_cp/'},
@@ -1322,6 +1341,26 @@ function saveLocalEdits() {
   try { localStorage.setItem(LOCAL_EDITS_KEY, JSON.stringify(localEdits)); } catch(e) {}
 }
 
+// ===== 食品⇔日用品の手動切り替え（✎の編集画面から。端末ごとに保存） =====
+// 自動の振り分けが間違っていたとき、見つけた本人がその場で直せるようにする（ユーザーの希望）。
+// 区分はIDの材料ではないので、切り替えても応募済み・ピン・履歴は消えない。
+const CAT_CLASS = {'食品': 'cat-food', '日用品': 'cat-daily'};
+function applyCategoryOverrides() {
+  (allData.maker || []).forEach(item => {
+    if (item._origCategory === undefined) { item._origCategory = item.category; item._origCat = item.cat; }
+    const c = (localEdits[item.id] || {}).category;
+    if (c && CAT_CLASS[c]) { item.category = c; item.cat = CAT_CLASS[c]; }
+    else { item.category = item._origCategory; item.cat = item._origCat; }
+  });
+}
+applyCategoryOverrides();
+
+let _editCat = '';
+function pickEditCat(c) {
+  _editCat = c;
+  document.querySelectorAll('.edit-cat-btn').forEach(b => b.classList.toggle('sel', b.dataset.cat === c));
+}
+
 function calcDlClass(s) {
   const mms = [...String(s||'').matchAll(/(\d{1,2})\/(\d{1,2})/g)];
   if (!mms.length) return 'dl-gray';
@@ -1357,6 +1396,9 @@ function openCardEdit(id) {
   document.getElementById('edit-buy').value = e.buy !== undefined ? e.buy : (item.buy || '');
   document.getElementById('edit-prize').value = e.prize !== undefined ? e.prize : (item.prize || '');
   document.getElementById('edit-url').value = e.url !== undefined ? e.url : (item.url || '');
+  const isMaker = !item.store;
+  document.getElementById('edit-cat-row').style.display = isMaker ? 'block' : 'none';
+  pickEditCat(isMaker ? (item.category || '') : '');
   document.getElementById('card-edit-overlay').classList.add('open');
   setTimeout(() => document.getElementById('edit-deadline').focus(), 80);
 }
@@ -1378,9 +1420,12 @@ function saveCardEdit() {
   if (buy) e.buy = buy;
   if (prize) e.prize = prize;
   if (url) e.url = url; else if ('url' in prev) e.url = '';
+  const editItem = allItems[editingCardId];
+  if (editItem && !editItem.store && CAT_CLASS[_editCat] && _editCat !== editItem._origCategory) e.category = _editCat;
   if (Object.keys(e).length) localEdits[editingCardId] = e;
   else delete localEdits[editingCardId];
   saveLocalEdits();
+  applyCategoryOverrides();
   closeCardEdit();
   renderAll();
 }
@@ -2825,7 +2870,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1794915989743;
+const BUILD_STAMP = 1794917901585;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
