@@ -604,7 +604,7 @@
     <h1>🛒 懸賞買い物リスト</h1>
     <button class="reset-btn" onclick="resetAll()">↩ リセット</button>
   </div>
-  <div class="header-date">2026年11月26日更新　応募できる<span id="active-count">537</span>件</div>
+  <div class="header-date">2026年11月26日更新　応募できる<span id="active-count">539</span>件</div>
   <div class="tabs">
     <button class="tab-btn" onclick="switchTab('new',this)">🆕 NEW</button>
     <button class="tab-btn active" onclick="switchTab('store',this)">店舗</button>
@@ -1068,6 +1068,7 @@ const allData = {
     {id:'m_ef2a2c9a',since:1794823574613,announce:'',category:'食品',cat:'cat-food',maker:'ゼブラ　マッキー',deadline:'12/25',dlClass:'dl-yellow',buy:'マッキーシリーズ\n(全色軸、1本入パック・多色セットも対象)\nハイマッキー(ケア含む) / マッキー極細(ケア含む) / マッキーケア超極細 / マッキー極太\n対象商品購入レシート',method:'WEB',prize:'A賞:ハイマッキークッション限定色…5名\nB賞:ハイマッキーロゴ入りジャケット(Lサイズのみ)…10名\nC賞:ハイマッキー8色セット風メモ用紙付ケース…500名',url:'https://nzpb.f.msgs.jp/n/form/nzpb/TWpbbmZpMDJndZNsHMMaS'},
     {id:'m_17fe751b',since:1794915989768,announce:'',category:'食品',cat:'cat-food',maker:'キリンビール　キリンビール キリングッドエール GOOD DAYグラスが当たる！キャンペーン',deadline:'2/21（12/25）',dlClass:'dl-yellow',buy:'対象商品購入',method:'',prize:'手描きイラスト入りGOOD DAYグラス1脚 キリングッドエール（350ml缶）2本×5,000名',url:'https://cp.kirin.jp/story/37896'},
     {id:'m_8f0bbaff',since:1795661554651,announce:'',category:'食品',cat:'cat-food',maker:'くふうトクバイ　鍋つゆ・白菜',deadline:'12/25',dlClass:'dl-yellow',buy:'対象の「鍋つゆ」と「白菜」を一緒に買ったレシートが対象\nミツカン 〆まで美味しい鍋\n〆鍋 ごま豆乳・キムチ・焼あごだし・寄せ鍋・ゆず塩・鶏うま塩 など各種\n味の\n対象商品購入レシート',method:'WEB',prize:'デジタルギフト1,000円分(Amazonギフトカード・楽天ポイント・dポイントから選べる)…50名',url:'https://entry.tokubai.co.jp/tokubaioriginal-receipt-campaign-hakusainabetsuyu-202611'},
+    {id:'m_c779486e',since:1795698557335,announce:'',category:'食品',cat:'cat-food',maker:'くふうトクバイ　コンビニおでん',deadline:'12/25',dlClass:'dl-yellow',buy:'コンビニの「おでん」(1点以上を含み、合計税込500円以上のお買い物)\n対象商品購入レシート',method:'WEB',prize:'デジタルギフト 500円分(Amazonギフトカード・楽天ポイント・dポイントから選べる) 100名様',url:'https://entry.tokubai.co.jp/tokubaioriginal-receipt-campaign-convenienceoden-202611'},
     {id:'m_dcf428f0',since:1795661554651,announce:'',category:'日用品',cat:'cat-daily',maker:'LION　LION･MEGAMIS',deadline:'11/24〜12/25(金)23:59',dlClass:'dl-yellow',buy:'対象商品1650円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'ﾊﾞｽﾀｵﾙ･90名',url:'https://lidea.today/campaign/megamis_mojojojo_2611/index?from=campaign_megamis_mojojojo_2611#top'},
     {id:'m_eca5e868',since:1790831773673,announce:'',category:'食品',cat:'cat-food',maker:'雪印メグミルク　雪印メグミルク･牧場の朝ヨーグルト',deadline:'10/1〜12/25(金)〆切',dlClass:'dl-yellow',buy:'対象商品6･1個\n購入ﾚｼｰﾄ応募',method:'WEB･ハガキ',prize:'6･ぬいぐるみ･200名\n6･Tｼｬﾂ等ｸﾞｯｽﾞ･200名\n6･ﾋﾟｸﾆｯｸｸﾞｯｽﾞ･200名\n2･ﾁｬｰﾑﾎﾟｰﾁ･400名',url:'https://makibacp.com'},
     {id:'m_40399031',since:1790856380258,announce:'',category:'食品',cat:'cat-food',maker:'日の出　日の出･フルーツリキュール･サワーの素',deadline:'10/1〜12/25(金)23:59',dlClass:'dl-yellow',buy:'応募ｼｰﾙｼﾘｱﾙ№入力応募\nﾎﾟｲﾝﾄ貯め応募\n3･1p応募',method:'WEB',prize:'1･QUOPay1000円･200名\n3･合計20名',url:'https://get-cp.jp/campain/pages/top/hinode-fru'},
@@ -1296,6 +1297,7 @@ const allData = {
     {id:'m_692b6a74',since:1793356897226,announce:'',category:'食品',cat:'cat-food',maker:'ドール　ドール･フルーツ',deadline:'11/1〜2/28(日)',dlClass:'dl-green',buy:'エクスペディアコース\n対象商品A1500･B500\nC150円(税込)以上',method:'WEB',prize:'エクスペディア宿泊ｸｰﾎﾟﾝ\nﾊﾞﾅﾅｺｰｽ',url:'https://www.dole.co.jp/lp/jp/autumn-campaign-2026/'},
     {id:'m_d7fce9aa',since:1795242859011,announce:'',category:'食品',cat:'cat-food',maker:'創味食品　創味のつゆ・だしまろ酢',deadline:'3/3',dlClass:'dl-green',buy:'創味のつゆ 500ml / 創味のつゆ 1L / 創味のつゆ 減塩 / 創味のつゆ あまくち / だしまろ酢 500ml / だしまろ酢 1L\n※お店によっては\n対象商品購入レシート',method:'LINE',prize:'PayPayポイント5,000円分(PayPayポイントコード)…100名',url:'https://get-cp.com/campain/pages/top/somi-cp6'},
     {id:'m_c6a45ade',since:1793628284432,announce:'',category:'食品',cat:'cat-food',maker:'コカコーラ　プレミアリーグ観戦チケットなどが当たる！',deadline:'3/7',dlClass:'dl-green',buy:'パッケージデザインに二次元コードが明記されているコカコーラ製品\nコカ･コーラ：プレミアリーグデザイン500ml缶\nコカ･コーラ ゼロ シュガー：プレミアリーグデ\n対象商品購入',method:'WEB',prize:'【1ポイントコース】\nコカ･コーラ オリジナル アスレチッククルーソックス　 全3色（ブラック、ネイビー、ホワイト）…各色200名 合計600名\nCoke ONドリンクチケット…1,000名\n【6ポイントコース】\nコカ･コーラ オリジナル 名入れユニフォーム…50名\n【20ポイントコース】\nイングランド・プレミアリーグ 観戦チケット1組2名チケット…10組20名',url:'https://www.coca-cola.com/jp/ja/brands/coca-cola/campaign/2026epl'},
+    {id:'m_8de04db9',since:1795698557335,announce:'',category:'日用品',cat:'cat-daily',maker:'予告◆日本製紙クレシア　予告◆日本製紙クレシア',deadline:'応募･3/7(日)23:59',dlClass:'dl-green',buy:'対象商品購入ﾚｼｰﾄ応募\n3ﾎﾟｲﾝﾄ貯め応募',method:'LINE',prize:'QUOPay1000円･1000名',url:'https://scottie.crecia.jp/cp/kitchen/2026/'},
     {id:'m_2824a93f',since:1794660007509,announce:'',category:'食品',cat:'cat-food',maker:'文化通信社　文化通信社･本を買って当てようキャンペーン',deadline:'11/11〜3/15(月)',dlClass:'dl-green',buy:'書店にて1000円(税込)以上\n購入ﾚｼｰﾄ応募',method:'WEB',prize:'賞品',url:'https://giftbooks.jp/presents/'},
     {id:'m_76dbc797',since:1793709342852,announce:'',category:'食品',cat:'cat-food',maker:'オリオンビール　オリオンビール･桜ビール',deadline:'11/1〜3/26(金)〆切',dlClass:'dl-green',buy:'A\n対象商品1本以上含\nｵﾘｵﾝﾋﾞｰﾙの缶商品1000円(税込)以上',method:'WEB･ハガキ',prize:'A肉･20名\nB桜ﾋﾞｰﾙ12缶･100名',url:'https://www.orionbeer.co.jp/event/orionsakuracp2627/'},
     {id:'m_1b92e093',since:1793628284432,announce:'',category:'食品',cat:'cat-food',maker:'アルペンザルツ・メグレスプレーホイップクリーム　ごちそう体験Wプレゼントキャンペーン',deadline:'3/31',dlClass:'dl-green',buy:'アルペンザルツ 125g/ 250g/ 500g\nハーブ入りアルペンザルツ 125g\nメグレスプレーホイップクリーム 250g\n対象商品購入レシート',method:'WEB',prize:'【２ポイント】\nQUOカードPay5,000円分…50名\n【１ポイント】\nQUOカードPay1,000円分…300名',url:'https://www.apz2026cp.com/'},
@@ -2910,7 +2912,7 @@ function deleteMemoItem(id) {
 })();
 
 // ===== 新しい版の自動チェック（スマホのキャッシュ対策） =====
-const BUILD_STAMP = 1795661554649;
+const BUILD_STAMP = 1795698557334;
 let lastUpdateCheck = 0;
 function checkForUpdate() {
   if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
